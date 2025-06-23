@@ -12,15 +12,16 @@ platform :ios do
       workspace: "SOAPFT.xcworkspace",
       scheme: "SOAPFT",
       export_method: "app-store",
-      export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"], # ← 이 줄 추가!
+      export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
       export_options: {
-        signingStyle: "automatic"
+        signingStyle: "automatic",
+        provisioningProfiles: {
+          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT"
+        }
       },
       xcargs: "-allowProvisioningUpdates"
     )
 
-    upload_to_testflight(
-      api_key: api_key_obj
-    )
+    upload_to_testflight(api_key: api_key_obj)
   end
 end
