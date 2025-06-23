@@ -11,14 +11,19 @@ platform :ios do
       )
       ENV["MATCH_KEYCHAIN_NAME"] = "ci.keychain"
       ENV["MATCH_KEYCHAIN_PASSWORD"] = "ci_password"
+
+      match(
+        type: "appstore",
+        readonly: false,
+        git_url: "https://#{ENV['USERNAME']}:#{ENV['PAT_TOKEN']}@github.com/SOAPFT/SOAPFT-iOS-certificates"
+      )
+    else
+      # 로컬 테스트용: 로컬 키체인 인증서를 쓸 수 있게 설정하거나 생략
+      match(
+        type: "appstore",
+        readonly: false
+      )
     end
-
-    match(
-  type: "appstore",
-  readonly: false,
-  git_url: "https://#{ENV['USERNAME']}:#{ENV['PAT_TOKEN']}@github.com/SOAPFT/SOAPFT-iOS-certificates"
-)
-
 
     build_app(scheme: "SOAPFT")
   end
