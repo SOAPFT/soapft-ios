@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Repository
@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          gem install bundler -v 2.3.27
+          gem install bundler
           bundle install
 
       - name: Install Tuist
@@ -27,15 +27,15 @@ jobs:
           brew install tuist
 
       - name: Generate Xcode Project (Tuist)
-        run: tuist generate
+        run: |
+          tuist generate
 
       - name: Run Fastlane (Deploy to TestFlight)
         env:
-          CI: true
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_KEYCHAIN_NAME: ci.keychain
           MATCH_REPO_URL: https://${{ secrets.USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/SOAPFT/SOAPFT-iOS-certificates.git
+          DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
         run: bundle exec fastlane ios beta
