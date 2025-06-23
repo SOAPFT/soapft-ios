@@ -1,0 +1,29 @@
+name: Release Workflow
+
+sharedSchemes:
+  - SOAPFT
+
+environment:
+  xcode: latest
+
+actions:
+  - name: Generate Tuist Project
+    script: |
+      brew install tuist
+      tuist generate
+
+  - name: Build and Test
+    build:
+      scheme: SOAPFT
+      destination:
+        platform: iOS
+        name: iPhone 15
+    test:
+      testPlan: Default  # 없으면 생략 가능
+
+postActions:
+  - name: Upload to TestFlight
+    uploadToTestFlight:
+      distributionGroups:
+        - Internal Testers
+
