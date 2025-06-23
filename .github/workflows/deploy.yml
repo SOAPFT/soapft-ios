@@ -37,7 +37,8 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           MATCH_REPO_URL: ${{ secrets.MATCH_REPO_URL }}
         run: |
-          bundle exec fastlane match appstore --readonly
+            bundle exec fastlane match appstore --readonly --git_url "$MATCH_REPO_URL"
+
 
       - name: Run Fastlane (Deploy to TestFlight)
         env:
