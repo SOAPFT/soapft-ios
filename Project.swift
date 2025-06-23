@@ -4,11 +4,12 @@ let project = Project(
     name: "SOAPFT",
     settings: Settings.settings(
         base: [
+            "CODE_SIGN_STYLE": "Automatic",
             "DEVELOPMENT_TEAM": "MHD24ZMA79",
-            "CODE_SIGN_STYLE": "Automatic", 
             "CURRENT_PROJECT_VERSION": "3",
             "VERSIONING_SYSTEM": "apple-generic"
         ]
+
     ),
     targets: [
         .target(

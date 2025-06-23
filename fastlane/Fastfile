@@ -14,12 +14,12 @@ platform :ios do
       xcodeproj: "SOAPFT.xcodeproj"
     )
 
-    # 앱 빌드 (자동 서명)
+    # 앱 빌드 (자동 서명 허용)
     build_app(
       scheme: "SOAPFT",
       configuration: "Release",
       export_method: "app-store",
-      export_xcargs: "-allowProvisioningUpdates"
+      xcargs: "-allowProvisioningUpdates"
     )
 
     # TestFlight에 업로드
