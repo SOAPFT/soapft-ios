@@ -1,28 +1,8 @@
-app_identifier("io.tuist.SOAPFT") # The bundle identifier of your app
-apple_id("qwqwqw4756@gmail.com") # Your Apple Developer Portal username
-
-itc_team_id("127929736") # App Store Connect Team ID
-team_id("MHD24ZMA79") # Developer Portal Team ID
-
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile
 
-# 앱 번들 식별자
-app_identifier("io.tuist.SOAPFT")
-
-# Apple ID 이메일 (선택사항)
-apple_id("your_email@example.com")
-
-# App Store Connect 팀 ID
-itc_team_id("YOUR_ITC_TEAM_ID") # 예: 12345678
-
-# Apple Developer Portal 팀 ID
-team_id("YOUR_DEV_PORTAL_TEAM_ID") # 예: ABCDE12345
 
 # App Store Connect API Key 인증
-api_key(
-  key_id: ENV["ASC_KEY_ID"],           # GitHub Secret: Key ID
-  issuer_id: ENV["ASC_ISSUER_ID"],     # GitHub Secret: Issuer ID
-  key: ENV["ASC_API_KEY"],             # GitHub Secret: .p8 키 문자열
-  in_house: false
-)
+app_identifier("io.tuist.SOAPFT")
+apple_id("qwqwqw4756@gmail.com")
+team_id("MHD24ZMA79")
