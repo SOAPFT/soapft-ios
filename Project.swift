@@ -4,7 +4,7 @@ let project = Project(
     name: "SOAPFT",
     settings: Settings.settings(
         base: [
-            "DEVELOPMENT_TEAM": "YOUR_TEAM_ID",
+            "DEVELOPMENT_TEAM": "MHD24ZMA79",
             "CODE_SIGN_STYLE": "Manual"
         ],
         configurations: [
