@@ -14,10 +14,11 @@ platform :ios do
     end
 
     match(
-      type: "appstore",
-      readonly: false,
-      git_url: "https://github.com/SOAPFT/SOAPFT-iOS-certificates" # ← 여기를 본인 repo로!
-    )
+  type: "appstore",
+  readonly: false,
+  git_url: "https://#{ENV['USERNAME']}:#{ENV['PAT_TOKEN']}@github.com/SOAPFT/SOAPFT-iOS-certificates"
+)
+
 
     build_app(scheme: "SOAPFT")
   end
