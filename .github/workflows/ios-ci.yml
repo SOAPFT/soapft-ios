@@ -11,9 +11,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-      - uses: ruby/setup-ruby@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
 
@@ -23,12 +25,11 @@ jobs:
           bundle install || gem install fastlane
 
       - name: Install Tuist
-        run: |
-          brew install tuist
+        run: brew install tuist
 
-
-      - name: Fetch & Generate Tuist Project
+      - name: Clean and Generate Tuist Project
         run: |
+          rm -rf Derived
           tuist generate
 
       - name: Build and Test

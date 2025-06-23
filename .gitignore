@@ -8,6 +8,8 @@ Derived/
 DerivedData/
 timeline.xctimeline
 .DS_Store
+*.xcodeproj
+*.xcworkspace
 
 # MARK: - Swift Package Manager
 .build/
