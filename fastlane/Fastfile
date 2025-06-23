@@ -24,6 +24,7 @@ platform :ios do
   scheme: "SOAPFT",
   export_method: "app-store",
   export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
+  configuration: "Release",
   xcargs: "-allowProvisioningUpdates",
   export_options: {
     provisioningProfiles: {
