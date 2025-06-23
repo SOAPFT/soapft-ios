@@ -2,10 +2,8 @@ import ProjectDescription
 
 let settings = Settings.settings(
   base: [
-    "CODE_SIGN_STYLE": "Manual",       // ✅ 수동 서명 방식
-    "CODE_SIGN_IDENTITY": "Apple Distribution",
-    "DEVELOPMENT_TEAM": ProcessInfo.processInfo.environment["DEVELOPMENT_TEAM"] ?? "",
-    "PROVISIONING_PROFILE_SPECIFIER": ProcessInfo.processInfo.environment["PROFILE_SPECIFIER"] ?? ""
+    "CODE_SIGN_STYLE": "Manual",
+    "CODE_SIGN_IDENTITY": "Apple Distribution"
   ]
 )
 
