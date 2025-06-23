@@ -1,6 +1,6 @@
 platform :ios do
   lane :beta do
-    if ENV["CI"] # GitHub Actions 등에서만 실행
+    if ENV["CI"]
       create_keychain(
         name: "ci.keychain",
         password: "ci_password",
@@ -14,11 +14,11 @@ platform :ios do
     end
 
     match(
-      type: "appstore", # or "adhoc" or "development"
-      readonly: false
+      type: "appstore",
+      readonly: false,
+      git_url: "https://github.com/SOAPFT/SOAPFT-iOS-certificates" # ← 여기를 본인 repo로!
     )
 
     build_app(scheme: "SOAPFT")
-    # deliver 등 배포 명령어가 있다면 여기에 추가
   end
 end
