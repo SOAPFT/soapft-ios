@@ -18,7 +18,8 @@ platform :ios do
     build_app(
       scheme: "SOAPFT",
       configuration: "Release",
-      export_method: "app-store"
+      export_method: "app-store",
+      export_xcargs: "-allowProvisioningUpdates"
     )
 
     # TestFlight에 업로드
