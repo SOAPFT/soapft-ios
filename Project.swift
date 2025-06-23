@@ -5,7 +5,10 @@ let project = Project(
     settings: Settings.settings(
         base: [
             "DEVELOPMENT_TEAM": "MHD24ZMA79",
-            "CODE_SIGN_STYLE": "Manual"
+            "CODE_SIGN_STYLE": "Manual",
+            // ✅ 아래 두 줄 추가
+            "CURRENT_PROJECT_VERSION": "1",
+            "VERSIONING_SYSTEM": "apple-generic"
         ],
         configurations: [
             .debug(name: "Debug", settings: [
@@ -26,12 +29,11 @@ let project = Project(
             bundleId: "io.tuist.SOAPFT",
             infoPlist: .extendingDefault(
                 with: [
-                    "CFBundleVersion": "auto",
                     "CFBundleIconName": "AppIcon",
                     "UILaunchScreen": [
                         "UIColorName": "",
                         "UIImageName": "",
-                    ],
+                    ]
                 ]
             ),
             sources: ["SOAPFT/Sources/**"],
