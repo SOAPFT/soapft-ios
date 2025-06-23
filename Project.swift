@@ -2,14 +2,16 @@ import ProjectDescription
 
 let settings = Settings.settings(
   base: [
-    "DEVELOPMENT_TEAM": "MHD24ZMA79",         // ✅ 본인의 Apple Developer Team ID
-    "CODE_SIGN_STYLE": "Automatic",           // ✅ 자동 서명 방식 사용
+    "DEVELOPMENT_TEAM": "MHD24ZMA79",  // ✅ 본인의 팀 ID
+    "CODE_SIGN_STYLE": "Manual",       // ✅ 수동 서명 방식
+    "CODE_SIGN_IDENTITY": "Apple Distribution",
+    "PROVISIONING_PROFILE_SPECIFIER": "match AppStore io.tuist.SOAPFT 1750679207"
   ]
 )
 
 let project = Project(
     name: "SOAPFT",
-    settings: settings,  // ← 여기에 설정 적용!
+    settings: settings,
     targets: [
         .target(
             name: "SOAPFT",
