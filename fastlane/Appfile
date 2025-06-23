@@ -1,8 +1,0 @@
-# For more information about the Appfile, see:
-#     https://docs.fastlane.tools/advanced/#appfile
-
-
-# App Store Connect API Key 인증
-app_identifier("io.tuist.SOAPFT")
-apple_id(ENV["APPLE_ID"]) 
-team_id(ENV["TEAM_ID"])
