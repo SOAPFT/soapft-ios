@@ -17,7 +17,9 @@ let project = Project(
             ]),
             .release(name: "Release", settings: [
                 "CODE_SIGN_IDENTITY": "Apple Distribution",
-                "PROVISIONING_PROFILE_SPECIFIER": "match AppStore io.tuist.SOAPFT 1750692394"
+                "PROVISIONING_PROFILE_SPECIFIER": "match AppStore io.tuist.SOAPFT",
+                "DEVELOPMENT_TEAM": "MHD24ZMA79",
+                "CODE_SIGN_STYLE": "Manual"
             ])
         ]
     ),
