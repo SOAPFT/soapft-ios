@@ -1,41 +1,37 @@
-name: Deploy to TestFlight
+name: iOS CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Setup Ruby
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
 
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install
+      - name: Install Bundler
+        run: gem install bundler -v 2.3.27
 
-      - name: Install Tuist
-        run: |
-          brew install tuist
+      - name: Bundle install
+        run: bundle install
 
-      - name: Generate Xcode Project (Tuist)
+      - name: Set ENV
         run: |
-          tuist generate
+          echo "ASC_API_KEY=${{ secrets.ASC_API_KEY }}" >> $GITHUB_ENV
+          echo "ASC_KEY_ID=${{ secrets.ASC_KEY_ID }}" >> $GITHUB_ENV
+          echo "ASC_ISSUER_ID=${{ secrets.ASC_ISSUER_ID }}" >> $GITHUB_ENV
+          echo "MATCH_REPO_URL=https://oauth2:${{ secrets.MATCH_GIT_TOKEN }}@github.com/SOAPFT/SOAPFT-iOS-certificates.git" >> $GITHUB_ENV
 
-      - name: Run Fastlane (Deploy to TestFlight)
-        env:
-          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_REPO_URL: https://${{ secrets.USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/SOAPFT/SOAPFT-iOS-certificates.git
-          DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
+      - name: Generate Project
+        run: bundle exec tuist generate
+
+      - name: Run Fastlane
         run: bundle exec fastlane ios beta

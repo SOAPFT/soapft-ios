@@ -21,27 +21,31 @@ platform :ios do
       key_content: ENV['ASC_API_KEY']
     )
 
-    # ✅ TestFlight용으로 type을 'development' 또는 'adhoc'으로 설정
     match(
-      type: "development", # 또는 'adhoc'
+      type: "development", # TestFlight용 인증서
       readonly: false,
       git_url: ENV['MATCH_REPO_URL'],
       api_key: api_key,
       force: true
     )
 
-    # ✅ match에서 불러온 프로파일 이름을 정확히 지정
     build_app(
       scheme: "SOAPFT",
-      export_method: "development", # 'adhoc'일 경우엔 여기서도 맞춰야 함
+      configuration: "Debug", # match type과 맞춰야 함
+      export_method: "development",
       export_options: {
         provisioningProfiles: {
-          "io.tuist.SOAPFT" => "match Development io.tuist.SOAPFT" # 정확한 이름 확인 필요
+          "io.tuist.SOAPFT" => "match Development io.tuist.SOAPFT"
         }
       }
     )
 
-    # ✅ TestFlight에 올리는 것이 목적이라면 deliver → upload_to_testflight
-    upload_to_testflight(api_key: api_key)
+    deliver(
+      api_key: api_key,
+      submit_for_review: false,
+      skip_metadata: true,
+      skip_screenshots: true,
+      skip_waiting_for_build_processing: true
+    )
   end
 end
