@@ -2,8 +2,9 @@ name: Deploy to TestFlight
 
 on:
   push:
-    branches:
-      - main  # 푸시 시 실행할 브랜치
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
