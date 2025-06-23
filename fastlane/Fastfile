@@ -19,13 +19,13 @@ platform :ios do
     )
 
     # 빌드 및 아카이브
-    build_app(
+   build_app(
   workspace: "SOAPFT.xcworkspace",
   scheme: "SOAPFT",
   export_method: "app-store",
   export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
   configuration: "Release",
-  xcargs: "-allowProvisioningUpdates",
+  xcargs: "-allowProvisioningUpdates CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore io.tuist.SOAPFT 1750679207'",
   export_options: {
     provisioningProfiles: {
       "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT 1750679207"
