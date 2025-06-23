@@ -14,7 +14,7 @@ actions:
 
   - name: Build and Test
     build:
-      workspace: SOAPFT.xcworkspace
+      workspace: ./SOAPFT.xcworkspace
       scheme: SOAPFT
       destination:
         platform: iOS
