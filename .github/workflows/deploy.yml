@@ -36,6 +36,6 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_REPO_URL: https://${{ secrets.USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/ParkMazorika/SOAPFT-iOS-certificates.git
+          MATCH_REPO_URL: https://${{ secrets.USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/SOAPFT/SOAPFT-iOS-certificates.git
           DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
         run: bundle exec fastlane ios beta
