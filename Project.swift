@@ -26,6 +26,7 @@ let project = Project(
             bundleId: "io.tuist.SOAPFT",
             infoPlist: .extendingDefault(
                 with: [
+                    "CFBundleVersion": "auto",
                     "CFBundleIconName": "AppIcon",
                     "UILaunchScreen": [
                         "UIColorName": "",
