@@ -23,8 +23,8 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          
-     - name: Install Tuist
+
+      - name: Install Tuist
         run: |
           brew install tuist
 
