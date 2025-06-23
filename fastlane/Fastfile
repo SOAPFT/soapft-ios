@@ -39,7 +39,7 @@ platform :ios do
       export_method: "app-store", # ✅ 정확한 export_method
       export_options: {
         provisioningProfiles: {
-          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT 1750697335"
+          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT 1750692394"
         }
       }
     )
