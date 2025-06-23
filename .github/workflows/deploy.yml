@@ -3,8 +3,6 @@ name: Deploy to TestFlight
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -32,21 +30,13 @@ jobs:
         run: |
           tuist generate
 
-      - name: Setup Fastlane match
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_REPO_URL: ${{ secrets.MATCH_REPO_URL }}
-        run: |
-            bundle exec fastlane match appstore --readonly --git_url "$MATCH_REPO_URL"
-
-
       - name: Run Fastlane (Deploy to TestFlight)
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_REPO_URL: ${{ secrets.MATCH_REPO_URL }}
+          GITHUB_USERNAME: your-github-username
+          MATCH_REPO_URL: https://${{ secrets.GITHUB_USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/your-org/SOAPFT-iOS-certificates.git
           DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
-        run: |
-          bundle exec fastlane ios beta
+        run: bundle exec fastlane ios beta
