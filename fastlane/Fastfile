@@ -14,9 +14,11 @@ platform :ios do
       readonly: false,
       api_key: api_key_obj,
       git_url: ENV["MATCH_REPO_URL"],
-      keychain_name: "login.keychain",
-      keychain_password: "fastlane" # GitHub Actions macOS 기본값
+      keychain_name: "login.keychain-db", # macOS 최신 keychain 이름
+      keychain_password: "fastlane",      # macOS GitHub Actions 기본값
+      verbose: true                       # 디버깅을 위해 출력
     )
+
 
     # 코드서명 관련 환경 변수 (signing 시간 이슈 방지용)
     ENV["OTHER_CODE_SIGN_FLAGS"] = "--no-strict"
