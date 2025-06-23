@@ -1,27 +1,33 @@
 platform :ios do
   desc "TestFlight에 업로드"
   lane :beta do
+    # App Store Connect API 인증
     api_key_obj = app_store_connect_api_key(
       key_id: ENV["ASC_KEY_ID"],
       issuer_id: ENV["ASC_ISSUER_ID"],
-      key_content: ENV["ASC_API_KEY"],
-      in_house: false
+      key_content: ENV["ASC_API_KEY"]
     )
 
+    # 인증서 및 프로비저닝 프로파일 설치
+    match(
+      type: "appstore",
+      readonly: true,
+      api_key: api_key_obj,
+      git_url: ENV["MATCH_REPO_URL"]
+    )
+
+    # 빌드
     build_app(
       workspace: "SOAPFT.xcworkspace",
       scheme: "SOAPFT",
       export_method: "app-store",
       export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
-      export_options: {
-        signingStyle: "automatic",
-        provisioningProfiles: {
-          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT"
-        }
-      },
       xcargs: "-allowProvisioningUpdates"
     )
 
-    upload_to_testflight(api_key: api_key_obj)
+    # 업로드
+    upload_to_testflight(
+      api_key: api_key_obj
+    )
   end
 end
