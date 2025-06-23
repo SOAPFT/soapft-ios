@@ -25,7 +25,7 @@ platform :ios do
       type: "appstore",
       readonly: false,
       git_url: ENV['MATCH_REPO_URL'],
-      app_store_connect_api_key: api_key
+      api_key: api_key
     )
 
     build_app(
