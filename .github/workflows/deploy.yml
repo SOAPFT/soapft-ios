@@ -1,9 +1,10 @@
 name: Deploy to TestFlight
 
 on:
-  push:
-    branches:
-      - main # 혹은 deploy 브랜치
+  workflow_run:
+    workflows: ["iOS CI"]  # CI 워크플로 이름
+    types:
+      - completed
 
 jobs:
   build:
