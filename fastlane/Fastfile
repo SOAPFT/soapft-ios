@@ -22,11 +22,10 @@ platform :ios do
     )
 
     match(
-      type: "appstore", # ✅ 올바른 type (appstore)
-      readonly: false,
+      type: "appstore",
+      readonly: true, # ✅ readonly 모드로 변경 (CI에서 profile 생성 방지)
       git_url: ENV['MATCH_REPO_URL'],
-      api_key: api_key,
-      force: true
+      api_key: api_key
     )
 
     increment_build_number(
@@ -35,11 +34,11 @@ platform :ios do
 
     build_app(
       scheme: "SOAPFT",
-      configuration: "Release", # ✅ TestFlight 배포용
-      export_method: "app-store", # ✅ 정확한 export_method
+      configuration: "Release",
+      export_method: "app-store",
       export_options: {
         provisioningProfiles: {
-          "io.tuist.SOAPFT" => "74824f03-83d2-4e35-bf51-aebdb6d0fe1c"
+          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT" # ✅ 이름 기반으로 매칭
         }
       }
     )

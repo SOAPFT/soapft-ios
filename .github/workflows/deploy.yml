@@ -23,12 +23,17 @@ jobs:
           bundle install
 
       - name: Install Tuist
-        run: |
-          brew install tuist
+        run: brew install tuist
 
       - name: Generate Xcode Project (Tuist)
+        run: tuist generate
+
+      - name: Set up match keychain manually
         run: |
-          tuist generate
+          security create-keychain -p "ci_password" ci.keychain
+          security default-keychain -s ci.keychain
+          security unlock-keychain -p "ci_password" ci.keychain
+          security set-keychain-settings -t 3600 -u ci.keychain
 
       - name: Run Fastlane (Deploy to TestFlight)
         env:
@@ -38,4 +43,6 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           MATCH_REPO_URL: https://${{ secrets.USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/SOAPFT/SOAPFT-iOS-certificates.git
           DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          FASTLANE_ITC_TEAM_ID: ${{ secrets.FASTLANE_ITC_TEAM_ID }}
         run: bundle exec fastlane ios beta
