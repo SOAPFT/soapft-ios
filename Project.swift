@@ -3,9 +3,12 @@ import ProjectDescription
 let settings = Settings.settings(
   base: [
     "CODE_SIGN_STYLE": "Manual",
-    "CODE_SIGN_IDENTITY": "Apple Distribution"
+    "CODE_SIGN_IDENTITY": "Apple Distribution",
+    "PROVISIONING_PROFILE_SPECIFIER": "match AppStore io.tuist.SOAPFT 1750692394",
+    "DEVELOPMENT_TEAM": "YOUR_TEAM_ID"
   ]
 )
+
 
 let project = Project(
     name: "SOAPFT",
