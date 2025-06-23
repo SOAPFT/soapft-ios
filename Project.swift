@@ -2,10 +2,10 @@ import ProjectDescription
 
 let settings = Settings.settings(
   base: [
-    "DEVELOPMENT_TEAM": "MHD24ZMA79",  // ✅ 본인의 팀 ID
     "CODE_SIGN_STYLE": "Manual",       // ✅ 수동 서명 방식
     "CODE_SIGN_IDENTITY": "Apple Distribution",
-    "PROVISIONING_PROFILE_SPECIFIER": "match AppStore io.tuist.SOAPFT 1750679207"
+    "DEVELOPMENT_TEAM": ProcessInfo.processInfo.environment["DEVELOPMENT_TEAM"] ?? "",
+    "PROVISIONING_PROFILE_SPECIFIER": ProcessInfo.processInfo.environment["PROFILE_SPECIFIER"] ?? ""
   ]
 )
 

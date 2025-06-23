@@ -4,5 +4,5 @@
 
 # App Store Connect API Key 인증
 app_identifier("io.tuist.SOAPFT")
-apple_id("qwqwqw4756@gmail.com")
-team_id("MHD24ZMA79")
+apple_id(ENV["APPLE_ID"]) 
+team_id(ENV["TEAM_ID"])
