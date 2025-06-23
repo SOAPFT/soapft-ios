@@ -22,7 +22,7 @@ platform :ios do
     )
 
     match(
-      type: "app-store", # ✅ 그대로 유지
+      type: "appstore", # ✅ 그대로 유지
       readonly: false,
       git_url: ENV['MATCH_REPO_URL'],
       api_key: api_key,
@@ -36,7 +36,7 @@ platform :ios do
     build_app(
       scheme: "SOAPFT",
       configuration: "Release", # ✅ 변경
-      export_method: "app-store", # ✅ 변경
+      export_method: "appstore", # ✅ 변경
       export_options: {
         provisioningProfiles: {
           "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT" # ✅ 변경
