@@ -2,15 +2,6 @@ import ProjectDescription
 
 let project = Project(
     name: "SOAPFT",
-    settings: Settings.settings(
-        base: [
-            "CODE_SIGN_STYLE": "Automatic",
-            "DEVELOPMENT_TEAM": "MHD24ZMA79",
-            "CURRENT_PROJECT_VERSION": "3",
-            "VERSIONING_SYSTEM": "apple-generic"
-        ]
-
-    ),
     targets: [
         .target(
             name: "SOAPFT",
