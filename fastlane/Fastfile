@@ -23,7 +23,7 @@ platform :ios do
 
     match(
       type: "appstore", # ✅ 올바른 type (appstore)
-      readonly: false,
+      readonly: true,
       git_url: ENV['MATCH_REPO_URL'],
       api_key: api_key,
       force: true
