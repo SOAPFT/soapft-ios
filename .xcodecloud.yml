@@ -10,21 +10,20 @@ actions:
   - name: Generate Tuist Project
     script: |
       brew install tuist
-      tuist generate
+      tuist generate || exit 1
 
   - name: Build and Test
     build:
-      workspace: ./SOAPFT.xcworkspace
+      workspace: SOAPFT.xcworkspace
       scheme: SOAPFT
       destination:
         platform: iOS
         name: iPhone 15
     test:
-      testPlan: Default  # 없으면 생략 가능
+      testPlan: Default
 
 postActions:
   - name: Upload to TestFlight
     uploadToTestFlight:
       distributionGroups:
         - Internal Testers
-
