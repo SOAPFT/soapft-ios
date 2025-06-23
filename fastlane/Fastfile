@@ -12,7 +12,8 @@ platform :ios do
     match(
       type: "appstore",
       readonly: true,
-      api_key: api_key_obj
+      api_key: api_key_obj,
+      git_url: ENV["MATCH_REPO_URL"] # ⬅️ 이 줄이 반드시 필요함
     )
 
     # 빌드
