@@ -12,6 +12,7 @@ platform :ios do
       workspace: "SOAPFT.xcworkspace",
       scheme: "SOAPFT",
       export_method: "app-store",
+      export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"], # ← 이 줄 추가!
       export_options: {
         signingStyle: "automatic"
       },
