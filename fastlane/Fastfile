@@ -1,51 +1,24 @@
 platform :ios do
-  desc "TestFlight에 업로드"
   lane :beta do
-    # App Store Connect API 인증
-    api_key_obj = app_store_connect_api_key(
-      key_id: ENV["ASC_KEY_ID"],
-      issuer_id: ENV["ASC_ISSUER_ID"],
-      key_content: ENV["ASC_API_KEY"]
-    )
+    if ENV["CI"] # GitHub Actions 등에서만 실행
+      create_keychain(
+        name: "ci.keychain",
+        password: "ci_password",
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        add_to_search_list: true
+      )
+      ENV["MATCH_KEYCHAIN_NAME"] = "ci.keychain"
+      ENV["MATCH_KEYCHAIN_PASSWORD"] = "ci_password"
+    end
 
-    # 인증서 및 프로비저닝 프로파일 설치
     match(
-      type: "appstore",
-      readonly: false,
-      api_key: api_key_obj,
-      git_url: ENV["MATCH_REPO_URL"],
-      keychain_name: "login.keychain-db", # macOS 최신 keychain 이름
-      keychain_password: "fastlane",      # macOS GitHub Actions 기본값
-      verbose: true                       # 디버깅을 위해 출력
+      type: "appstore", # or "adhoc" or "development"
+      readonly: false
     )
 
-
-    # 코드서명 관련 환경 변수 (signing 시간 이슈 방지용)
-    ENV["OTHER_CODE_SIGN_FLAGS"] = "--no-strict"
-    ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
-
-    # 빌드 및 아카이브
-    build_app(
-      workspace: "SOAPFT.xcworkspace",
-      scheme: "SOAPFT",
-      export_method: "app-store",
-      skip_package_ipa: true,
-      export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
-      configuration: "Release",
-      silent: false,                 # 로그 생략 방지
-      verbose: true,                 # 상세 로그 활성화
-      disable_xcpretty: true,        # xcbeautify 문제 회피
-      xcargs: "-allowProvisioningUpdates CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore io.tuist.SOAPFT 1750679207'",
-      export_options: {
-        provisioningProfiles: {
-          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT 1750679207"
-        }
-      }
-    )
-
-    # TestFlight 업로드
-    upload_to_testflight(
-      api_key: api_key_obj
-    )
+    build_app(scheme: "SOAPFT")
+    # deliver 등 배포 명령어가 있다면 여기에 추가
   end
 end
