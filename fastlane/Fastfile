@@ -1,3 +1,5 @@
+default_platform(:ios)
+
 platform :ios do
   lane :beta do
     if ENV["CI"]
@@ -16,17 +18,25 @@ platform :ios do
     api_key = app_store_connect_api_key(
       key_id: ENV['ASC_KEY_ID'],
       issuer_id: ENV['ASC_ISSUER_ID'],
-      key_content: ENV['ASC_API_KEY'] # Base64 아님 → 일반 KEY 내용 그대로
+      key_content: ENV['ASC_API_KEY']
     )
 
     match(
       type: "appstore",
       readonly: false,
       git_url: ENV['MATCH_REPO_URL'],
-      api_key: api_key
+      app_store_connect_api_key: api_key
     )
 
-    build_app(scheme: "SOAPFT")
+    build_app(
+      scheme: "SOAPFT",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT 1750692394"
+        }
+      }
+    )
 
     deliver(api_key: api_key)
   end
