@@ -7,7 +7,7 @@ let project = Project(
             "DEVELOPMENT_TEAM": "MHD24ZMA79",
             "CODE_SIGN_STYLE": "Manual",
             // ✅ 아래 두 줄 추가
-            "CURRENT_PROJECT_VERSION": "1",
+            "CURRENT_PROJECT_VERSION": "3",
             "VERSIONING_SYSTEM": "apple-generic"
         ],
         configurations: [
