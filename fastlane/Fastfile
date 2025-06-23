@@ -11,7 +11,7 @@ platform :ios do
     # 인증서 및 프로비저닝 프로파일 설치
     match(
       type: "appstore",
-      readonly: true,
+      readonly: false,
       api_key: api_key_obj,
       git_url: ENV["MATCH_REPO_URL"],
       keychain_name: "login.keychain",
@@ -20,17 +20,18 @@ platform :ios do
 
     # 빌드 및 아카이브
     build_app(
-      workspace: "SOAPFT.xcworkspace",
-      scheme: "SOAPFT",
-      export_method: "app-store",
-      export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
-      xcargs: "-allowProvisioningUpdates -skipPackagePluginValidation",
-      export_options: {
-        provisioningProfiles: {
-          "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT #{ENV['DEVELOPER_PORTAL_TEAM_ID']}"
-        }
-      }
-    )
+  workspace: "SOAPFT.xcworkspace",
+  scheme: "SOAPFT",
+  export_method: "app-store",
+  export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
+  xcargs: "-allowProvisioningUpdates",
+  export_options: {
+    provisioningProfiles: {
+      "io.tuist.SOAPFT" => "match AppStore io.tuist.SOAPFT 1750679207"
+    }
+  }
+)
+
 
     # TestFlight 업로드
     upload_to_testflight(
