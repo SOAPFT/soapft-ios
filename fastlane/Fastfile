@@ -29,6 +29,7 @@ platform :ios do
       workspace: "SOAPFT.xcworkspace",
       scheme: "SOAPFT",
       export_method: "app-store",
+      skip_package_ipa: true,
       export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
       configuration: "Release",
       silent: false,                 # 로그 생략 방지
