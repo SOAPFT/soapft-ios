@@ -12,8 +12,7 @@ platform :ios do
     match(
       type: "appstore",
       readonly: true,
-      api_key: api_key_obj,
-      git_url: ENV["MATCH_REPO_URL"]
+      api_key: api_key_obj
     )
 
     # 빌드
