@@ -29,7 +29,6 @@ jobs:
 
       - name: Fetch & Generate Tuist Project
         run: |
-          tuist fetch
           tuist generate
 
       - name: Build and Test
