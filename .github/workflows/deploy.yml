@@ -1,10 +1,9 @@
 name: Deploy to TestFlight
 
 on:
-  workflow_run:
-    workflows: ["iOS CI"]  # CI 워크플로 이름
-    types:
-      - completed
+  push:
+    branches:
+      - main  # 푸시 시 실행할 브랜치
 
 jobs:
   build:
@@ -23,16 +22,18 @@ jobs:
         run: |
           gem install bundler
           bundle install
+          
+     - name: Install Tuist
+        run: |
+          brew install tuist
 
-      - name: Set up API Key file
-        run: echo "${{ secrets.ASC_API_KEY }}" > AuthKey.p8
+      - name: Generate Xcode Project (Tuist)
+        run: |
+          tuist generate
 
       - name: Run Fastlane
         env:
-          APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
-          DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }} # 만약 사용 시
         run: bundle exec fastlane beta
