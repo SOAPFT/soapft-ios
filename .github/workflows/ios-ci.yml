@@ -1,0 +1,45 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Tuist Build & Test
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+
+      - name: Install Bundler and Fastlane
+        run: |
+          gem install bundler
+          bundle install || gem install fastlane
+
+      - name: Install Tuist
+        run: |
+          curl -Ls https://install.tuist.io | bash
+          export PATH="$HOME/.tuist/bin:$PATH"
+
+      - name: Fetch & Generate Tuist Project
+        run: |
+          tuist fetch
+          tuist generate
+
+      - name: Build and Test
+        run: |
+          xcodebuild clean test \
+            -workspace SOAPFT.xcworkspace \
+            -scheme SOAPFT \
+            -destination 'platform=iOS Simulator,name=iPhone 15'
+
+
