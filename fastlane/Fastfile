@@ -18,7 +18,7 @@ platform :ios do
       workspace: "SOAPFT.xcworkspace", # Tuist로 생성된 .xcworkspace 사용
       scheme: "SOAPFT",
       export_method: "app-store",
-      team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"], # ← 꼭 설정
+      export_team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"], # ← 꼭 설정
       xcargs: "-allowProvisioningUpdates"
     )
 
