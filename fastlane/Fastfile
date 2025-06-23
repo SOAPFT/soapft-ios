@@ -28,6 +28,10 @@ platform :ios do
       api_key: api_key,
       force: true
     )
+	
+    increment_build_number( # 👈 여기 추가
+      xcodeproj: "SOAPFT.xcodeproj"
+    )
 
     build_app(
       scheme: "SOAPFT",
