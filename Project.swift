@@ -5,22 +5,9 @@ let project = Project(
     settings: Settings.settings(
         base: [
             "DEVELOPMENT_TEAM": "MHD24ZMA79",
-            "CODE_SIGN_STYLE": "Manual",
-            // ✅ 아래 두 줄 추가
+            "CODE_SIGN_STYLE": "Automatic", 
             "CURRENT_PROJECT_VERSION": "3",
             "VERSIONING_SYSTEM": "apple-generic"
-        ],
-        configurations: [
-            .debug(name: "Debug", settings: [
-                "CODE_SIGN_IDENTITY": "Apple Development",
-                "PROVISIONING_PROFILE_SPECIFIER": "match Development io.tuist.SOAPFT"
-            ]),
-            .release(name: "Release", settings: [
-                "CODE_SIGN_IDENTITY": "Apple Distribution",
-                "PROVISIONING_PROFILE_SPECIFIER": "match AppStore io.tuist.SOAPFT",
-                "DEVELOPMENT_TEAM": "MHD24ZMA79",
-                "CODE_SIGN_STYLE": "Manual"
-            ])
         ]
     ),
     targets: [
@@ -34,7 +21,7 @@ let project = Project(
                     "CFBundleIconName": "AppIcon",
                     "UILaunchScreen": [
                         "UIColorName": "",
-                        "UIImageName": "",
+                        "UIImageName": ""
                     ]
                 ]
             ),

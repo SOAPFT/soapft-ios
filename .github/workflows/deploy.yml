@@ -28,21 +28,9 @@ jobs:
       - name: Generate Xcode Project (Tuist)
         run: tuist generate
 
-      - name: Set up match keychain manually
-        run: |
-          security create-keychain -p "ci_password" ci.keychain
-          security default-keychain -s ci.keychain
-          security unlock-keychain -p "ci_password" ci.keychain
-          security set-keychain-settings -t 3600 -u ci.keychain
-
       - name: Run Fastlane (Deploy to TestFlight)
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_REPO_URL: https://${{ secrets.USERNAME }}:${{ secrets.PAT_TOKEN }}@github.com/SOAPFT/SOAPFT-iOS-certificates.git
-          DEVELOPER_PORTAL_TEAM_ID: ${{ secrets.DEVELOPER_PORTAL_TEAM_ID }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          FASTLANE_ITC_TEAM_ID: ${{ secrets.FASTLANE_ITC_TEAM_ID }}
         run: bundle exec fastlane ios beta
