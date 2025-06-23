@@ -27,8 +27,10 @@ jobs:
 
       - name: Install Tuist
         run: |
-          curl -Ls https://install.tuist.io | bash
-          export PATH="$HOME/.tuist/bin:$PATH"
+          curl -Ls https://github.com/tuist/tuist/releases/latest/download/tuist.zip -o tuist.zip
+          unzip -q tuist.zip -d tuist-bin
+          sudo mv tuist-bin/tuist /usr/local/bin/tuist
+          tuist --version
 
       - name: Fetch & Generate Tuist Project
         run: |
@@ -41,5 +43,3 @@ jobs:
             -workspace SOAPFT.xcworkspace \
             -scheme SOAPFT \
             -destination 'platform=iOS Simulator,name=iPhone 15'
-
-
