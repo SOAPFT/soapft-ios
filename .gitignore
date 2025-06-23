@@ -7,9 +7,6 @@ xcuserdata/
 Derived/
 DerivedData/
 timeline.xctimeline
-playground.xcworkspace
-*.xcodeproj
-*.xcworkspace
 .DS_Store
 
 # MARK: - Swift Package Manager
