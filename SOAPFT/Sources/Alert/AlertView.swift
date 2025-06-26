@@ -43,13 +43,17 @@ struct AlertView: View {
                     .foregroundColor(Color.black)
                     .frame(width: 24, height: 24)
             })
+            
             Spacer()
-            Text("알림")
+            
+            Text("알림 내역")
+            
             Spacer()
+            
             Button(action: {
                 self.showingSheet = true
             }, label: {
-                Image(systemName: "gearshape")
+                Image(systemName: "ellipsis")
                     .foregroundColor(Color.black)
                     .frame(width: 24, height: 24)
             })
@@ -69,16 +73,23 @@ struct AlertView: View {
     
     private func AlertCard() -> some View {
         ForEach(viewModel.alerts, id: \.id) { alert in
-            VStack(alignment: .leading, spacing: 4) {
-                Text(alert.alarm)
-                    .font(.body)
-                    .foregroundStyle(alert.isRead ? .gray: .black)
-                Text(alert.time)
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(alert.alarm.byCharWrapping)
+                        .font(.callout)
+                        .foregroundStyle(alert.isRead ? .gray: .black)
+                    
+                    Text(alert.time)
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Spacer()
             }
             .padding(.vertical, 6)
             .padding(.horizontal, 6)
+            .frame(maxWidth: .infinity)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button(role: .destructive) {
                     if let index = viewModel.alerts.firstIndex(where: { $0.id == alert.id }) {
@@ -89,6 +100,12 @@ struct AlertView: View {
                 }
             }
         }
+    }
+}
+
+extension String {
+    var byCharWrapping: Self {
+        map(String.init).joined(separator: "\u{200B}")
     }
 }
 
