@@ -3,6 +3,7 @@ import ProjectDescription
 let project = Project(
     name: "SOAPFT",
     packages: [
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.2"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.0.0"))
     ],
     settings: .settings(
@@ -28,7 +29,7 @@ let project = Project(
             sources: ["SOAPFT/Sources/**"],
             resources: ["SOAPFT/Resources/**"],
             dependencies: [
-                // ✅ MessageKit 관련
+                .package(product: "Lottie"),
                 .package(product: "Kingfisher")
             ]
         ),
