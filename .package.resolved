@@ -1,15 +1,6 @@
 {
-  "originHash" : "5133ecf90c102db287b5bb5f341511194aa3ae0f8994fc5f2ef0399dac0ae877",
+  "originHash" : "917a2b512148612347b307b5f8d624e74df48af36fa322c80901a86fc0e1317f",
   "pins" : [
-    {
-      "identity" : "inputbaraccessoryview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/nathantannar4/InputBarAccessoryView.git",
-      "state" : {
-        "revision" : "c7acd5fa32e54cd7a44ad7eb9a7730da35b54c95",
-        "version" : "6.5.1"
-      }
-    },
     {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",
@@ -17,15 +8,6 @@
       "state" : {
         "revision" : "2ef543ee21d63734e1c004ad6c870255e8716c50",
         "version" : "7.12.0"
-      }
-    },
-    {
-      "identity" : "messagekit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MessageKit/MessageKit.git",
-      "state" : {
-        "revision" : "b024c1287ac30fb6ea2ee07169e6193efc11d972",
-        "version" : "4.3.0"
       }
     }
   ],
