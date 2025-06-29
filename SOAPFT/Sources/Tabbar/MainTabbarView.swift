@@ -9,11 +9,11 @@ import SwiftUI
 
 struct MainTabbarView: View {
     @State private var selectedTab: String = "Main"
-    
+
     var body: some View{
         VStack(spacing: 0) {
             TabView (selection: $selectedTab){
-                Text("Main")
+                Home()
                     .tag("Main")
                 Text("Friends")
                     .tag("Friends")
