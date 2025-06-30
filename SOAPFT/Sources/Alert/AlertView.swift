@@ -15,7 +15,7 @@ struct AlertView: View {
                     if viewModel.alerts.isEmpty {
                         Text("최근 알림이 없습니다")
                             .foregroundStyle(Color.gray)
-                            .font(.subheadline)
+                            .font(Font.Pretend.pretendardRegular(size: 15))
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.vertical, 32)
                             .listRowBackground(Color.clear)
@@ -47,6 +47,7 @@ struct AlertView: View {
             Spacer()
             
             Text("알림 내역")
+                .font(Font.Pretend.pretendardSemiBold(size: 18))
             
             Spacer()
             
@@ -76,11 +77,11 @@ struct AlertView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(alert.alarm.byCharWrapping)
-                        .font(.callout)
+                        .font(Font.Pretend.pretendardRegular(size: 14))
                         .foregroundStyle(alert.isRead ? .gray: .black)
                     
                     Text(alert.time)
-                        .font(.caption)
+                        .font(Font.Pretend.pretendardRegular(size: 12))
                         .foregroundStyle(.gray)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
