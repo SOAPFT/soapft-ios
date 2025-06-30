@@ -87,7 +87,7 @@ struct ChatInputView: View {
             }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         ChatRoomView(messages: mockMessages, chatRoomName: "30일 헬스 챌린지", currentUserUuid: me.userUuid)
     }
 }
