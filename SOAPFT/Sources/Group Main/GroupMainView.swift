@@ -5,7 +5,7 @@ struct GroupMainView: View {
     
     var body: some View {
         VStack {
-            HStack {
+            HStack { // 상단 고정 부분
                 // 로고
                 
                 Spacer()
@@ -27,16 +27,22 @@ struct GroupMainView: View {
             .padding(.bottom, 8)
             .padding(.horizontal, 12)
             
-            ScrollView {
+            ScrollView { // 스크롤뷰
                 Spacer()
                 
                 // 광고 배너
                 
                 NewChallenge // 새로운 챌린지 만들기 버튼
                 
-                WholeChallenge
+                Spacer().frame(height: 30)
+                
+                ChallengeBannerView
+                
+                Spacer().frame(height: 30)
                 
                 HotChallenge // 지금 인기 있는 챌린지
+                
+                Spacer().frame(height: 30)
                 
                 RecentChallenge // 최근 개설된 챌린지
             }
@@ -47,7 +53,7 @@ struct GroupMainView: View {
     private var NewChallenge: some View {
         HStack {
             Text("새로운 챌린지 만들기")
-                .font(.caption2)
+                .font(Font.Pretend.pretendardMedium(size: 12))
             
             Spacer()
             
@@ -68,52 +74,64 @@ struct GroupMainView: View {
         .frame(maxWidth: .infinity)
     }
     
-    private var WholeChallenge: some View {
-        VStack {
-            Text("지금 새로운 챌린지가 열렸습니다!")
-                .font(.caption)
-            
+    private var ChallengeBannerView: some View {
+        TabView {
+            ForEach(0..<3, id: \.self) { index in
+                BannerCard(index: index)
+                    .padding(.horizontal, 8)
+            }
+        }
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+        .frame(height: 260)
+        .onAppear {
+            UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemGray
+            UIPageControl.appearance().pageIndicatorTintColor = UIColor.systemGray6
+        }
+    }
+    
+    private func BannerCard(index: Int) -> some View {
+        VStack(spacing: 16) {
             Spacer()
             
+            Text("지금 새로운 챌린지가 열렸습니다!")
+                .font(Font.Pretend.pretendardRegular(size: 14))
+            
             Button(action: {
-                print("지금 참여하기")
+                print("지금 참여하기 \(index)")
             }, label: {
-                ZStack {
-                    Rectangle()
-                        .foregroundStyle(Color.orange01)
-                        .frame(width: 100, height: 25)
-                        .cornerRadius(8)
-                        
-                    Text("지금 참여하기")
-                        .font(.caption2)
-                        .foregroundStyle(Color.white)
-                }
+                Text("지금 참여하기")
+                    .font(Font.Pretend.pretendardSemiBold(size: 12))
+                    .foregroundStyle(Color.white)
+                    .frame(width: 100, height: 25)
+                    .background(Color.orange01)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
             })
+            Spacer()
         }
-        .padding(.horizontal)
-        .padding(.vertical)
+        .padding()
+        .frame(maxWidth: .infinity)
+        .aspectRatio(4/3, contentMode: .fit)
         .background(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 12)
                 .strokeBorder(Color.black, lineWidth: 0.8)
                 .background(Color.clear)
         )
-        .frame(maxWidth: .infinity)
     }
     
     private var HotChallenge: some View {
         VStack {
             HStack {
                 Text("지금 인기 있는 챌린지 🔥")
-                    .font(.caption)
+                    .font(Font.Pretend.pretendardMedium(size: 16))
                 
                 Spacer()
                 
                 Button(action: {
                     print("더보기")
                 }, label: {
-                    HStack {
+                    HStack(spacing: 4) {
                         Text("더보기")
-                            .font(.caption2)
+                            .font(Font.Pretend.pretendardLight(size: 11))
                             .foregroundStyle(Color.gray)
                         Image(systemName: "chevron.right")
                             .resizable()
@@ -130,6 +148,7 @@ struct GroupMainView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
         }
     }
     
@@ -137,10 +156,15 @@ struct GroupMainView: View {
         VStack {
             Image(Name)
                 .resizable()
-                .frame(width: 80, height: 80)
+                .frame(width: 100, height: 100)
+                .cornerRadius(8)
             
-            Text(Title)
-                .font(.caption2)
+            HStack {
+                Text(Title)
+                    .font(Font.Pretend.pretendardLight(size: 12))
+                
+                Spacer()
+            }
         }
     }
     
@@ -148,16 +172,16 @@ struct GroupMainView: View {
         VStack {
             HStack {
                 Text("최근 개설된 챌린지 🌱")
-                    .font(.caption)
+                    .font(Font.Pretend.pretendardMedium(size: 16))
                 
                 Spacer()
                 
                 Button(action: {
                     print("더보기")
                 }, label: {
-                    HStack {
+                    HStack(spacing: 4) {
                         Text("더보기")
-                            .font(.caption2)
+                            .font(Font.Pretend.pretendardLight(size: 11))
                             .foregroundStyle(Color.gray)
                         Image(systemName: "chevron.right")
                             .resizable()
@@ -174,6 +198,7 @@ struct GroupMainView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
         }
     }
 }
