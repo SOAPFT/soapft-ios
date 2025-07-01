@@ -101,7 +101,7 @@ struct CommentView: View {
                             : "· \(timeAgoString(from: comment.createdAt))"
                         )
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                     }
                 }
             }
@@ -114,7 +114,7 @@ struct CommentView: View {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "arrow.turn.down.left")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
 
                     KFImage(URL(string: reply.author.profileImage))
                         .placeholder { Circle().fill(Color.gray) }
@@ -130,7 +130,7 @@ struct CommentView: View {
                                 "· \(timeAgoString(from: reply.createdAt))"
                             )
                             .font(.caption)
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                         }
                         Text(reply.content)
                             .font(.body)
@@ -159,7 +159,7 @@ struct CommentView: View {
             } else {
                 Button("답글 달기", action: onReplyButtonTap)
                     .font(.caption)
-                    .foregroundColor(Color.orange01)
+                    .foregroundStyle(Color.orange01)
                     .padding(.horizontal, 40)
             }
         }

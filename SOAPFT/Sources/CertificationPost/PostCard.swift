@@ -52,7 +52,7 @@ struct PostCardView: View {
                     .font(.subheadline).bold()
                 Text(timeAgoString(from: createdTime))
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
             }
 
             Spacer()
@@ -91,12 +91,12 @@ struct PostCardView: View {
         HStack(spacing: 20) {
             Button(action: toggleLike) {
                 Label("\(post.likeCount + (state.isLiked ? 1 : 0))", systemImage: state.isLiked ? "heart.fill" : "heart")
-                    .foregroundColor(state.isLiked ? .red : .gray)
+                    .foregroundStyle(state.isLiked ? .red : .gray)
             }
 
             Button(action: toggleComment) {
                 Label("\(post.commentCount)", systemImage: "text.bubble")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
             }
 
             Button(action: {
@@ -113,7 +113,7 @@ struct PostCardView: View {
                         .frame(width: 14, height: 14)
                     Text(state.isSuspicious ? "1" : "0")
                 }
-                .foregroundColor(state.isSuspicious ? .orange : .gray)
+                .foregroundStyle(state.isSuspicious ? .orange : .gray)
             }
             .alert(isPresented: $showSuspiciousAlert) {
                 Alert(
