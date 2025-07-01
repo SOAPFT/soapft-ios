@@ -25,20 +25,18 @@ struct GroupCreateView: View {
     var body: some View {
         VStack {
             // 상단바
-            HStack {
-                Button(action: {
-                    print("뒤로가기")
-                }, label: {
-                    Image(systemName: "chevron.backward")
-                        .foregroundColor(Color.black)
-                })
-                
-                Spacer()
-                
+            ZStack {
+                HStack {
+                    Button(action: { }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                            .font(.system(size: 18))
+                    }
+                    Spacer()
+                }
+
                 Text("그룹 생성")
-                    .font(Font.Pretend.pretendardSemiBold(size: 16))
-                
-                Spacer()
+                    .font(Font.Pretend.pretendardBold(size: 16))
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
