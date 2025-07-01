@@ -1,5 +1,5 @@
 //
-//  ChatListNavBar.swift
+//  ChatRoomNavBar.swift
 //  SOAPFT
 //
 //  Created by 바견규 on 6/29/25.
@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct ChatListNavBar: View {
+struct ChallengeRankingNavBar: View {
+    let ChallengeName: String
+    
     var body: some View {
         
         HStack {
@@ -19,7 +21,7 @@ struct ChatListNavBar: View {
             
             Spacer()
             
-            Text("채팅")
+            Text(ChallengeName)
                 .font(Font.Pretend.pretendardBold(size: 16))
             
             Spacer()
@@ -36,7 +38,6 @@ struct ChatListNavBar: View {
     }
 }
 
-
 #Preview {
-    ChatListNavBar()
+    ChatRoomNavBar(chatRoomName: "챌린지 이름")
 }

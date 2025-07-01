@@ -34,7 +34,7 @@ struct ChatRoomCell: View {
                 } else {
                     Circle()
                         .fill(Color.gray.opacity(0.2))
-                        .overlay(Image(systemName: "person.fill").foregroundColor(.gray))
+                        .overlay(Image(systemName: "person.fill").foregroundStyle(.gray))
                 }
             }
             .frame(width: 48, height: 48)
@@ -47,14 +47,14 @@ struct ChatRoomCell: View {
                 if let challenge = room.challenge {
                     Text(challenge.title)
                         .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
             }
 
             Spacer()
 
             Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
+                .foregroundStyle(.gray)
         }
         .padding()
         .background(Color.white)

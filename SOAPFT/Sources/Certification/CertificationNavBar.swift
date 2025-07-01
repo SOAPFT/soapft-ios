@@ -13,7 +13,7 @@ struct CertificationNavBar: View {
             HStack {
                 Button(action: { }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundStyle(.black)
                         .font(.system(size: 18))
                 }
                 Spacer()

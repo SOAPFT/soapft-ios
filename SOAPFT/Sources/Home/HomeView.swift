@@ -48,11 +48,11 @@ struct Home: View {
                             .padding()
                         Text("참여하는 챌린지가 없어요")
                             .font(Font.Pretend.pretendardSemiBold(size: 18))
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                         
                         Text("챌린지에 참여해보세요!")
                             .font(Font.Pretend.pretendardLight(size: 15))
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                             .padding(1)
                     }else{
                         // 챌린지 2열 목록
