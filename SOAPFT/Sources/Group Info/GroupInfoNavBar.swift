@@ -15,7 +15,7 @@ struct GroupInfoNavBar: View {
             // 정중앙 타이틀
             Text("그룹 정보")
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(.black)
+                .foregroundStyle(.black)
 
             // 좌우 버튼 정렬
             HStack {
@@ -25,28 +25,28 @@ struct GroupInfoNavBar: View {
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.black)
+                        .foregroundStyle(.black)
                 }
 
                 Spacer()
 
                 // Group Members Icon
                 Button(action: {}) {
-                    Image(systemName: "person.2")
-                        .foregroundColor(.black)
+                    Image(systemName: "message")
+                        .foregroundStyle(.black)
                 }
 
                 // Notification with badge
                 ZStack(alignment: .topTrailing) {
                     Button(action: {}) {
                         Image(systemName: "bell")
-                            .foregroundColor(.black)
+                            .foregroundStyle(.black)
                     }
 
                     if notificationCount > 0 {
                         Text("\(notificationCount)")
                             .font(.caption2)
-                            .foregroundColor(.white)
+                            .foregroundStyle(.white)
                             .padding(4)
                             .background(Color.red)
                             .clipShape(Circle())
@@ -58,7 +58,7 @@ struct GroupInfoNavBar: View {
                 Button(action: { /* 메뉴 열기 */ }) {
                     Image(systemName: "ellipsis")
                         .rotationEffect(.degrees(90))
-                        .foregroundColor(.black)
+                        .foregroundStyle(.black)
                         .frame(width: 18, height: 24)
                         .contentShape(Rectangle())
                 }

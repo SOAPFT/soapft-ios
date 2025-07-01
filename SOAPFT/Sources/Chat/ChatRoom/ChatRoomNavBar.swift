@@ -15,7 +15,7 @@ struct ChatRoomNavBar: View {
         HStack {
             Button(action: { }) {
                 Image(systemName: "chevron.left")
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
                     .font(Font.system(size: 18))
             }
             
@@ -29,7 +29,7 @@ struct ChatRoomNavBar: View {
             Button(action: { /* 메뉴 열기 */ }) {
                 Image(systemName: "ellipsis")
                     .rotationEffect(.degrees(90))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
                     .frame(width: 18, height: 24) // 아이콘 크기 조정
                     .contentShape(Rectangle())    // 터치 영역 확장
             }

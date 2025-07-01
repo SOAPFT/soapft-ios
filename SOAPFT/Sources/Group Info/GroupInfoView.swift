@@ -80,7 +80,7 @@ struct GroupInfoView: View {
                     Spacer()
 
                     Image(systemName: "crown.fill")
-                        .foregroundColor(.orange)
+                        .foregroundStyle(.orange)
                 }
                 .padding(.horizontal)
 
@@ -119,7 +119,7 @@ struct GroupInfoView: View {
 
                             if member.userUuid == viewModel.hostUuid {
                                 Image(systemName: "crown.fill")
-                                    .foregroundColor(.orange)
+                                    .foregroundStyle(.orange)
                             }
 
                             Spacer()
@@ -150,7 +150,7 @@ struct InfoRow: View {
     var body: some View {
         HStack {
             Text(title)
-                .foregroundColor(.gray)
+                .foregroundStyle(.gray)
                 .frame(width: 50, alignment: .leading)
             Text(value)
         }

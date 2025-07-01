@@ -63,7 +63,7 @@ struct ChatInputView: View {
                 .frame(height: 50)
                 .overlay(
                     Text("메시지를 입력하세요")
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .padding(.leading, 15)
                         .opacity(messageText.isEmpty ? 1 : 0), alignment: .leading
                 )
@@ -73,7 +73,7 @@ struct ChatInputView: View {
                             messageText = ""  // 메시지 전송 후 초기화
                         }) {
                             Image(systemName: "paperplane.fill")
-                                .foregroundColor(.white)  // 아이콘 색상 흰색
+                                .foregroundStyle(.white)  // 아이콘 색상 흰색
                                 .padding(12)
                                 .background(messageText.isEmpty ? Color.gray.opacity(0.5) : Color.orange)  // 배경색 오렌지
                                 .clipShape(Circle())  // 동그라미 모양

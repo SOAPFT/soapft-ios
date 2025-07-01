@@ -14,7 +14,7 @@ struct AdBannerView: View {
 
             Text("📢")
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundStyle(.black)
         }
         .frame(height: 80) // 원하는 높이로 조정
         .frame(maxWidth: .infinity)

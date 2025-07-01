@@ -40,7 +40,7 @@ struct AlertView: View {
                 dismiss()
             }, label: {
                 Image(systemName: "chevron.backward")
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .frame(width: 24, height: 24)
             })
             

@@ -20,7 +20,7 @@ struct HomeChallengeToggleView: View {
                 } label: {
                     Text(tab.rawValue)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(selectedTab == tab ? .black : .gray)
+                        .foregroundStyle(selectedTab == tab ? .black : .gray)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .background(

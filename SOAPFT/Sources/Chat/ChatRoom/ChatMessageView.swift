@@ -22,10 +22,10 @@ struct MessageText: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("↪︎ \(reply.sender.nickname)")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                     Text("\"\(reply.content)\"")
                         .font(.caption2)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .lineLimit(1)
                 }
                 .padding(6)

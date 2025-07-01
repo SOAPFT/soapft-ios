@@ -34,14 +34,14 @@ struct UploadCertificationView: View {
                     } else {
                         Rectangle()
                             .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [5]))
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                             .frame(height: 300)
                         VStack {
                             Image(systemName: "camera")
                                 .font(.system(size: 30))
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                             Text("사진을 업로드하세요")
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                         }
                     }
                 }
@@ -72,7 +72,7 @@ struct UploadCertificationView: View {
 
                         if descriptionText.isEmpty && !isFocused {
                             Text("텍스트를 입력하세요")
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.gray)
                                 .padding(10)
                                 .padding(.leading, 20)
                         }
@@ -84,7 +84,7 @@ struct UploadCertificationView: View {
             }) {
                 Text("업로드")
                     .font(Font.Pretend.pretendardBold(size: 18))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .padding(10)
                     .padding(.horizontal, 30)
                     .background(Color.orange01)

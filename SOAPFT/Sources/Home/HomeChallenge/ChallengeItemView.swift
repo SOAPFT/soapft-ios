@@ -39,7 +39,7 @@ struct ChallengeItemView: View {
                     
                     Text(badgeText)
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(badgeColor)
@@ -56,16 +56,16 @@ struct ChallengeItemView: View {
 
                 Text("그룹 소개글")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .lineLimit(1)
 
                 HStack {
                     Image(systemName: "person.fill")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                     Text("\(challenge.currentMembers)/\(challenge.maxMembers)")
                         .font(.caption)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
             }
             .padding([.horizontal, .bottom], 8)

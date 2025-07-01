@@ -17,12 +17,12 @@ struct homeNavBar: View {
             
             Button(action: { /* 메뉴 열기 */ }) {
                 Image(systemName: "bell")
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
             }
             
             Button(action: { /* 메뉴 열기 */ }) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
             }
         }.padding()
 
