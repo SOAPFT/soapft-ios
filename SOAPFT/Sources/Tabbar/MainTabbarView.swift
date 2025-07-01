@@ -17,8 +17,8 @@ struct MainTabbarView: View {
                     .tag("Main")
                 Text("Friends")
                     .tag("Friends")
-                Text("Challenges")
-                    .tag("Challenge")
+                GroupMainView()
+                    .tag("More")
                 Text("Chat")
                     .tag("Chat")
                 Text("My")
@@ -29,7 +29,7 @@ struct MainTabbarView: View {
             HStack {
                 tabButton(title: "Main", selectedImage: "house.fill")
                 tabButton(title: "Friends", selectedImage: "person.2.fill")
-                tabButton(title: "Challenges", selectedImage: "list.bullet")
+                tabButton(title: "More", selectedImage: "list.bullet")
                 tabButton(title: "Chat", selectedImage: "ellipsis.message.fill")
                 tabButton(title: "My", selectedImage: "person.crop.circle.fill")
             }
