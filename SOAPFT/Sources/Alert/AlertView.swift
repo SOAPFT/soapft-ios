@@ -47,7 +47,7 @@ struct AlertView: View {
             Spacer()
             
             Text("알림 내역")
-                .font(Font.Pretend.pretendardSemiBold(size: 18))
+                .font(Font.Pretend.pretendardSemiBold(size: 16))
             
             Spacer()
             
