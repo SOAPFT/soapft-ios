@@ -13,7 +13,8 @@ struct CertificationPostView: View {
     @State private var selectedPostForComment: ChallengePost?
 
     var body: some View {
-        ZStack {
+        VStack {
+            CertificationPostNavBar()
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.posts) { post in
