@@ -113,6 +113,7 @@ struct CommentView: View {
             ForEach(comment.replies) { reply in
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "arrow.turn.down.left")
+                        .scaleEffect(x: -1, y: 1) // 좌우 반전
                         .font(.caption)
                         .foregroundStyle(.gray)
 
