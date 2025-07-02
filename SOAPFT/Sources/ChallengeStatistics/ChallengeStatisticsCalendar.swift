@@ -54,7 +54,7 @@ struct CalenderView: View {
                                             selectedDate = nil
                                         }) {
                                             Image(systemName: "xmark.circle.fill")
-                                                .foregroundColor(.gray)
+                                                .foregroundStyle(.gray)
                                         }
                                     }
 
@@ -160,7 +160,7 @@ struct CalenderView: View {
     private var legendView: some View {
         HStack(spacing: 4) {
             Circle().fill(Color.orange01).frame(width: 6, height: 6)
-            Text("인증 완료").font(.caption2).foregroundColor(.gray)
+            Text("인증 완료").font(.caption2).foregroundStyle(.gray)
         }.padding(.top, 8)
     }
 
@@ -211,12 +211,12 @@ private struct CellView: View {
 
             Text("\(day)")
                 .font(.caption)
-                .foregroundColor(.black)
+                .foregroundStyle(.black)
 
             if certified > 0 {
                 Text("\(certified)명")
                     .font(.caption2)
-                    .foregroundColor(Color.orange01)
+                    .foregroundStyle(Color.orange01)
                     .offset(y: 23)
             }
         }

@@ -19,7 +19,7 @@ struct ChallengeSearchView: View {
             // 검색창
             HStack {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
 
                 TextField("새로운 챌린지를 검색해 보세요", text: $viewModel.searchText)
                     .textFieldStyle(PlainTextFieldStyle())
@@ -33,7 +33,7 @@ struct ChallengeSearchView: View {
             ScrollView {
                 if viewModel.filteredChallenges.isEmpty {
                     Text("검색 결과가 없습니다.")
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                         .padding()
                 } else {
                     LazyVStack(alignment: .leading, spacing: 12) {
@@ -57,12 +57,12 @@ struct ChallengeSearchView: View {
                                             .font(.headline)
                                         Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
                                             .font(.caption)
-                                            .foregroundColor(.gray)
+                                            .foregroundStyle(.gray)
                                     }
 
                                     Spacer()
                                     Image(systemName: "chevron.right")
-                                        .foregroundColor(.gray)
+                                        .foregroundStyle(.gray)
                                         .font(.caption)
                                 }
                                 .padding(.horizontal)
