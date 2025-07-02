@@ -55,7 +55,7 @@ struct AlertView: View {
                 self.showingSheet = true
             }, label: {
                 Image(systemName: "ellipsis")
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .frame(width: 24, height: 24)
             })
             .confirmationDialog(
