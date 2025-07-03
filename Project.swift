@@ -3,6 +3,8 @@ import ProjectDescription
 let project = Project(
     name: "SOAPFT",
     packages: [
+        .package(url: "https://github.com/kakao/kakao-ios-sdk", .upToNextMajor(from: "2.13.0")),
+        .package(url: "https://github.com/Moya/Moya.git", .exact("15.0.0")),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.2"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.0.0"))
     ],
@@ -29,6 +31,10 @@ let project = Project(
             sources: ["SOAPFT/Sources/**"],
             resources: ["SOAPFT/Resources/**"],
             dependencies: [
+                .package(product: "KakaoSDKCommon"),
+                .package(product: "KakaoSDKAuth"),
+                .package(product: "KakaoSDKUser"),
+                .package(product: "Moya"),
                 .package(product: "Lottie"),
                 .package(product: "Kingfisher")
             ]
