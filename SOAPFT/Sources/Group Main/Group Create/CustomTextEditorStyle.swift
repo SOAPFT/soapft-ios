@@ -56,7 +56,8 @@ struct ConditionalOverlay: ViewModifier {
         } else {
             content
         }
-    }}
+    }
+}
 
 extension TextEditor {
     func customStyleEditor(
