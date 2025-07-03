@@ -25,7 +25,10 @@ let project = Project(
                     "UILaunchScreen": [
                         "UIColorName": "",
                         "UIImageName": ""
-                    ]
+                    ],
+                    // ✅ Secret.xcconfig에서 가져올 값들
+                    "API_URL": "$(API_URL)",
+                    "Kakao_AppKey": "$(Kakao_AppKey)",
                 ]
             ),
             sources: ["SOAPFT/Sources/**"],
