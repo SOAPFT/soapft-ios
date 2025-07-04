@@ -42,14 +42,14 @@ struct ConditionalOverlay: ViewModifier {
     -> some View {
         if show {
             content.overlay(alignment: .bottomTrailing) {
-                Text("\(text.count) / 1000")
+                Text("\(text.count) / 500")
                     .font(Font.Pretend.pretendardLight(size: 12))
                     .foregroundStyle(Color(UIColor.systemGray2))
                     .padding(.trailing, 15)
                     .padding(.bottom, 15)
                     .onChange(of: text) {
-                        if text.count > 1000 {
-                            text = String(text.prefix(1000))
+                        if text.count > 500 {
+                            text = String(text.prefix(500))
                         }
                     }
             }

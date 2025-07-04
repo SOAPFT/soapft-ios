@@ -21,7 +21,7 @@ struct MainTabbarView: View {
                     .tag("More")
                 Text("Chat")
                     .tag("Chat")
-                Text("My")
+                MyPageView()
                     .tag("My")
             }
             .tabViewStyle(.page(indexDisplayMode: .never))

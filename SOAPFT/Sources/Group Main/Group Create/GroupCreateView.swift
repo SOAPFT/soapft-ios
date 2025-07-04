@@ -14,8 +14,9 @@ struct GroupCreateView: View {
     @State private var description = ""
     @State private var maxMembers = 10
     @State private var selectedGender = "제한 없음"
-    @State private var selectedAgeRange = 20...55
+    @State private var selectedAgeRange = 20...40
     @State private var selectedGoal = "주 7회"
+    @State private var authMethod = ""
     
     let genderOptions = ["제한 없음", "남성", "여성"]
     let goalOptions = ["주 1회", "주 2회", "주 3회", "주 4회","주 5회", "주 6회", "주 7회"]
@@ -46,6 +47,7 @@ struct GroupCreateView: View {
             
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 25) {
+                    // MARK: - 챌린지명
                     VStack(alignment: .leading, spacing: 6) {
                         Text("챌린지명")
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -55,15 +57,17 @@ struct GroupCreateView: View {
                             .frame(height: 43)
                     }
                     
+                    // MARK: - 시작일
                     VStack(alignment: .leading, spacing: 6) {
                         Text("시작일")
                             .font(Font.Pretend.pretendardMedium(size: 16))
                         
-                        DatePicker("", selection: $startDate, displayedComponents: .date)
+                        DatePicker("", selection: $startDate, in: ...endDate, displayedComponents: .date)
                             .labelsHidden()
                             .tint(Color.orange01)
                     }
                     
+                    // MARK: - 종료일
                     VStack(alignment: .leading, spacing: 6) {
                         Text("종료일")
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -73,17 +77,19 @@ struct GroupCreateView: View {
                             .tint(Color.orange01)
                     }
                     
+                    // MARK: - 챌린지 소개
                     VStack(alignment: .leading, spacing: 6) {
                         Text("챌린지 소개")
                             .font(Font.Pretend.pretendardMedium(size: 16))
                         
                         VStack {
                             TextEditor(text: $description)
-                                .customStyleEditor(placeholder: "예) 저희는 물 많이 마시기 습관화를 목표로 하고 있어요!", userInput: $description)
+                                .customStyleEditor(placeholder: "예) 매일 6시에 기상하는 걸 목표로 건강한 생활 습관을 기르고자 합니다!", userInput: $description)
                                 .frame(height: 200)
                         }
                     }
                     
+                    // MARK: - 최대 인원
                     VStack(alignment: .leading, spacing: 6) {
                         Text("최대 인원")
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -106,6 +112,7 @@ struct GroupCreateView: View {
                         }
                     }
                     
+                    // MARK: - 성별
                     VStack(alignment: .leading, spacing: 6) {
                         Text("성별")
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -119,6 +126,7 @@ struct GroupCreateView: View {
                         .tint(Color.orange01)
                     }
                     
+                    // MARK: - 연령대
                     VStack(alignment: .leading, spacing: 6) {
                         Text("연령대")
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -129,10 +137,11 @@ struct GroupCreateView: View {
                         
                         RangeSliderView(
                             selection: $selection,
-                            range: 10...100,
+                            range: 10...60,
                             minimumDistance: 0)
                     }
                     
+                    // MARK: - 목표 설정
                     VStack(alignment: .leading, spacing: 6) {
                         Text("목표 설정")
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -144,6 +153,18 @@ struct GroupCreateView: View {
                         }
                         .pickerStyle(.menu)
                         .tint(Color.orange01)
+                    }
+                    
+                    // MARK: - 인증 방법
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("인증 방법")
+                            .font(Font.Pretend.pretendardMedium(size: 16))
+                        
+                        VStack {
+                            TextEditor(text: $authMethod)
+                                .customStyleEditor(placeholder: "***챌린지가 시작하면 수정이 어려우니 최대한 자세히 적어주세요***\n\n예) 주 5회 이상 5시 30분에서 6시 반 사이에 시간이 나오도록 일어났다는 걸 인증해주시면 됩니다!", userInput: $description)
+                                .frame(height: 200)
+                        }
                     }
                 }
                 
@@ -172,7 +193,7 @@ struct GroupCreateView: View {
     private var isFormValid: Bool {
         !groupName.trimmingCharacters(in: .whitespaces).isEmpty &&
         !description.trimmingCharacters(in: .whitespaces).isEmpty &&
-        endDate > startDate &&
+//        endDate > startDate &&
         (10...50).contains(maxMembers) &&
         !selectedGender.isEmpty &&
         !selectedGoal.isEmpty
