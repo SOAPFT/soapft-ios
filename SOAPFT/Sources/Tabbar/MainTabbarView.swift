@@ -19,7 +19,7 @@ struct MainTabbarView: View {
                     .tag("Friends")
                 GroupMainView()
                     .tag("More")
-                Text("Chat")
+                MainChatListView(rooms: mockChatRooms)
                     .tag("Chat")
                 MyPageView()
                     .tag("My")
