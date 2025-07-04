@@ -14,6 +14,7 @@ struct MyPageView: View {
     private var postCount: Int = 12
     private var friendCount: Int = 4
     private var coinCount: Int = 39
+    private var myIntro: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
@@ -91,27 +92,33 @@ struct MyPageView: View {
             
             Spacer().frame(height: 8)
             
-            VStack(spacing: 20) {
+            VStack(spacing: 18) {
                 Circle()
                     .frame(width: 150)
                 
                 Text("\(nickname)")
                     .font(Font.Pretend.pretendardMedium(size: 24))
                 
-                Button(action: {
-                    
-                }, label: {
-                    HStack {
-                        Image(systemName: "plus")
-                        Text("소개 추가")
-                            .font(Font.Pretend.pretendardSemiBold(size: 14))
-                    }
-                    .foregroundStyle(Color.gray.opacity(0.8))
-                    .padding(.horizontal, 23)
-                    .padding(.vertical, 10)
-                    .background(Color.gray.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                })
+                if myIntro == "" {
+                    Button(action: {
+                        
+                    }, label: {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("소개 추가")
+                                .font(Font.Pretend.pretendardSemiBold(size: 14))
+                        }
+                        .foregroundStyle(Color.gray.opacity(0.8))
+                        .padding(.horizontal, 23)
+                        .padding(.vertical, 10)
+                        .background(Color.gray.opacity(0.2))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    })
+                } else {
+                    Text("\(myIntro)")
+                        .font(Font.Pretend.pretendardLight(size: 16))
+                        .foregroundStyle(Color.gray.opacity(0.8))
+                }
                 
                 HStack {
                     VStack {
