@@ -42,7 +42,7 @@ struct MyPageView: View {
                 
                 ZStack {
                     Button(action: { }) {
-                        Image(systemName: "bell.fill")
+                        Image(systemName: "bell")
                             .foregroundColor(.black)
                             .font(.system(size: 18))
                     }
@@ -59,7 +59,7 @@ struct MyPageView: View {
                 }
                 
                 Button(action: { }) {
-                    Image(systemName: "gearshape.fill")
+                    Image(systemName: "square.and.pencil")
                         .foregroundColor(.black)
                         .font(.system(size: 18))
                 }
