@@ -9,14 +9,23 @@ import SwiftUI
 import PhotosUI
 import UIKit
 
+struct FileDetails: Identifiable {
+    var id: String { name }
+    let name: String
+    let fileType: UTType
+}
+
 struct MyInfoEditView: View {
+    @State private var selectedItem: PhotosPickerItem? = nil
+
+    @State private var profileImage: UIImage? = nil
+    
+    @State private var showCamera = false
+    @State private var showActionSheet = false
+    @State private var showPhotosPicker = false
+    
     @State var nickname: String = "Jiwoo"
     @State var intro: String = ""
-    
-    @State var showingSheet = false
-    @State private var showImagePicker = false
-    @State private var imagePickerSource: UIImagePickerController.SourceType = .photoLibrary
-    @State private var selectedImage: UIImage? = nil //실제로 가져온 이미지
     
     var body: some View {
         VStack {
@@ -50,33 +59,70 @@ struct MyInfoEditView: View {
             ScrollView {
                 VStack(spacing: 40) {
                     Button(action: {
-                        print("프로필 바꾸기")
-                        self.showingSheet = true
+                        showActionSheet = true
                     }, label: {
                         ZStack {
-                            AsyncImage(url: URL(string: "https://example.com/image.png")) { phase in
-                                if let image = phase.image {
-                                    image
-                                        .resizable()
-                                        .aspectRatio(1, contentMode: .fill)
-                                        .clipped()
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                } else if phase.error != nil {
-                                    Circle()
-                                        .frame(width: 150)
-                                        .foregroundStyle(Color.gray)
-                                } else {
-                                    ProgressView()
+                            if let image = profileImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(1, contentMode: .fill)
+                                    .clipped()
+                                    .clipShape(Circle())
+                                    .frame(width: 150)
+                            } else {
+                                AsyncImage(url: URL(string: "https://example.com/image.png")) { phase in
+                                    if let image = phase.image {
+                                        image
+                                            .resizable()
+                                            .aspectRatio(1, contentMode: .fill)
+                                            .clipped()
+                                            .clipShape(Circle())
+                                            .frame(width: 150)
+                                    } else if phase.error != nil {
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
+                                            .frame(width: 150, height: 150)
+                                            .foregroundStyle(Color.gray)
+                                    } else {
+                                        ProgressView()
+                                    }
                                 }
                             }
                             
-                            Image(systemName: "camera.circle.fill")
+                            Image(systemName: "camera.circle")
                                 .resizable()
                                 .frame(width: 25, height: 25)
                                 .offset(x: 50, y: 50)
                                 .foregroundStyle(Color.black)
                         }
                     })
+                    .confirmationDialog("사진을 어떻게 추가할까요?", isPresented: $showActionSheet, titleVisibility: .visible) {
+                        Button("앨범에서 가져오기") {
+                            showPhotosPicker = true
+                        }
+
+                        Button("카메라로 촬영하기") {
+                            showCamera = true
+                        }
+
+                        Button("취소", role: .cancel) {}
+                    }
+                    .sheet(isPresented: $showCamera) {
+                        CameraPicker { image in
+                            profileImage = image
+                        }
+                    }
+                    .photosPicker(isPresented: $showPhotosPicker, selection: $selectedItem, matching: .images)
+                            .onChange(of: selectedItem) { oldItem,newItem in
+                                guard let item = newItem else { return }
+                                Task {
+                                    if let data = try? await item.loadTransferable(type: Data.self),
+                                       let image = UIImage(data: data) {
+                                        profileImage = image
+                                    }
+                                }
+                                
+                            }
                     
                     VStack(spacing: 12) {
                         Divider()

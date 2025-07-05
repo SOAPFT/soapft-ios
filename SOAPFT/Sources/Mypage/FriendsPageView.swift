@@ -48,23 +48,6 @@ struct FriendsPageView: View {
                         .font(.system(size: 18))
                 }
                 Spacer()
-                ZStack {
-                    Button(action: { }) {
-                        Image(systemName: "bell.fill")
-                            .foregroundColor(.black)
-                            .font(.system(size: 18))
-                    }
-                    
-                    if notificationCount > 0 {
-                        Text("\(notificationCount)")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .padding(4)
-                            .background(Color.red)
-                            .clipShape(Circle())
-                            .offset(x: 8, y: -8)
-                    }
-                }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -78,21 +61,7 @@ struct FriendsPageView: View {
     // MARK: - 프로필 섹션
     private var profileSection: some View {
         VStack {
-            Spacer().frame(height: 8)
-            
-            HStack {
-                Spacer()
-                Image("coin")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                
-                Text("\(coinCount)")
-                    .font(Font.Pretend.pretendardLight(size: 16))
-                    .foregroundStyle(Color.black.opacity(0.8))
-                Spacer().frame(width: 16)
-            }
-            
-            Spacer().frame(height: 8)
+            Spacer().frame(height: 20)
             
             VStack(spacing: 20) {
                 Circle()
