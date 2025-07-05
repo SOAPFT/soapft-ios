@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreateWarningView: View {
+struct WarningView: View {
     @Binding var showPopUp: Bool
     
     let title: String // 공지 이름
@@ -88,7 +88,7 @@ struct CreateWarningView: View {
 }
 
 #Preview {
-    CreateWarningView(showPopUp: .constant(false),
+    WarningView(showPopUp: .constant(false),
                       title: "챌린지를 생성하시겠습니까?",
                       message: "챌린지 생성 후 수정 및 삭제가 불가합니다.\n가입 조건 및 인증 조건을 정확하게 입력하였는지 확인해주세요.",
                       btn1: "생성하기",

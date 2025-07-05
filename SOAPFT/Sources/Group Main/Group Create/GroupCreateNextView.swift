@@ -174,7 +174,7 @@ extension GroupCreateNextView {
         btn1: String,
         btn2: String
     ) -> some View {
-        CreateWarningView(
+        WarningView(
             showPopUp: $showPopUp,
             title: title,
             message: message,

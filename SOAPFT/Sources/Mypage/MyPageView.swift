@@ -58,8 +58,10 @@ struct MyPageView: View {
                     }
                 }
                 
-                Button(action: { }) {
-                    Image(systemName: "square.and.pencil")
+                Button(action: {
+                    
+                }) {
+                    Image(systemName: "gearshape")
                         .foregroundColor(.black)
                         .font(.system(size: 18))
                 }
