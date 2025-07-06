@@ -31,6 +31,11 @@ let project = Project(
                     // ✅ Secret.xcconfig에서 가져올 값들
                     "API_URL": "$(API_URL)",
                     "Kakao_AppKey": "$(Kakao_AppKey)",
+                    "NidClientID": "$(NidClientID)",
+                    "NidClientSecret": "$(NidClientSecret)",
+                    "NidAppName": "SOAPFT",
+                    "NidServiceAppUrlScheme": "naver.$(NidClientID)",
+                    "NidUrlScheme": "naver.$(NidClientID)"
                 ]
             ),
             sources: ["SOAPFT/Sources/**"],
