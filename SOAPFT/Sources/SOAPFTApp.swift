@@ -4,6 +4,8 @@ import KakaoSDKAuth
 
 @main
 struct SOAPFTApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     init() {
         // kakao sdk 초기화
         let kakaoNativeAppKey = (Bundle.main.object(forInfoDictionaryKey: "Kakao_AppKey") as? String) ?? ""

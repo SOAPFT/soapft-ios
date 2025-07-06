@@ -26,7 +26,7 @@ struct KakoSignButton: View {
                 }
             }
         } label: {
-            Image("kakao_login_large_wide")
+            Image("kakaoButton")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: UIScreen.main.bounds.width * 0.9)

@@ -14,12 +14,15 @@ struct LoginView: View {
             Text("한땀한땀")
                 .font(Font.Pretend.pretendardBold(size: 24))
             
-            // 카카오 로그인
-            KakoSignButton()
-            
-            // 네이버 로그인
-            
-            // Apple 로그인
+            VStack(spacing: 20) {
+                // 카카오 로그인
+                KakoSignButton()
+                
+                // 네이버 로그인
+                NaverSignButton()
+                
+                // Apple 로그인
+            }
         }
     }
 }
