@@ -99,7 +99,7 @@ extension PostAPI: TargetType {
     var headers: [String: String]? {
         var commonHeaders: [String: String] = [
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAxMSIsImlhdCI6MTc0OTAyODA5OCwiZXhwIjoxNzUxNjIwMDk4fQ.tmBGIctbbN09ey64YQvJ9B1y_Zx8BY-KGINNHSrnO8c",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAzNDA0LCJleHAiOjE3NTQ0OTU0MDR9.eeETUYLQy_W14flyNrvkSkJQm4CfqfsbrtfN7dOssl8",
             "accept": "application/json"
         ]
 
