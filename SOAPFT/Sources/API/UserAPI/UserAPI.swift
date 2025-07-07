@@ -94,7 +94,7 @@ extension UserAPI: TargetType {
              let .deleteProfile(accessToken),
              let .getUserInfo(accessToken),
              let .getOtherUserInfo(_, accessToken):
-            baseHeaders["Authorization"] = "Bearer \(accessToken)"
+            baseHeaders["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAzNDA0LCJleHAiOjE3NTQ0OTU0MDR9.eeETUYLQy_W14flyNrvkSkJQm4CfqfsbrtfN7dOssl8"
             baseHeaders["Content-Type"] = "application/json"
             return baseHeaders
         }
