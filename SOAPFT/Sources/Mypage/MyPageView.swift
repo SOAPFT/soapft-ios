@@ -23,7 +23,7 @@ struct MyPageView: View {
             
             // 메인 스크롤 영역
             ScrollView {
-                VStack(spacing: 0) {
+                VStack {
                     // 프로필 섹션
                     profileSection
                     
