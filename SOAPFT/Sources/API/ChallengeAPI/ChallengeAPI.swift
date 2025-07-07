@@ -26,8 +26,13 @@ enum ChallengeAPI {
 
 extension ChallengeAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "https://xxx")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
+        }
+        return url
     }
+
 
     var path: String {
         switch self {
@@ -94,7 +99,8 @@ extension ChallengeAPI: TargetType {
         return [
             "accept": "application/json",
             "Content-Type": "application/json",
-            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
+            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAyODUwLCJleHAiOjE3NTQ0OTQ4NTB9.AWkWZKZ2BcV4w2uubt2pbvcnh00pFLiiGgrkp2J7qwg"
         ]
     }
 
