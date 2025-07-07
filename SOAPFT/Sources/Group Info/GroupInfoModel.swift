@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct ChallengeDetailResponse: Decodable {
     let challengeUuid: String
     let title: String
@@ -31,6 +32,7 @@ struct ChallengeDetailResponse: Decodable {
     let createdAt: String
     let updatedAt: String
 }
+
 
 struct Creator: Decodable {
     let userUuid: String
