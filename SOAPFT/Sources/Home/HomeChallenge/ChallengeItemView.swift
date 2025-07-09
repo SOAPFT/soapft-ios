@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct ChallengeItemView: View {
-    let challenge: Challenge
+    let challenge: UserChallenge
 
     // 상태에 따른 뱃지 색상과 텍스트
     var badgeText: String {

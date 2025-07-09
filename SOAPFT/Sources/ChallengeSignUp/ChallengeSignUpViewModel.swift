@@ -10,11 +10,11 @@ import Foundation
 import Combine
 
 final class ChallengeSignUpViewModel: ObservableObject {
-    @Published var challenge: ChallengeDetailResponse
+    @Published var challenge: ChallengeDetail
     @Published var isJoinCompleted: Bool = false
     @Published var errorMessage: String? = nil
 
-    init(mockData: ChallengeDetailResponse) {
+    init(mockData: ChallengeDetail) {
         self.challenge = mockData
     }
 
