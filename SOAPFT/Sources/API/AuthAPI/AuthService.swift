@@ -16,7 +16,7 @@ final class AuthService {
 
     private let provider = MoyaProvider<AuthAPI>()
 
-    private init() {}
+    init() {}
 
     // MARK: - Kakao Login
     func kakaoLogin(accessToken: String, deviceId: String, deviceType: String, pushToken: String, appVersion: String, completion: @escaping (Result<KakaoResponseDTO, Error>) -> Void) {

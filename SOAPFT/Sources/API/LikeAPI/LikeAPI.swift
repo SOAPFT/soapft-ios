@@ -16,15 +16,19 @@ enum LikeAPI {
 
 extension LikeAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://13.125.191.87:7777/api/like")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
+        }
+        return url
     }
 
     var path: String {
         switch self {
         case .like(let postId, _), .unlike(let postId, _):
-            return "/\(postId)"
+            return "/api/like/\(postId)"
         case .checkLikeStatus(let postId, _):
-            return "/check/\(postId)"
+            return "/api/like/check/\(postId)"
         }
     }
 

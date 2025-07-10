@@ -16,7 +16,7 @@ final class PostService {
 
     private let provider = MoyaProvider<PostAPI>()
 
-    private init() {}
+    init() {}
 
     // MARK: - Create Post
     func createPost(title: String, challengeUuid: String, content: String, imageUrls: [String], isPublic: Bool, completion: @escaping (Result<PostResponseDTO, Error>) -> Void) {

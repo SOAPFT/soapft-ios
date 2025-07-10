@@ -17,19 +17,23 @@ enum AuthAPI {
 
 extension AuthAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://13.125.191.87:7777/api/auth")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
+        }
+        return url
     }
 
     var path: String {
         switch self {
         case .kakaoLogin:
-            return "/kakao"
+            return "/api/auth/kakao"
         case .naverLogin:
-            return "/naver"
+            return "/api/auth/naver"
         case .refreshToken:
-            return "/refresh"
+            return "/api/auth/refresh"
         case .testNickname:
-            return "/test-nickname"
+            return "/api/auth/test-nickname"
         }
     }
 
