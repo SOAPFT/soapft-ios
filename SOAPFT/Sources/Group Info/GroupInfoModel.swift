@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ChallengeDetailResponse: Decodable {
+struct ChallengeDetail: Decodable {
     let challengeUuid: String
     let title: String
     let type: String

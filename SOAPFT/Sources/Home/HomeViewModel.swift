@@ -10,10 +10,10 @@ import Combine
 
 final class HomeViewModel: ObservableObject {
     @Published var selectedTab: ChallengeTab = .inProgress
-    @Published var challenges: [Challenge] = []
+    @Published var challenges: [UserChallenge] = []
     @Published var isLoading: Bool = false
 
-    var filteredChallenges: [Challenge] {
+    var filteredChallenges: [UserChallenge] {
         switch selectedTab {
         case .inProgress:
             return challenges.filter { $0.status.rawValue == "IN_PROGRESS" }

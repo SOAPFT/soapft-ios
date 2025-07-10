@@ -6,10 +6,15 @@
 //
 
 import Foundation
+import Moya
 
 final class NotificationService {
-    private let networkManager = DefaultNetworkManager<NotificationAPI>()
-
+    
+    static let shared = NotificationService()
+    private let provider = MoyaProvider<NotificationAPI>()
+    
+    private init() {}
+    
     // MARK: - 알림 생성
     func createNotification(
         recipientUuid: String,
@@ -19,9 +24,9 @@ final class NotificationService {
         content: String,
         data: [String: Any],
         accessToken: String,
-        completion: @escaping (Result<NotificationDTO, NetworkError>) -> Void
+        completion: @escaping (Result<NotificationDTO, Error>) -> Void
     ) {
-        let target = NotificationAPI.createNotification(
+        provider.request(.createNotification(
             recipientUuid: recipientUuid,
             senderUuid: senderUuid,
             type: type,
@@ -29,59 +34,83 @@ final class NotificationService {
             content: content,
             data: data,
             accessToken: accessToken
-        )
-        networkManager.request(target: target, decodingType: NotificationDTO.self, completion: completion)
+        )) { result in
+            self.handleResponse(result, ofType: NotificationDTO.self, completion: completion)
+        }
     }
-
+    
     // MARK: - 알림 목록 조회
     func fetchNotifications(
         page: Int,
         limit: Int,
         unreadOnly: Bool,
         accessToken: String,
-        completion: @escaping (Result<NotificationsResponseDTO, NetworkError>) -> Void
+        completion: @escaping (Result<NotificationsResponseDTO, Error>) -> Void
     ) {
-        let target = NotificationAPI.fetchNotifications(page: page, limit: limit, unreadOnly: unreadOnly, accessToken: accessToken)
-        networkManager.request(target: target, decodingType: NotificationsResponseDTO.self, completion: completion)
+        provider.request(.fetchNotifications(page: page, limit: limit, unreadOnly: unreadOnly, accessToken: accessToken)) { result in
+            self.handleResponse(result, ofType: NotificationsResponseDTO.self, completion: completion)
+        }
     }
-
+    
     // MARK: - 미읽음 알림 개수 조회
     func fetchUnreadCount(
         accessToken: String,
-        completion: @escaping (Result<UnreadCountResponseDTO, NetworkError>) -> Void
+        completion: @escaping (Result<UnreadCountResponseDTO, Error>) -> Void
     ) {
-        let target = NotificationAPI.fetchUnreadCount(accessToken: accessToken)
-        networkManager.request(target: target, decodingType: UnreadCountResponseDTO.self, completion: completion)
+        provider.request(.fetchUnreadCount(accessToken: accessToken)) { result in
+            self.handleResponse(result, ofType: UnreadCountResponseDTO.self, completion: completion)
+        }
     }
-
-    // MARK: - 알림 읽음 처리 (단일 또는 복수)
+    
+    // MARK: - 특정 알림 읽음 처리
     func markAsRead(
         notificationIds: [Int],
         accessToken: String,
-        completion: @escaping (Result<MarkReadResponseDTO, NetworkError>) -> Void
+        completion: @escaping (Result<MarkReadResponseDTO, Error>) -> Void
     ) {
-        let target = NotificationAPI.markAsRead(notificationIds: notificationIds, accessToken: accessToken)
-        networkManager.request(target: target, decodingType: MarkReadResponseDTO.self, completion: completion)
+        provider.request(.markAsRead(notificationIds: notificationIds, accessToken: accessToken)) { result in
+            self.handleResponse(result, ofType: MarkReadResponseDTO.self, completion: completion)
+        }
     }
-
-    // MARK: - 모든 알림 읽음 처리
+    
+    // MARK: - 전체 알림 읽음 처리
     func markAllAsRead(
         notificationIds: [Int],
         accessToken: String,
-        completion: @escaping (Result<MarkReadResponseDTO, NetworkError>) -> Void
+        completion: @escaping (Result<MarkReadResponseDTO, Error>) -> Void
     ) {
-        let target = NotificationAPI.markAllAsRead(notificationIds: notificationIds, accessToken: accessToken)
-        networkManager.request(target: target, decodingType: MarkReadResponseDTO.self, completion: completion)
+        provider.request(.markAllAsRead(notificationIds: notificationIds, accessToken: accessToken)) { result in
+            self.handleResponse(result, ofType: MarkReadResponseDTO.self, completion: completion)
+        }
     }
-
+    
     // MARK: - 알림 삭제
     func deleteNotification(
         id: Int,
         accessToken: String,
-        completion: @escaping (Result<DeleteNotificationResponseDTO, NetworkError>) -> Void
+        completion: @escaping (Result<DeleteNotificationResponseDTO, Error>) -> Void
     ) {
-        let target = NotificationAPI.deleteNotification(id: id, accessToken: accessToken)
-        networkManager.request(target: target, decodingType: DeleteNotificationResponseDTO.self, completion: completion)
+        provider.request(.deleteNotification(id: id, accessToken: accessToken)) { result in
+            self.handleResponse(result, ofType: DeleteNotificationResponseDTO.self, completion: completion)
+        }
+    }
+    
+    // MARK: - 공통 응답 처리
+    private func handleResponse<T: Decodable>(
+        _ result: Result<Response, MoyaError>,
+        ofType type: T.Type,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        switch result {
+        case .success(let response):
+            do {
+                let decodedData = try JSONDecoder().decode(T.self, from: response.data)
+                completion(.success(decodedData))
+            } catch {
+                completion(.failure(error))
+            }
+        case .failure(let error):
+            completion(.failure(error))
+        }
     }
 }
-

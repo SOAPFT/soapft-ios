@@ -37,9 +37,9 @@ final class ChallengeService {
     }
 
     // 챌린지 상세
-    func getChallengeDetail(id: String, completion: @escaping (Result<ChallengeDetailResponse2, Error>) -> Void) {
+    func getChallengeDetail(id: String, completion: @escaping (Result<ChallengeDetailResponse, Error>) -> Void) {
         provider.request(.challengeDetail(id: id)) { result in
-            self.handleResponse(result, type: ChallengeDetailResponse2.self, completion: completion)
+            self.handleResponse(result, type: ChallengeDetailResponse.self, completion: completion)
         }
     }
 
@@ -77,6 +77,40 @@ final class ChallengeService {
             self.handleResponse(result, type: CompletedChallengeCountResponse.self, completion: completion)
         }
     }
+    
+    // 챌린지 수정
+        func updateChallenge(id: String, parameters: [String: Any], completion: @escaping (Result<ChallengeUpdateResponse, Error>) -> Void) {
+            provider.request(.updateChallenge(id: id, parameters: parameters)) { result in
+                self.handleResponse(result, type: ChallengeUpdateResponse.self, completion: completion)
+            }
+        }
+        
+        // 최근 챌린지 목록
+        func getRecentChallenges(completion: @escaping (Result<[Challenge], Error>) -> Void) {
+            provider.request(.recentChallenges) { result in
+                self.handleResponse(result, type: ChallengeListWithMetaResponse.self) {
+                    completion($0.map { $0.data })
+                }
+            }
+        }
+        
+        // 인기 챌린지 목록
+        func getPopularChallenges(completion: @escaping (Result<[Challenge], Error>) -> Void) {
+            provider.request(.popularChallenges) { result in
+                self.handleResponse(result, type: ChallengeListWithMetaResponse.self) {
+                    completion($0.map { $0.data })
+                }
+            }
+        }
+        
+        // 챌린지 검색
+        func searchChallenges(keyword: String, page: Int, limit: Int, completion: @escaping (Result<[Challenge], Error>) -> Void) {
+            provider.request(.searchChallenges(keyword: keyword, page: page, limit: limit)) { result in
+                self.handleResponse(result, type: ChallengeListWithMetaResponse.self) {
+                    completion($0.map { $0.data })
+                }
+            }
+        }
 
     // 공통 응답 처리
     private func handleResponse<T: Decodable>(

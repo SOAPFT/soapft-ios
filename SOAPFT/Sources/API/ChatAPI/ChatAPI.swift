@@ -20,25 +20,29 @@ enum ChatAPI {
 
 extension ChatAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "https://xxx/api")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
+        }
+        return url
     }
 
     var path: String {
         switch self {
         case .createRoom:
-            return "/chat/room"
+            return "/api/chat/room"
         case .getRooms:
             return "/chat/rooms"
         case let .getRoomDetail(uuid):
-            return "/chat/room/\(uuid)"
+            return "/api/chat/room/\(uuid)"
         case let .sendMessage(roomId, _, _, _, _):
-            return "/chat/room/\(roomId)/message"
+            return "/api/chat/room/\(roomId)/message"
         case let .getMessages(roomId, _, _, _, _):
-            return "/chat/room/\(roomId)/messages"
+            return "/api/chat/room/\(roomId)/messages"
         case let .markAsRead(roomId, _):
-            return "/chat/room/\(roomId)/read"
+            return "/api/chat/room/\(roomId)/read"
         case let .leaveRoom(roomId):
-            return "/chat/room/\(roomId)/leave"
+            return "/api/chat/room/\(roomId)/leave"
         }
     }
 
@@ -116,7 +120,8 @@ extension ChatAPI: TargetType {
             "Content-Type": "application/json",
             "accept": "application/json",
             "Accept-Language": "ko-KR",
-            "User-Agent": "iOS-App"
+            "User-Agent": "iOS-App",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAyODUwLCJleHAiOjE3NTQ0OTQ4NTB9.AWkWZKZ2BcV4w2uubt2pbvcnh00pFLiiGgrkp2J7qwg"
         ]
     }
 

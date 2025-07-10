@@ -13,14 +13,14 @@ final class GroupInfoViewModel: ObservableObject {
     @Published var searchText: String = ""
 
     // MARK: - Output
-    @Published var challenge: ChallengeDetailResponse
+    @Published var challenge: ChallengeDetail
     @Published var filteredParticipants: [Participant] = []
 
     var hostUuid: String {
         challenge.creator.userUuid
     }
 
-    init(challenge: ChallengeDetailResponse) {
+    init(challenge: ChallengeDetail) {
         self.challenge = challenge
         self.filteredParticipants = challenge.participants
     }

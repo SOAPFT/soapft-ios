@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Challenge: Codable, Identifiable {
+struct UserChallenge: Codable, Identifiable {
     let id: Int
     let uuid: String
     let title: String

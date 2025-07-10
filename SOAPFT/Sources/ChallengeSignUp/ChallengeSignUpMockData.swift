@@ -6,7 +6,7 @@
 //
 
 // 이 모델의 정의부는 Group Info Folder
-let ChallengeSignUpMockData = ChallengeDetailResponse(
+let ChallengeSignUpMockData = ChallengeDetail(
     challengeUuid: "01HZQK5J8X2M3N4P5Q6R7S8T9V",
     title: "30일 헬스 챌린지",
     type: "NORMAL",

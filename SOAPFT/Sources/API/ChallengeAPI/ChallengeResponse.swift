@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: -  공통 챌린지 모델
-struct Challenge2: Decodable {
+struct Challenge: Decodable {
     let id: Int?
     let challengeUuid: String
     let title: String
@@ -75,7 +75,7 @@ struct Meta: Decodable {
 }
 
 // MARK: - 챌린지 상세 응답
-struct ChallengeDetailResponse2: Decodable {
+struct ChallengeDetailResponse: Decodable {
     let challengeUuid: String
     let title: String
     let type: String
@@ -96,6 +96,7 @@ struct ChallengeDetailResponse2: Decodable {
     let isParticipating: Bool
     let createdAt: String
     let updatedAt: String
+    
 }
 
 // MARK: - 챌린지 수정 응답
