@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct MainTabbarView: View {
+    @EnvironmentObject var container: DIContainer
     @State private var selectedTab: String = "Main"
 
     var body: some View{
         VStack(spacing: 0) {
             TabView (selection: $selectedTab){
-                Home()
+                HomeWrapper()
                     .tag("Main")
                 Text("Friends")
                     .tag("Friends")

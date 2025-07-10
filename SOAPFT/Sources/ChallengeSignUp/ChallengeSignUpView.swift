@@ -20,7 +20,7 @@ struct ChallengeSignUpView: View {
                 
                 // 1. 커버 이미지 (배경)
                 ZStack(alignment: .bottom) {
-                    AsyncImage(url: URL(string: viewModel.challenge.banner)) { image in
+                    AsyncImage(url: URL(string: viewModel.challenge.banner ?? "")) { image in
                         image
                             .resizable()
                             .scaledToFill()
@@ -41,7 +41,7 @@ struct ChallengeSignUpView: View {
                     
                     VStack(spacing: 8) {
                         // 겹쳐진 원형 프로필
-                        AsyncImage(url: URL(string: viewModel.challenge.profile)) { image in
+                        AsyncImage(url: URL(string: viewModel.challenge.profile ?? "")) { image in
                             image
                                 .resizable()
                                 .clipShape(Circle())
@@ -67,7 +67,7 @@ struct ChallengeSignUpView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     infoRow(title: "기간", value: "\(viewModel.challenge.startDate) ~ \(viewModel.challenge.endDate)")
                     infoRow(title: "목표", value: "주 \(viewModel.challenge.goal)회 인증")
-                    infoRow(title: "인원", value: "\(viewModel.challenge.currentMember)/\(viewModel.challenge.maxMember)명")
+                    infoRow(title: "인원", value: "\(viewModel.challenge.currentMembers)/\(viewModel.challenge.maxMember)명")
                     infoRow(title: "성별", value: viewModel.challenge.gender == "ALL" ? "제한 없음" : viewModel.challenge.gender)
                     infoRow(title: "나이", value: "\(viewModel.challenge.startAge)대")
                     infoRow(title: "참여 코인", value: "\(viewModel.challenge.coinAmount)개")
@@ -139,5 +139,5 @@ struct ChallengeSignUpView: View {
 
 
 #Preview {
-    ChallengeSignUpView(viewModel: ChallengeSignUpViewModel(mockData: ChallengeSignUpMockData))
+    ChallengeSignUpView(viewModel: ChallengeSignUpViewModel(mockData: GroupInfoMockData))
 }

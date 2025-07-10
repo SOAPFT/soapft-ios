@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: -  공통 챌린지 모델
 struct Challenge: Decodable {
-    let id: Int?
+    let id: Int
     let challengeUuid: String
     let title: String
     let type: String?
@@ -19,14 +19,14 @@ struct Challenge: Decodable {
     let verificationGuide: String?
     let startDate: String
     let endDate: String
-    let goal: Int?
+    let goal: Int
     let startAge: Int?
     let endAge: Int?
-    let gender: String?
-    let maxMember: Int?
+    let gender: String
+    let maxMember: Int
     let currentMember: Int?
-    let creatorUuid: String?
-    let participantUuid: [String]?
+    let creatorUuid: String
+    let participantUuid: [String]
     let coinAmount: Int?
     let isStarted: Bool
     let isFinished: Bool
@@ -34,24 +34,20 @@ struct Challenge: Decodable {
     let successParticipantsUuid: [String]?
     let createdAt: String?
     let updatedAt: String?
-}
+    
+    var status: String {
+        if isFinished {
+            return "completed"
+        } else if isStarted {
+            return "ongoing"
+        } else {
+            return "upcoming"
+        }
+    }
 
-// MARK: - 사용자 참여 챌린지 목록 응답
-
-struct ParticipatedChallengesResponse: Decodable {
-    let success: Bool
-    let data: [ChallengeSummary]
-}
-
-struct ChallengeSummary: Decodable {
-    let challengeId: Int
-    let challengeUuid: String
-    let title: String
-    let status: String
-    let currentMembers: Int
-    let maxMembers: Int
-    let startDate: String
-    let endDate: String
+    var currentMembers: Int {
+        participantUuid.count
+    }
 }
 
 // MARK: - 챌린지 생성 응답
@@ -76,12 +72,14 @@ struct Meta: Decodable {
 
 // MARK: - 챌린지 상세 응답
 struct ChallengeDetailResponse: Decodable {
+    let id: Int
     let challengeUuid: String
     let title: String
     let type: String
-    let profile: String
-    let banner: String
+    let profile: String?
+    let banner: String?
     let introduce: String
+    let verificationGuide: String
     let startDate: String
     let endDate: String
     let goal: Int
@@ -89,15 +87,97 @@ struct ChallengeDetailResponse: Decodable {
     let endAge: Int
     let gender: String
     let maxMember: Int
+    let creatorUuid: String
+    let participantUuid: [String]
     let coinAmount: Int
     let isStarted: Bool
     let isFinished: Bool
-    let creatorUuid: String
-    let isParticipating: Bool
-    let createdAt: String
-    let updatedAt: String
+    let isParticipated: Bool
+    let successParticipantsUuid: [String]
+    let createdAt: String?
+    let updatedAt: String?
+    var participants: [Participant]
     
+    var currentMembers: Int {
+        participantUuid.count
+    }
+    
+    var status: String {
+        if isFinished {
+            return "completed"
+        } else if isStarted {
+            return "ongoing"
+        } else {
+            return "upcoming"
+        }
+    }
+    
+    //날짜 관련 확장
+    private var isoFormatter: ISO8601DateFormatter {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }
+
+    var startDateValue: Date? {
+        isoFormatter.date(from: startDate)
+    }
+
+    var endDateValue: Date? {
+        isoFormatter.date(from: endDate)
+    }
+
+    var startYear: Int? {
+        startDateValue.map { Calendar.current.component(.year, from: $0) }
+    }
+
+    var startMonth: Int? {
+        startDateValue.map { Calendar.current.component(.month, from: $0) }
+    }
+
+    var endYear: Int? {
+        endDateValue.map { Calendar.current.component(.year, from: $0) }
+    }
+
+    var endMonth: Int? {
+        endDateValue.map { Calendar.current.component(.month, from: $0) }
+    }
+
+    var currentYear: Int? {
+        switch status {
+        case "ongoing": return Calendar.current.component(.year, from: Date())
+        case "upcoming": return startYear
+        case "completed": return endYear
+        default: return nil
+        }
+    }
+
+    var currentMonth: Int? {
+        switch status {
+        case "ongoing": return Calendar.current.component(.month, from: Date())
+        case "upcoming": return startMonth
+        case "completed": return endMonth
+        default: return nil
+        }
+    }
 }
+
+struct Participant: Decodable, Identifiable, Hashable {
+    let userUuid: String
+    let nickname: String
+    let profileImage: String
+    
+    var id: String { userUuid }
+}
+
+struct Creator: Decodable {
+    let userUuid: String
+    let nickname: String
+    let profileImage: String
+}
+
+
+
 
 // MARK: - 챌린지 수정 응답
 struct ChallengeUpdateResponse: Decodable {

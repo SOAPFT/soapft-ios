@@ -226,33 +226,5 @@ private struct CellView: View {
 
 
 #Preview {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd"
 
-    let certifiedCount: [Date: Int] = [
-        formatter.date(from: "2024-10-04")!: 2,
-        formatter.date(from: "2024-10-12")!: 1,
-        formatter.date(from: "2024-10-13")!: 1
-    ]
-
-    let certifiedMembers: [Date: [Member]] = [
-        formatter.date(from: "2024-10-04")!: [
-            Member(name: "홍길동", profileImage: "https://randomuser.me/api/portraits/men/1.jpg"),
-            Member(name: "김민지", profileImage: "https://randomuser.me/api/portraits/women/1.jpg")
-        ],
-        formatter.date(from: "2024-10-12")!: [
-            Member(name: "이수민", profileImage: "https://randomuser.me/api/portraits/women/2.jpg")
-        ],
-        formatter.date(from: "2024-10-13")!: [
-            Member(name: "최우진", profileImage: "https://randomuser.me/api/portraits/men/2.jpg")
-        ]
-    ]
-
-    return CalenderView(
-        currentMonth: Calendar.current.date(from: DateComponents(year: 2024, month: 10))!,
-        startMonth: Calendar.current.date(from: DateComponents(year: 2024, month: 9))!,
-        endMonth: Calendar.current.date(from: DateComponents(year: 2024, month: 12))!,
-        certifiedCount: certifiedCount,
-        certifiedMembers: certifiedMembers
-    )
 }

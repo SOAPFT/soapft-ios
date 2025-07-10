@@ -8,20 +8,23 @@ struct SOAPFTApp: App {
     
     @StateObject private var router = AppRouter()
     // DIContainer 인스턴스 생성
-    
+    private var container: DIContainer
     
     init() {
         // kakao sdk 초기화
         let kakaoNativeAppKey = (Bundle.main.object(forInfoDictionaryKey: "Kakao_AppKey") as? String) ?? ""
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+        
+        // DIContainer 생성
+        let router = AppRouter()
+        self._router = StateObject(wrappedValue: router)
+        self.container = DIContainer(router: router)
     }
     
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $router.path) {
-                let container = DIContainer(router: router)
                 LoginView()
-                    .environment(\.diContainer, container) // 💡 DIContainer 환경 주입
                     .navigationDestination(for: Route.self) { route in
                         switch route {
 
@@ -55,6 +58,7 @@ struct SOAPFTApp: App {
                         }
                     }
             }
+            .environment(\.diContainer, container)
         }
     }
 }

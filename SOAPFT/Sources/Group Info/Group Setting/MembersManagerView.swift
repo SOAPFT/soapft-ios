@@ -37,7 +37,7 @@ struct MembersManagerView: View {
                 LazyVStack {
                     // MARK: 멤버 검색
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("멤버 \(viewModel.challenge.participants.count)")
+                        Text("멤버 \(viewModel.challenge.participantUuid.count)")
                             .font(.headline)
 
                         TextField("멤버를 검색해주세요", text: $viewModel.searchText)
@@ -86,5 +86,5 @@ struct MembersManagerView: View {
 }
 
 #Preview {
-    MembersManagerView(viewModel: GroupInfoViewModel(challenge: GroupInfoMockData))
+    //MembersManagerView(viewModel: GroupInfoViewModel(challenge: GroupInfoMockData))
 }

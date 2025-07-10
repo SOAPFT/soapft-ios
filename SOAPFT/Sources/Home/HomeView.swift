@@ -9,59 +9,68 @@ import SwiftUI
 import Lottie
 
 struct Home: View {
-    @StateObject var viewModel = HomeViewModel(useMock: true)
-    let columns = [
+    @StateObject private var viewModel: HomeViewModel
+    //DIContainer
+    @Environment(\.diContainer) private var container
+    
+    init(viewModel: HomeViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-    
+
     var body: some View {
-        VStack{
+        VStack {
             //Nav 영역
             homeNavBar()
             
             Divider()
             
-            ScrollView{
+            ScrollView {
                 LazyVStack {
-                    //Lottie 영역
-                    LottieView(filename: "Fire")  // Fire.json 파일 사용
-                        .frame(width: 120,height: 90)
+                    // Lottie
+                    LottieView(filename: "Fire")
+                        .frame(width: 120, height: 90)
                         .padding(.top, 33)
+
                     Text("7")
                         .font(Font.Pretend.pretendardBold(size: 60))
                     Text("Challenges You've Completed")
                         .font(Font.Pretend.pretendardSemiBold(size: 15))
                         .padding(.bottom, 33)
-                    
-                    // Advertise
+
                     AdBannerView()
                         .padding(.vertical)
-                    
-                    //Toggle
+
                     HomeChallengeToggleView(selectedTab: $viewModel.selectedTab)
                         .padding()
-                    
-                    //챌린지 item
-                    if viewModel.filteredChallenges.isEmpty { // 없는 경우
+
+                    if viewModel.filteredChallenges.isEmpty {
                         Image("NoneParticipateChallenge")
                             .padding()
                         Text("참여하는 챌린지가 없어요")
                             .font(Font.Pretend.pretendardSemiBold(size: 18))
                             .foregroundStyle(.gray)
-                        
                         Text("챌린지에 참여해보세요!")
                             .font(Font.Pretend.pretendardLight(size: 15))
                             .foregroundStyle(.gray)
                             .padding(1)
-                    }else{
-                        // 챌린지 2열 목록
-                        LazyVGrid(columns: columns, spacing: 16) {
-                            ForEach(viewModel.filteredChallenges) { challenge in
-                                ChallengeItemView(challenge: challenge)
+                    } else {
+                        NavigationStack {
+                            LazyVGrid(columns: columns, spacing: 16) {
+                                ForEach(viewModel.filteredChallenges, id: \.id) { challenge in
+                                    NavigationLink(
+                                        destination: GroupTabbarWrapper(challengeID: challenge.challengeUuid)
+                                    ) {
+                                        ChallengeItemView(challenge: challenge)
+                                    }
+                                }
                             }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                     }
                 }
             }
@@ -69,6 +78,34 @@ struct Home: View {
     }
 }
 
+struct HomeWrapper: View {
+    @Environment(\.diContainer) private var container
+
+    var body: some View {
+        let viewModel = HomeViewModel(challengeService: container.challengeService)
+        Home(viewModel: viewModel)
+    }
+}
+
 #Preview {
-    Home()
+    struct PreviewWrapper: View {
+        @StateObject var router = AppRouter()
+
+        var body: some View {
+            let container = DIContainer(router: router)
+
+            NavigationStack(path: $router.path) {
+                HomeWrapper()
+                    .environment(\.diContainer, container)
+                    .navigationDestination(for: Route.self) { route in
+                        switch route {
+                        case .MainTabbar:
+                            MainTabbarView()
+                        }
+                    }
+            }
+        }
+    }
+
+    return PreviewWrapper()
 }
