@@ -9,10 +9,39 @@ import SwiftUI
 
 final class DIContainer {
     let router: AppRouter
-    
-    // ...기타 서비스들
 
-    init(router: AppRouter/*, postService: PostService, authService: AuthService*/) {
+    // 모든 서비스 선언
+    let authService: AuthService
+    let userService: UserService
+    let postService: PostService
+    let likeService: LikeService
+    let notificationsService: NotificationService
+    let challengeService: ChallengeService
+    let chatService: ChatService
+    let friendService: FriendService
+
+    init(router: AppRouter) {
         self.router = router
+
+        // 각 서비스 초기화
+        self.authService = AuthService()
+        self.userService = UserService()
+        self.postService = PostService()
+        self.likeService = LikeService()
+        self.notificationsService = NotificationService()
+        self.challengeService = ChallengeService()
+        self.chatService = ChatService()
+        self.friendService = FriendService()
+    }
+}
+
+private struct DIContainerKey: EnvironmentKey {
+    static var defaultValue: DIContainer = DIContainer(router: AppRouter())
+}
+
+extension EnvironmentValues {
+    var diContainer: DIContainer {
+        get { self[DIContainerKey.self] }
+        set { self[DIContainerKey.self] = newValue }
     }
 }

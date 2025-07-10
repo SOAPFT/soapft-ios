@@ -16,7 +16,7 @@ final class LikeService {
 
     private let provider = MoyaProvider<LikeAPI>()
 
-    private init() {}
+    init() {}
 
     // MARK: - Add Like
     func like(postId: String, accessToken: String, completion: @escaping (Result<LikeAddResponseDTO, Error>) -> Void) {

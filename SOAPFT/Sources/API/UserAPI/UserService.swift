@@ -16,7 +16,7 @@ final class UserService {
 
     private let provider = MoyaProvider<UserAPI>()
 
-    private init() {}
+    init() {}
 
     // MARK: - Onboarding
     func onboarding(nickname: String, gender: String, birthDate: String, accessToken: String, completion: @escaping (Result<SignupResponseDTO, Error>) -> Void) {

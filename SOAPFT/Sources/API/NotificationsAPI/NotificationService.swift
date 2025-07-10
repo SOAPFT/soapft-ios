@@ -13,7 +13,7 @@ final class NotificationService {
     static let shared = NotificationService()
     private let provider = MoyaProvider<NotificationAPI>()
     
-    private init() {}
+    init() {}
     
     // MARK: - 알림 생성
     func createNotification(

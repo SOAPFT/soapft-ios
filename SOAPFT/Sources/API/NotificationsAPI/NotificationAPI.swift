@@ -27,19 +27,23 @@ enum NotificationAPI {
 
 extension NotificationAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://13.125.191.87:7777/api/notifications")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
+        }
+        return url
     }
 
     var path: String {
         switch self {
         case .fetchUnreadCount:
-            return "/unread-count"
+            return "/api/notifications/unread-count"
         case .markAsRead:
-            return "/mark-as-read"
+            return "/api/notifications/mark-as-read"
         case .markAllAsRead:
-            return "/mark-all-as-read"
+            return "/api/notifications/mark-all-as-read"
         case .deleteNotification(let id, _):
-            return "/\(id)"
+            return "/api/notifications/\(id)"
         default:
             return ""
         }

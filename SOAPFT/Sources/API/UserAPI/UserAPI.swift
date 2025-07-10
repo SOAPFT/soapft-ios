@@ -19,28 +19,27 @@ enum UserAPI {
 
 extension UserAPI: TargetType {
     var baseURL: URL {
-        switch self {
-        case .getOtherUserInfo(let userUUID, _):
-            return URL(string: "http://13.125.191.87:7777/api/user/info/\(userUUID)")!
-        default:
-            return URL(string: "http://13.125.191.87:7777/api/user")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
         }
+        return url
     }
 
     var path: String {
         switch self {
         case .onboarding:
-            return "/onboarding"
+            return "/api/user/onboarding"
         case .logout:
-            return "/logout"
+            return "/api/user/logout"
         case .updateProfile:
-            return "/profile"
+            return "/api/user/profile"
         case .deleteProfile:
-            return "/member"
+            return "/api/user/member"
         case .getUserInfo:
-            return "/userInfo"
-        case .getOtherUserInfo:
-            return ""
+            return "/api/user/userInfo"
+        case .getOtherUserInfo(let userUUID, _):
+            return "/api/user/info/\(userUUID)"
         }
     }
 

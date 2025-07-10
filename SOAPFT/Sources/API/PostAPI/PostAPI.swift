@@ -22,29 +22,33 @@ enum PostAPI {
 
 extension PostAPI: TargetType {
     var baseURL: URL {
-        return URL(string: "http://13.125.191.87:7777/api")!
+        guard let baseUrlString = Bundle.main.object(forInfoDictionaryKey: "API_URL") as? String,
+              let url = URL(string: baseUrlString) else {
+            fatalError("❌ API_URL not found or invalid in Info.plist")
+        }
+        return url
     }
 
     var path: String {
         switch self {
         case .createPost:
-            return "/post"
+            return "/api/post"
         case .getMyPosts:
-            return "/post/my"
+            return "/api/post/my"
         case .getCalendar:
-            return "/post/calendar"
+            return "/api/post/calendar"
         case .getUserCalendar(let userUuid, _, _):
-            return "/post/calendar/\(userUuid)"
+            return "/api/post/calendar/\(userUuid)"
         case .getUserPosts(let userId, _, _):
-            return "/post/user/\(userId)"
+            return "/api/post/user/\(userId)"
         case .getPostDetail(let postId):
-            return "/post/\(postId)"
+            return "/api/post/\(postId)"
         case .updatePost(let postUuid, _, _, _, _):
-            return "/post/\(postUuid)"
+            return "/api/post/\(postUuid)"
         case .deletePost(let postId):
-            return "/post/\(postId)"
+            return "/api/post/\(postId)"
         case .getChallengePosts(let challengeId, _, _):
-            return "/post/challenge/\(challengeId)"
+            return "/api/post/challenge/\(challengeId)"
         }
     }
 

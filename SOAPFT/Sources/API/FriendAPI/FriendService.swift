@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 final class FriendService {
-    private let provider: MoyaProvider<FriendAPI>
+    let provider: MoyaProvider<FriendAPI>
 
     init(provider: MoyaProvider<FriendAPI> = MoyaProvider<FriendAPI>()) {
         self.provider = provider
