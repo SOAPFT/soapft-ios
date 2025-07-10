@@ -12,11 +12,9 @@ final class ChallengeService {
     private let provider = MoyaProvider<ChallengeAPI>()
 
     // 사용자 참여 챌린지 목록
-    func getParticipatedChallenges(status: String, completion: @escaping (Result<[ChallengeSummary], Error>) -> Void) {
+    func getParticipatedChallenges(status: String, completion: @escaping (Result<[Challenge], Error>) -> Void) {
         provider.request(.userChallenges(status: status)) { result in
-            self.handleResponse(result, type: ParticipatedChallengesResponse.self) {
-                completion($0.map { $0.data })
-            }
+            self.handleResponse(result, type: [Challenge].self, completion: completion)
         }
     }
 

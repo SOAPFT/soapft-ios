@@ -9,18 +9,19 @@
 import Foundation
 import Combine
 
+
 final class ChallengeSignUpViewModel: ObservableObject {
-    @Published var challenge: ChallengeDetail
+    @Published var challenge: ChallengeDetailResponse
     @Published var isJoinCompleted: Bool = false
     @Published var errorMessage: String? = nil
 
-    init(mockData: ChallengeDetail) {
+    init(mockData: ChallengeDetailResponse) {
         self.challenge = mockData
     }
 
     // 가입 가능한 상태인지 판단
     var isJoinable: Bool {
-        !challenge.isParticipating && !challenge.isStarted && challenge.currentMember < challenge.maxMember
+        !challenge.isParticipated && !challenge.isStarted && challenge.currentMembers < challenge.maxMember
     }
 
     // 가입 신청 처리

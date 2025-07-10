@@ -9,22 +9,24 @@ import SwiftUI
 
 
 struct ChallengeItemView: View {
-    let challenge: UserChallenge
+    let challenge: Challenge
 
     // 상태에 따른 뱃지 색상과 텍스트
     var badgeText: String {
         switch challenge.status {
-        case .inProgress: return "진행 중"
-        case .upcoming: return "진행 예정"
-        case .completed: return "완료"
+        case "ongoing": return "진행 중"
+        case "upcoming": return "진행 예정"
+        case "completed": return "완료"
+        default: return "알 수 없음"
         }
     }
 
     var badgeColor: Color {
         switch challenge.status {
-        case .inProgress: return Color.red
-        case .upcoming: return Color.yellow
-        case .completed: return Color.green
+        case "ongoing": return Color.red
+        case "upcoming": return Color.yellow
+        case "completed": return Color.green
+        default: return Color.gray
         }
     }
 
@@ -63,7 +65,7 @@ struct ChallengeItemView: View {
                     Image(systemName: "person.fill")
                         .font(.caption)
                         .foregroundStyle(.gray)
-                    Text("\(challenge.currentMembers)/\(challenge.maxMembers)")
+                    Text("\(challenge.currentMembers)/\(challenge.maxMember)")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
@@ -83,5 +85,5 @@ struct ChallengeItemView: View {
 
 
 #Preview {
-    ChallengeItemView(challenge: ChallengesMockdata[0])
+
 }

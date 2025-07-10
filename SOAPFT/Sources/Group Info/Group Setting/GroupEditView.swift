@@ -173,7 +173,8 @@ struct GroupEditView: View {
 
 #Preview {
     GroupEditView(
-        initialProfileURL: GroupInfoMockData.profile,
-        initialBannerURL: GroupInfoMockData.banner
+        initialProfileURL: GroupInfoMockData.profile ?? "",
+        initialBannerURL: GroupInfoMockData.banner ?? ""
     )
 }
+

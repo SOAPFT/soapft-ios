@@ -6,43 +6,119 @@
 //
 
 // ChallengeStatisticsViewModel.swift
+
 import Foundation
 import SwiftUI
 
 final class ChallengeStatisticsViewModel: ObservableObject {
+    // 챌린지 API 서비스
+    private let challengeService: ChallengeService
+
+    // 챌린지
+    @Published var challenge: ChallengeDetailResponse
+    @Published var monthlyVerification: MonthlyVerificationResponse = MonthlyVerificationResponse(data: [:])
     @Published var data: ChallengeStatisticsData
+    @Published var year: Int
+    @Published var month: Int
+    @Published var progress: Int = 0
 
-    init() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+    init(challengeService: ChallengeService, challenge: ChallengeDetailResponse) {
+        self.challengeService = challengeService
+        self.challenge = challenge
 
-        let certifiedCount: [Date: Int] = [
-            formatter.date(from: "2024-10-04")!: 2,
-            formatter.date(from: "2024-10-12")!: 7,
-            formatter.date(from: "2024-10-13")!: 1
-        ]
+        // 날짜 포맷터
+        let isoFormatter = ISO8601DateFormatter()
+        var certifiedCount: [Date: Int] = [:]
+        var certifiedMembers: [Date: [Member]] = [:]
 
-        let certifiedMembers: [Date: [Member]] = [
-            formatter.date(from: "2024-10-04")!: [
-                Member(name: "홍길동", profileImage: "https://randomuser.me/api/portraits/men/1.jpg"),
-                Member(name: "김민지", profileImage: "https://randomuser.me/api/portraits/women/1.jpg")
-            ],
-            formatter.date(from: "2024-10-12")!: [
-                Member(name: "이수민", profileImage: "https://randomuser.me/api/portraits/women/2.jpg")
-            ],
-            formatter.date(from: "2024-10-13")!: [
-                Member(name: "최우진", profileImage: "https://randomuser.me/api/portraits/men/2.jpg")
-            ]
-        ]
+        // 챌린지 상태에 따라 기준 연도와 월 결정
+        let calendar = Calendar.current
+        let currentDate = Date()
 
+
+        if challenge.isFinished, let end = isoFormatter.date(from: challenge.endDate) {
+            year = calendar.component(.year, from: end)
+            month = calendar.component(.month, from: end)
+        } else if challenge.isStarted {
+            year = calendar.component(.year, from: currentDate)
+            month = calendar.component(.month, from: currentDate)
+        } else if let start = isoFormatter.date(from: challenge.startDate) {
+            year = calendar.component(.year, from: start)
+            month = calendar.component(.month, from: start)
+        } else {
+            year = calendar.component(.year, from: currentDate)
+            month = calendar.component(.month, from: currentDate)
+        }
+        
+        
+        // 초기값 (로딩 전)
         self.data = ChallengeStatisticsData(
-            goalCompletionRate: 40,
-            challengeStartDate: "2025-07-01",
-            challengeEndDate: "2025-07-31",
-            currentMember: 30,
-            goal: 1,
-            certifiedCount: certifiedCount,
-            certifiedMembers: certifiedMembers
+            goalCompletionRate: 0,
+            challengeStartDate: challenge.startDate,
+            challengeEndDate: challenge.endDate,
+            currentMember: challenge.currentMembers,
+            goal: challenge.goal,
+            certifiedCount: [:],
+            certifiedMembers: [:]
         )
+        
+        //사용자 챌린지 진행률 조회
+        self.challengeService.getProgress(id: challenge.challengeUuid) { [weak self] (result: Result<ChallengeProgressResponse, Error>) in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let ChallengeProgress):
+                    self.progress = ChallengeProgress.totalAchievementRate
+                case .failure(let error):
+                    print("챌린지 진행률 불러오기 실패: \(error)")
+                }
+            }
+        }
+
+        // 월별 인증 현황 요청
+        challengeService.getMonthlyVerifications(id: challenge.challengeUuid, year: year, month: month) { [weak self] result in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let verification):
+                    self.monthlyVerification = verification
+
+                    for (dateString, daily) in verification.data {
+                        if let date = isoFormatter.date(from: dateString) {
+                            certifiedCount[date] = daily.count
+                            certifiedMembers[date] = daily.users.map {
+                                Member(id: $0.userUuid, name: $0.nickname, profileImage: $0.profileImage)
+                            }
+                        }
+                    }
+
+                    self.data = ChallengeStatisticsData(
+                        goalCompletionRate: self.progress,
+                        challengeStartDate: challenge.startDate,
+                        challengeEndDate: challenge.endDate,
+                        currentMember: challenge.currentMembers,
+                        goal: challenge.goal,
+                        certifiedCount: certifiedCount,
+                        certifiedMembers: certifiedMembers
+                    )
+
+                case .failure(let error):
+                    print("월별 인증 현황 로드 실패: \(error)")
+                    self.data = ChallengeStatisticsData(
+                        goalCompletionRate: 0,
+                        challengeStartDate: challenge.startDate,
+                        challengeEndDate: challenge.endDate,
+                        currentMember: challenge.currentMembers,
+                        goal: challenge.goal,
+                        certifiedCount: [:],
+                        certifiedMembers: [:]
+                    )
+                }
+            }
+        }
+
+
     }
 }

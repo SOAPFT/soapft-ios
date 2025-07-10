@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class DIContainer {
+final class DIContainer: ObservableObject {
     let router: AppRouter
 
     // 모든 서비스 선언

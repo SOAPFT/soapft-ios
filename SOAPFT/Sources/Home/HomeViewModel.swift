@@ -9,22 +9,39 @@ import Foundation
 import Combine
 
 final class HomeViewModel: ObservableObject {
-    @Published var selectedTab: ChallengeTab = .inProgress
-    @Published var challenges: [UserChallenge] = []
-    @Published var isLoading: Bool = false
+    // 챌린지 API 서비스
+    private let challengeService: ChallengeService
 
-    var filteredChallenges: [UserChallenge] {
-        switch selectedTab {
-        case .inProgress:
-            return challenges.filter { $0.status.rawValue == "IN_PROGRESS" }
-        case .upcoming:
-            return challenges.filter { $0.status.rawValue == "UPCOMING" }
+    
+    @Published var selectedTab: ChallengeTab = .inProgress
+    @Published var challenges: [Challenge] = []
+    @Published var isLoading: Bool = false
+    
+
+    init(challengeService: ChallengeService) {
+        self.challengeService = challengeService
+
+        self.challengeService.getParticipatedChallenges(status: "all") { [weak self] (result: Result<[Challenge], Error>) in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let challenges):
+                    self.challenges = challenges
+                case .failure(let error):
+                    print("챌린지 불러오기 실패: \(error)")
+                }
+            }
         }
     }
+
     
-    init(useMock: Bool = false) {
-        if useMock {
-            self.challenges = ChallengesMockdata
+    var filteredChallenges: [Challenge] {
+        switch selectedTab {
+        case .inProgress:
+            return challenges.filter { $0.status == "ongoing" }
+        case .upcoming:
+            return challenges.filter { $0.status == "upcoming" }
         }
     }
 }

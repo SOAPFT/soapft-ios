@@ -7,26 +7,83 @@
 
 import SwiftUI
 
+struct GroupTabbarWrapper: View {
+    @Environment(\.diContainer) private var container
+    let challengeID: String
+
+    @State private var challenge: ChallengeDetailResponse?
+    @State private var isLoading = true
+    @State private var errorMessage: String?
+
+    var body: some View {
+        contentView
+            .onAppear {
+                loadChallenge()
+            }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        if isLoading {
+            ProgressView("챌린지를 불러오는 중입니다...")
+        } else if let challenge = challenge {
+            GroupTabbarView(Challenge: challenge)
+        } else {
+            VStack {
+                Text("❗️챌린지 정보를 불러오지 못했습니다.")
+                    .foregroundColor(.red)
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+    }
+
+    private func loadChallenge() {
+        container.challengeService.getChallengeDetail(id: challengeID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self.challenge = data
+                    self.isLoading = false
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
 struct GroupTabbarView: View {
     @State private var selectedTab: String = "Info"
+    let Challenge:ChallengeDetailResponse
+    
+    
     
     var body: some View{
         VStack(spacing: 0) {
             TabView (selection: $selectedTab){
-                Text("그룹 정보")
+                GroupInfoWrapper(challenge: Challenge)
                     .tag("Info")
-                Text("인증 현황")
+                ChallengeStatisticsWrapper(challenge: Challenge)
                     .tag("Status")
-                Text("인증")
+                UploadCertificationView()
                     .tag("Check")
-                Text("인증글 보기")
+                CertificationPostView(viewModel: CertificationPostViewModel())
                     .tag("List")
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             HStack {
                 tabButton(title: "Info", selectedImage: "info.circle")
-                tabButton(title: "Stauts", selectedImage: "checkmark.seal")
+                tabButton(title: "Status", selectedImage: "checkmark.seal")
                 tabButton(title: "Check", selectedImage: "camera")
                 tabButton(title: "List", selectedImage: "newspaper")
             }
@@ -55,5 +112,5 @@ struct GroupTabbarView: View {
 }
 
 #Preview {
-    GroupTabbarView()
+    
 }

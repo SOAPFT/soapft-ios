@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChallengeStatisticsView: View {
-    @StateObject private var viewModel = ChallengeStatisticsViewModel()
+    @StateObject var viewModel:ChallengeStatisticsViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -33,9 +33,9 @@ struct ChallengeStatisticsView: View {
             .padding(.horizontal)
 
             CalenderView(
-                currentMonth: Calendar.current.date(from: DateComponents(year: 2024, month: 10))!,
-                startMonth: Calendar.current.date(from: DateComponents(year: 2024, month: 9))!,
-                endMonth: Calendar.current.date(from: DateComponents(year: 2024, month: 12))!,
+                currentMonth: Calendar.current.date(from: DateComponents(year: viewModel.year, month: viewModel.month))!,
+                startMonth: Calendar.current.date(from: DateComponents(year: viewModel.challenge.startYear, month: viewModel.challenge.startMonth))!,
+                endMonth: Calendar.current.date(from: DateComponents(year: viewModel.challenge.endYear, month: viewModel.challenge.endMonth))!,
                 certifiedCount: viewModel.data.certifiedCount,
                 certifiedMembers: viewModel.data.certifiedMembers
             )
@@ -43,6 +43,40 @@ struct ChallengeStatisticsView: View {
     }
 }
 
+struct ChallengeStatisticsWrapper: View {
+    @Environment(\.diContainer) private var container
+    let challenge: ChallengeDetailResponse
+
+    var body: some View {
+        let viewModel = ChallengeStatisticsViewModel(challengeService: container.challengeService, challenge: challenge)
+        ChallengeStatisticsView(viewModel: viewModel)
+    }
+}
+
 #Preview {
-    ChallengeStatisticsView()
+    struct PreviewWrapper: View {
+        @StateObject var router = AppRouter()
+
+        var body: some View {
+            let container = DIContainer(router: router)
+
+            NavigationStack(path: $router.path) {
+                HomeWrapper()
+                    .environment(\.diContainer, container)
+                    .navigationDestination(for: Route.self) { route in
+                        switch route {
+                        case .MainTabbar:
+                            MainTabbarView()
+                        }
+                    }
+            }
+        }
+    }
+
+    return PreviewWrapper()
+}
+
+
+
+#Preview {
 }
