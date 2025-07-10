@@ -53,6 +53,7 @@ struct MainTabbarView: View {
                     .foregroundStyle(selectedTab == title ? Color.orange01 : .gray)
                     .frame(maxWidth: .infinity)
             }
+            
         }
     }
 }
