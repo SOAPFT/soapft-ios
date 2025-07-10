@@ -9,9 +9,20 @@ import Foundation
 
 // 온보딩 정보 입력
 struct SignupResponseDTO: Decodable {
-    let statusCode: Int
+    let statusCode: Int?
     let message: String
 }
+
+// 에러 응답
+struct ErrorResponseDTO: Decodable {
+    let success: Bool
+    let errorCode: String
+    let message: String
+    let timestamp: String
+    let path: String
+    let method: String
+}
+
 
 // 로그아웃
 struct LogoutResponseDTO: Decodable {

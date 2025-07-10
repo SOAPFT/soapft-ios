@@ -9,11 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct CalendarView: View {
-    @Query var myModels: [CalendarModel]
+    @Environment(\.diContainer) private var container
     
+    @StateObject private var viewModel: CalendarViewModel
     @State private var clickedDates: Set<Date> = []
     @State private var monthsToShow: [Date] = []
     @State private var loadedMonths: Set<Date> = []
+    
+    init() {
+        _viewModel = StateObject(wrappedValue: CalendarViewModel(container: DIContainer(router: AppRouter())))
+    }
     
     var body: some View {
         LazyVStack(spacing: 30) {
@@ -26,6 +31,8 @@ struct CalendarView: View {
                     //스크롤이 마지막에 도달하면 새로운 달 추가
                     if !loadedMonths.contains(monthDate) {
                         loadedMonths.insert(monthDate)
+                        viewModel.fetchCalendar(year: year(from: monthDate), month: month(from: monthDate))
+                        
                         if monthDate == monthsToShow.last {
                             addPreviousMonth()
                         }
@@ -60,7 +67,7 @@ struct CalendarView: View {
                 .padding(.bottom)
             
             HStack {
-                ForEach(Self.weekdaySymbols, id: \.self) { symbol in
+                ForEach(Array(Self.weekdaySymbols.enumerated()), id: \.offset) { index, symbol in
                     Text(symbol)
                         .frame(maxWidth: .infinity)
                         .font(Font.Pretend.pretendardMedium(size: 18))
@@ -85,9 +92,10 @@ struct CalendarView: View {
                         let date = getDate(for: index - firstWeekday, in: month)
                         let day = index - firstWeekday + 1
                         let clicked = clickedDates.contains(date)
-                        let myModel = myModelByDate(otherDate: date)
+                        let myModel = viewModel.imageURL(for: date)
                         
                         CellView(day: day, clicked: clicked, cellDate: date, myModel: myModel)
+                            .id(date)
                             .onTapGesture {
                                 if clicked {
                                     clickedDates.remove(date)
@@ -100,6 +108,14 @@ struct CalendarView: View {
             }
         }
     }
+    
+    private func year(from date: Date) -> Int {
+        Calendar.current.component(.year, from: date)
+    }
+    
+    private func month(from date: Date) -> Int {
+        Calendar.current.component(.month, from: date)
+    }
 }
 
 // MARK: - 날짜 한 칸의 셀 뷰
@@ -107,19 +123,19 @@ private struct CellView: View {
     var day: Int
     var clicked: Bool = false
     var cellDate: Date
-    var myModel: CalendarModel?
+    var myModel: String?
     
-    init(day: Int, clicked: Bool, cellDate: Date, myModel: CalendarModel?) {
-        self.day = day
-        self.clicked = clicked
-        self.cellDate = cellDate
-        self.myModel = myModel
-    }
+//    init(day: Int, clicked: Bool, cellDate: Date, myModel: CalendarModel?) {
+//        self.day = day
+//        self.clicked = clicked
+//        self.cellDate = cellDate
+//        self.myModel = myModel
+//    }
     
     var body: some View {
         ZStack {
             /// CalendarModel에 데이터가 있을 경우 표시될 뷰
-            if let imageUrlString = myModel?.imageURL, let imageUrl = URL(string: imageUrlString) {
+            if let imageUrlString = myModel, let imageUrl = URL(string: imageUrlString) {
                 AsyncImage(url: imageUrl) { phase in
                     switch phase {
                     case .empty:
@@ -193,11 +209,20 @@ private extension CalendarView {
     }
     
     /// myModels 에서 otherDate 와 동일한 날인 데이터 하나 찾아서 반환. 없으면 nil 반환
-    func myModelByDate(otherDate: Date) -> CalendarModel? {
-        return myModels.first { myModel in
-            startOfDay(date: myModel.date) == startOfDay(date: otherDate)
-        }
-    }
+//    func myModelByDate(otherDate: Date) -> String? {
+////        return myModels.first { myModel in
+////            startOfDay(date: myModel.date) == startOfDay(date: otherDate)
+////        }
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        let dateString = formatter.string(from: otherDate)
+//        
+//        guard let datePost = viewModel.calendarData.first(where: { $0.date == dateString}),
+//              let imageUrl = datePost.posts.first?.imageUrl.first else {
+//            return nil
+//        }
+//        return imageUrl
+//    }
 
     /// Date 를 해당 날짜의 자정으로 바꿔줌 (시 분 초기화)
     func startOfDay(date: Date) -> Date {
@@ -234,5 +259,4 @@ extension Date {
 
 #Preview {
     CalendarView()
-        .modelContainer(sampleDate)
 }

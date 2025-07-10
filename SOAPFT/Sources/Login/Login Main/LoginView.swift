@@ -24,6 +24,7 @@ struct LoginView: View {
                 // Apple 로그인
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

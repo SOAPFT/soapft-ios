@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct PostsView: View {
-    @StateObject var viewModel = PostViewModel()
+    @Environment(\.diContainer) private var container
+    @StateObject private var viewModel: PostViewModel
     
     let columns = [
         GridItem(.flexible()),
@@ -16,9 +17,13 @@ struct PostsView: View {
         GridItem(.flexible())
     ]
     
+    init() {
+        _viewModel = StateObject(wrappedValue: PostViewModel(container: DIContainer(router: AppRouter())))
+    }
+    
     var body: some View {
         LazyVGrid(columns: columns, spacing: 8) {
-            ForEach(viewModel.posts) { post in
+            ForEach(viewModel.posts, id: \.id) { post in
                 VStack {
                     AsyncImage(url: URL(string: post.imageUrl.first ?? "")) { image in
                         image
@@ -30,6 +35,7 @@ struct PostsView: View {
                         Rectangle()
                             .fill(Color.gray.opacity(0.2))
                             .aspectRatio(1, contentMode: .fit)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                 }
                 .onAppear {
@@ -40,9 +46,12 @@ struct PostsView: View {
             }
         }
         .padding()
-        .onAppear {
-            viewModel.loadMockData()
-            // viewModel.fetchPosts()
+        .onAppear() {
+            viewModel.container = container
+            if viewModel.posts.isEmpty {
+                viewModel.fetchPosts()
+            }
+//            viewModel.loadMockData()
         }
     }
 }

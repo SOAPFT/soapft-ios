@@ -62,6 +62,8 @@ extension UserAPI: TargetType {
                 "gender": gender,
                 "birthDate": birthDate
             ]
+            print("🚀 [Onboarding 요청 파라미터]: nickname=\(nickname), gender=\(gender), birthDate=\(birthDate)")
+            
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
 
         case let .updateProfile(newNickname, newIntroduction, newProfileImg, _):
@@ -93,7 +95,7 @@ extension UserAPI: TargetType {
              let .deleteProfile(accessToken),
              let .getUserInfo(accessToken),
              let .getOtherUserInfo(_, accessToken):
-            baseHeaders["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAzNDA0LCJleHAiOjE3NTQ0OTU0MDR9.eeETUYLQy_W14flyNrvkSkJQm4CfqfsbrtfN7dOssl8"
+            baseHeaders["Authorization"] = "Bearer \(accessToken)"
             baseHeaders["Content-Type"] = "application/json"
             return baseHeaders
         }

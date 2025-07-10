@@ -8,19 +8,9 @@
 import SwiftUI
 
 struct LoginInfoView: View {
-    @State private var showTermsOfService = false
-    
-    @State private var nickname: String = ""
-    @State private var gender: String = "남성"
-    @State private var birth: Date = Date()
+    @StateObject private var viewModel = LoginInfoViewModel()
     
     let genderOptions = ["남성", "여성"]
-    
-    private var birthFormatted: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 MM월 dd일"
-        return formatter.string(from: birth)
-    }
     
     var body: some View {
         VStack {
@@ -30,10 +20,23 @@ struct LoginInfoView: View {
                     VStack(alignment: .leading, spacing: 25) {
                         Text("닉네임을 입력해주세요")
                             .font(Font.Pretend.pretendardBold(size: 22))
-                        TextField("닉네입을 입력해주세요", text: $nickname)
-                            .padding()
-                            .background(Color(uiColor: .secondarySystemBackground))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                        HStack(spacing: 8) {
+                            TextField("닉네임을 입력해주세요", text: $viewModel.nickname)
+                                .padding(.horizontal, 12)
+                                .frame(height: 44)
+                                .background(Color(uiColor: .secondarySystemBackground))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .frame(maxWidth: .infinity)
+                            
+                            Button(action: {
+                                viewModel.fetchNickname()
+                            }, label: {
+                                Image(systemName: "arrow.trianglehead.2.clockwise")
+                                    .foregroundStyle(Color.gray.opacity(0.8))
+                                    .frame(width: 30, height: 30)
+                            })
+                        }
                     }
                     
                     // 성별
@@ -41,7 +44,7 @@ struct LoginInfoView: View {
                         Text("성별을 선택해주세요")
                             .font(Font.Pretend.pretendardBold(size: 22))
                         HStack {
-                            Picker("성별", selection: $gender) {
+                            Picker("성별", selection: $viewModel.gender) {
                                 ForEach(genderOptions, id: \.self) { gender in
                                     Text(gender)
                                 }
@@ -56,10 +59,10 @@ struct LoginInfoView: View {
                             .font(Font.Pretend.pretendardBold(size: 22))
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            Text(birthFormatted)
+                            Text(viewModel.birthFormatted)
                                 .font(Font.Pretend.pretendardSemiBold(size: 18))
                                 .foregroundStyle(Color.gray.opacity(0.8))
-                            DatePicker("날짜를 선택하세요", selection: $birth, in: ...Date(), displayedComponents: .date)
+                            DatePicker("날짜를 선택하세요", selection: $viewModel.birth, in: ...Date(), displayedComponents: .date)
                                 .datePickerStyle(GraphicalDatePickerStyle())
                                 .frame(maxHeight: 400)
                                 .tint(Color.orange01)
@@ -72,33 +75,32 @@ struct LoginInfoView: View {
             
             //버튼
             Button(action: {
-                showTermsOfService = true
+                viewModel.openTerms()
             }, label: {
                 Text("다음")
                     .foregroundStyle(Color.white)
                     .font(Font.Pretend.pretendardSemiBold(size: 14))
                     .padding(.horizontal, 50)
                     .padding(.vertical, 10)
-                    .background(isFormValid ? Color.orange01 : Color.gray.opacity(0.3))
+                    .background(viewModel.isFormValid ? Color.orange01 : Color.gray.opacity(0.3))
                     .clipShape(RoundedRectangle(cornerRadius: 20))
             })
-            .disabled(!isFormValid)
+            .disabled(!viewModel.isFormValid)
         }
         .padding(.horizontal, 12)
-        .sheet(isPresented: $showTermsOfService) {
-            TermsOfServiceView()
+        .onAppear {
+            viewModel.fetchNickname()
+        }
+        .sheet(isPresented: $viewModel.showTermsOfService) {
+            TermsOfServiceView(loginInfoViewModel: viewModel)
                 .presentationDetents([.height(300)])
                 .presentationDragIndicator(.visible)
         }
-    }
-    
-    private var isFormValid: Bool {
-        !nickname.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !gender.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !birth.description.isEmpty
+        .navigationBarBackButtonHidden()
     }
 }
 
 #Preview {
     LoginInfoView()
 }
+
