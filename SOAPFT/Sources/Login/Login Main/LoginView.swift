@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @Environment(\.diContainer) var container
+    
     var body: some View {
         VStack(alignment: .leading) {
             // 로고
@@ -22,6 +24,12 @@ struct LoginView: View {
                 NaverSignButton()
                 
                 // Apple 로그인
+                Button(action: {
+                    // 로그인 성공 후 홈으로 이동
+                    container.router.push(.MainTabbar)
+                }) {
+                    Text("테스트")
+                }
             }
         }
         .navigationBarBackButtonHidden()
@@ -29,5 +37,24 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    struct PreviewWrapper: View {
+        @StateObject var router = AppRouter()
+
+        var body: some View {
+            let container = DIContainer(router: router)
+
+            NavigationStack(path: $router.path) {
+                LoginView()
+                    .environment(\.diContainer, container)
+                    .navigationDestination(for: Route.self) { route in
+                        switch route {
+                        case .MainTabbar:
+                            MainTabbarView()
+                        }
+                    }
+            }
+        }
+    }
+
+    return PreviewWrapper()
 }

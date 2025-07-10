@@ -6,7 +6,8 @@ import KakaoSDKAuth
 struct SOAPFTApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    @StateObject private var router = AppRouter() // DIContainer 인스턴스 생성
+    @StateObject private var router = AppRouter()
+    // DIContainer 인스턴스 생성
     
     
     init() {
@@ -23,6 +24,7 @@ struct SOAPFTApp: App {
                     .environment(\.diContainer, container) // 💡 DIContainer 환경 주입
                     .navigationDestination(for: Route.self) { route in
                         switch route {
+
                         case .login:
                             LoginView()
                                 .environment(\.diContainer, container)
@@ -44,6 +46,7 @@ struct SOAPFTApp: App {
                         case .mypageEditInfo:
                             MyInfoEditView()
                                 .environment(\.diContainer, container)
+
                         }
                     }
                     .onOpenURL { url in
