@@ -24,9 +24,29 @@ struct SOAPFTApp: App {
                     .environment(\.diContainer, container) // 💡 DIContainer 환경 주입
                     .navigationDestination(for: Route.self) { route in
                         switch route {
-                        case .MainTabbar:
+
+                        case .login:
+                            LoginView()
+                                .environment(\.diContainer, container)
+                        case .loginInfo:
+                            LoginInfoView()
+                                .environment(\.diContainer, container)
+                        case .mainTabbar:
                             MainTabbarView()
                                 .environment(\.diContainer, container)
+                        case .home:
+                            GroupMainView()
+                                .environment(\.diContainer, container)
+                        case .mypage:
+                            MyPageView()
+                                .environment(\.diContainer, container)
+                        case .mypageEdit:
+                            MyPageEditView()
+                                .environment(\.diContainer, container)
+                        case .mypageEditInfo:
+                            MyInfoEditView()
+                                .environment(\.diContainer, container)
+
                         }
                     }
                     .onOpenURL { url in

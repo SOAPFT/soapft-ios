@@ -56,7 +56,7 @@ struct CustomTabView: View {
                 PostsView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                CalendarView().modelContainer(sampleDate)
+                CalendarView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }

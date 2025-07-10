@@ -65,11 +65,20 @@ final class UserService {
         switch result {
         case .success(let response):
             do {
-                let decodedData = try JSONDecoder().decode(T.self, from: response.data)
-                completion(.success(decodedData))
-            } catch {
-                completion(.failure(error))
-            }
+               if let json = try JSONSerialization.jsonObject(with: response.data) as? [String: Any],
+                  let success = json["success"] as? Bool,
+                  success == false {
+                   // 에러 응답 파싱
+                   let errorResponse = try JSONDecoder().decode(ErrorResponseDTO.self, from: response.data)
+                   completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: errorResponse.message])))
+               } else {
+                   // 성공 응답 파싱
+                   let decodedData = try JSONDecoder().decode(T.self, from: response.data)
+                   completion(.success(decodedData))
+               }
+           } catch {
+               completion(.failure(error))
+           }
         case .failure(let error):
             completion(.failure(error))
         }

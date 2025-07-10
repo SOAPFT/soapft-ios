@@ -16,6 +16,9 @@ struct FileDetails: Identifiable {
 }
 
 struct MyInfoEditView: View {
+    @Environment(\.diContainer) private var container
+    @StateObject private var viewModel: MyPageViewModel
+    
     @State private var selectedItem: PhotosPickerItem? = nil
 
     @State private var profileImage: UIImage? = nil
@@ -24,15 +27,18 @@ struct MyInfoEditView: View {
     @State private var showActionSheet = false
     @State private var showPhotosPicker = false
     
-    @State var nickname: String = "Jiwoo"
-    @State var intro: String = ""
+    init() {
+        _viewModel = StateObject(wrappedValue: MyPageViewModel(container: DIContainer(router: AppRouter())))
+    }
     
     var body: some View {
         VStack {
             // 상단바
             ZStack {
                 HStack {
-                    Button(action: { }) {
+                    Button(action: {
+                        container.router.pop()
+                    }) {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
                             .font(.system(size: 18))
@@ -40,7 +46,11 @@ struct MyInfoEditView: View {
                     
                     Spacer()
             
-                    Button(action: { }) {
+                    Button(action: {
+                        viewModel.updateProfile {
+                            container.router.pop()
+                        }
+                    }) {
                         Text("저장")
                             .font(Font.Pretend.pretendardMedium(size: 16))
                             .foregroundStyle(Color.black)
@@ -69,8 +79,8 @@ struct MyInfoEditView: View {
                                     .clipped()
                                     .clipShape(Circle())
                                     .frame(width: 150)
-                            } else {
-                                AsyncImage(url: URL(string: "https://example.com/image.png")) { phase in
+                            } else if let userImageUrl = viewModel.userImage, let url = URL(string: userImageUrl) {
+                                AsyncImage(url: url) { phase in
                                     if let image = phase.image {
                                         image
                                             .resizable()
@@ -87,6 +97,11 @@ struct MyInfoEditView: View {
                                         ProgressView()
                                     }
                                 }
+                            } else {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .frame(width: 150, height: 150)
+                                    .foregroundStyle(Color.gray)
                             }
                             
                             Image(systemName: "camera.circle")
@@ -135,12 +150,12 @@ struct MyInfoEditView: View {
                             .frame(width: 100)
                             
                             ZStack(alignment: .leading) {
-                                if nickname.isEmpty {
-                                    Text("닉네임")
+                                
+                                Text(viewModel.userName.isEmpty ? "닉네임" : "\(viewModel.userName)")
                                         .foregroundStyle(Color.gray)
                                         .font(Font.Pretend.pretendardRegular(size: 16))
-                                }
-                                TextField("", text: $nickname)
+                                
+                                TextField("", text: $viewModel.userName)
                                     .font(Font.Pretend.pretendardRegular(size: 16))
                             }
                         }
@@ -155,13 +170,17 @@ struct MyInfoEditView: View {
                             .frame(width: 100)
                             
                             ZStack(alignment: .leading) {
-                                if intro.isEmpty {
+                                if (viewModel.userIntroduction ?? "").isEmpty {
                                     Text("소개")
                                         .foregroundStyle(Color.gray)
                                         .font(Font.Pretend.pretendardRegular(size: 16))
                                 }
-                                TextField("", text: $intro)
-                                    .font(Font.Pretend.pretendardRegular(size: 16))
+                                
+                                TextField("", text: Binding(
+                                    get: {viewModel.userIntroduction ?? ""},
+                                    set: {viewModel.userIntroduction = $0}
+                                ))
+                                .font(Font.Pretend.pretendardRegular(size: 16))
                             }
                         }
                         
@@ -171,6 +190,10 @@ struct MyInfoEditView: View {
                 }
                 .padding(.top, 18)
             }
+        }
+        .navigationBarBackButtonHidden()
+        .onAppear() {
+            viewModel.fetchUserProfile()
         }
     }
 }

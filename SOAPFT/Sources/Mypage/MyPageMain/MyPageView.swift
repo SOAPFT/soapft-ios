@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct MyPageView: View {
+    @Environment(\.diContainer) private var container
+    @StateObject private var viewModel: MyPageViewModel
     
-    private var notificationCount: Int = 3
-    private var nickname: String = "Jiwoo"
-    private var postCount: Int = 12
-    private var friendCount: Int = 4
-    private var coinCount: Int = 39
-    private var myIntro: String = ""
+    init() {
+        _viewModel = StateObject(wrappedValue: MyPageViewModel(container: DIContainer(router: AppRouter())))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -32,6 +31,12 @@ struct MyPageView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
+        .onAppear() {
+            viewModel.container = container
+            viewModel.fetchUserProfile()
+            viewModel.fetchNotificationCount()
+        }
     }
     
     // MARK: - 상단바 (고정)
@@ -47,8 +52,8 @@ struct MyPageView: View {
                             .font(.system(size: 18))
                     }
                     
-                    if notificationCount > 0 {
-                        Text("\(notificationCount)")
+                    if viewModel.notificationCount > 0 {
+                        Text("\(viewModel.notificationCount)")
                             .font(.caption2)
                             .foregroundStyle(.white)
                             .padding(4)
@@ -59,7 +64,7 @@ struct MyPageView: View {
                 }
                 
                 Button(action: {
-                    
+                    container.router.push(.mypageEdit)
                 }) {
                     Image(systemName: "gearshape")
                         .foregroundColor(.black)
@@ -86,7 +91,7 @@ struct MyPageView: View {
                     .resizable()
                     .frame(width: 24, height: 24)
                 
-                Text("\(coinCount)")
+                Text("\(viewModel.coins)")
                     .font(Font.Pretend.pretendardLight(size: 16))
                     .foregroundStyle(Color.black.opacity(0.8))
                 Spacer().frame(width: 16)
@@ -95,13 +100,25 @@ struct MyPageView: View {
             Spacer().frame(height: 8)
             
             VStack(spacing: 18) {
-                Circle()
-                    .frame(width: 150)
+                if let userImage = viewModel.userImage, !userImage.isEmpty {
+                    AsyncImage(url: URL(string: userImage)) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Circle().foregroundStyle(Color.gray.opacity(0.3))
+                    }
+                    .frame(width: 150, height: 150)
+                    .clipShape(Circle())
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .frame(width: 150, height: 150)
+                        .foregroundStyle(Color.gray)
+                }
                 
-                Text("\(nickname)")
+                Text(viewModel.userName.isEmpty ? "이름 없음" : viewModel.userName)
                     .font(Font.Pretend.pretendardMedium(size: 24))
                 
-                if myIntro == "" {
+                if (viewModel.userIntroduction ?? "").isEmpty {
                     Button(action: {
                         
                     }, label: {
@@ -117,14 +134,14 @@ struct MyPageView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     })
                 } else {
-                    Text("\(myIntro)")
+                    Text(viewModel.userIntroduction ?? "")
                         .font(Font.Pretend.pretendardLight(size: 16))
                         .foregroundStyle(Color.gray.opacity(0.8))
                 }
                 
                 HStack {
                     VStack {
-                        Text("\(postCount)")
+                        Text("\(viewModel.postCount)")
                             .font(Font.Pretend.pretendardRegular(size: 22))
                         Text("Posts")
                             .font(Font.Pretend.pretendardLight(size: 16))
@@ -134,7 +151,7 @@ struct MyPageView: View {
                     Spacer().frame(width: 35)
                     
                     VStack {
-                        Text("\(friendCount)")
+                        Text("\(viewModel.friendCount)")
                             .font(Font.Pretend.pretendardRegular(size: 22))
                         Text("Friends")
                             .font(Font.Pretend.pretendardLight(size: 16))

@@ -32,6 +32,7 @@ struct LoginView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

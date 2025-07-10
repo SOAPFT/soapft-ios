@@ -8,8 +8,13 @@
 import SwiftUI
 
 enum Route: Hashable {
-    case MainTabbar
-    
+    case login
+    case loginInfo
+    case mainTabbar
+    case home
+    case mypage
+    case mypageEdit
+    case mypageEditInfo
 }
 
 class AppRouter: ObservableObject {
@@ -17,6 +22,10 @@ class AppRouter: ObservableObject {
     
     func push(_ route: Route) {
         path.append(route)
+    }
+    
+    func pop() {
+        path.removeLast()
     }
     
     func reset() {

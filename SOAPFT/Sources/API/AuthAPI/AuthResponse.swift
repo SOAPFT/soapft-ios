@@ -28,13 +28,6 @@ struct NaverResponseDTO: Decodable {
     let refreshToken: String
     let isNewUser: Bool
     let message: String
-
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case refreshToken = "refresh_token"
-        case isNewUser = "isNewUser"
-        case message = "message"
-    }
 }
 
 // 토큰 갱신 응답 DTO
