@@ -8,7 +8,8 @@
 import SwiftUI
 
 enum Route: Hashable {
-    case home
+    case MainTabbar
+    
 }
 
 class AppRouter: ObservableObject {
