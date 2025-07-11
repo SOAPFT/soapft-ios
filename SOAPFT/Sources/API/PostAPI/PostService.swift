@@ -75,7 +75,7 @@ final class PostService {
     }
 
     // MARK: - Get Challenge Posts
-    func getChallengePosts(challengeId: Int, page: Int, limit: Int, completion: @escaping (Result<ChallengePostsResponseDTO, Error>) -> Void) {
+    func getChallengePosts(challengeId: String, page: Int, limit: Int, completion: @escaping (Result<ChallengePostsResponseDTO, Error>) -> Void) {
         provider.request(.getChallengePosts(challengeId: challengeId, page: page, limit: limit)) { result in
             self.handleResponse(result, completion: completion)
         }

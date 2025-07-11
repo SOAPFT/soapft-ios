@@ -26,7 +26,7 @@ struct LoginView: View {
                 // Apple 로그인
                 Button(action: {
                     // 로그인 성공 후 홈으로 이동
-                    container.router.push(.MainTabbar)
+                    container.router.push(.mainTabbar)
                 }) {
                     Text("테스트")
                 }
@@ -39,22 +39,41 @@ struct LoginView: View {
 #Preview {
     struct PreviewWrapper: View {
         @StateObject var router = AppRouter()
-
+        
         var body: some View {
             let container = DIContainer(router: router)
-
+            
             NavigationStack(path: $router.path) {
                 LoginView()
                     .environment(\.diContainer, container)
                     .navigationDestination(for: Route.self) { route in
                         switch route {
-                        case .MainTabbar:
+                        case .login:
+                            LoginView()
+                                .environment(\.diContainer, container)
+                        case .loginInfo:
+                            LoginInfoView()
+                                .environment(\.diContainer, container)
+                        case .mainTabbar:
                             MainTabbarView()
+                                .environment(\.diContainer, container)
+                        case .home:
+                            GroupMainView()
+                                .environment(\.diContainer, container)
+                        case .mypage:
+                            MyPageView()
+                                .environment(\.diContainer, container)
+                        case .mypageEdit:
+                            MyPageEditView()
+                                .environment(\.diContainer, container)
+                        case .mypageEditInfo:
+                            MyInfoEditView()
+                                .environment(\.diContainer, container)
                         }
                     }
             }
         }
     }
-
+    
     return PreviewWrapper()
 }

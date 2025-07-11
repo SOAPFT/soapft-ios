@@ -54,7 +54,7 @@ final class GroupInfoViewModel: ObservableObject {
             filteredParticipants = challenge.participants
         } else {
             filteredParticipants = challenge.participants.filter {
-                $0.nickname.localizedCaseInsensitiveContains(searchText)
+                ($0.nickname ?? "").localizedCaseInsensitiveContains(searchText)
             }
         }
     }

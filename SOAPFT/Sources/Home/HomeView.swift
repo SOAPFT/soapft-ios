@@ -16,12 +16,12 @@ struct Home: View {
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-
+    
     var body: some View {
         VStack {
             //Nav 영역
@@ -35,19 +35,19 @@ struct Home: View {
                     LottieView(filename: "Fire")
                         .frame(width: 120, height: 90)
                         .padding(.top, 33)
-
+                    
                     Text("7")
                         .font(Font.Pretend.pretendardBold(size: 60))
                     Text("Challenges You've Completed")
                         .font(Font.Pretend.pretendardSemiBold(size: 15))
                         .padding(.bottom, 33)
-
+                    
                     AdBannerView()
                         .padding(.vertical)
-
+                    
                     HomeChallengeToggleView(selectedTab: $viewModel.selectedTab)
                         .padding()
-
+                    
                     if viewModel.filteredChallenges.isEmpty {
                         Image("NoneParticipateChallenge")
                             .padding()
@@ -59,14 +59,12 @@ struct Home: View {
                             .foregroundStyle(.gray)
                             .padding(1)
                     } else {
-                        NavigationStack {
-                            LazyVGrid(columns: columns, spacing: 16) {
-                                ForEach(viewModel.filteredChallenges, id: \.id) { challenge in
-                                    NavigationLink(
-                                        destination: GroupTabbarWrapper(challengeID: challenge.challengeUuid)
-                                    ) {
-                                        ChallengeItemView(challenge: challenge)
-                                    }
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(viewModel.filteredChallenges, id: \.id) { challenge in
+                                NavigationLink(
+                                    destination: GroupTabbarWrapper(challengeID: challenge.challengeUuid)
+                                ) {
+                                    ChallengeItemView(challenge: challenge)
                                 }
                             }
                             .padding(.horizontal)
@@ -80,7 +78,7 @@ struct Home: View {
 
 struct HomeWrapper: View {
     @Environment(\.diContainer) private var container
-
+    
     var body: some View {
         let viewModel = HomeViewModel(challengeService: container.challengeService)
         Home(viewModel: viewModel)
@@ -90,22 +88,41 @@ struct HomeWrapper: View {
 #Preview {
     struct PreviewWrapper: View {
         @StateObject var router = AppRouter()
-
+        
         var body: some View {
             let container = DIContainer(router: router)
-
+            
             NavigationStack(path: $router.path) {
                 HomeWrapper()
                     .environment(\.diContainer, container)
                     .navigationDestination(for: Route.self) { route in
                         switch route {
-                        case .MainTabbar:
+                        case .login:
+                            LoginView()
+                                .environment(\.diContainer, container)
+                        case .loginInfo:
+                            LoginInfoView()
+                                .environment(\.diContainer, container)
+                        case .mainTabbar:
                             MainTabbarView()
+                                .environment(\.diContainer, container)
+                        case .home:
+                            GroupMainView()
+                                .environment(\.diContainer, container)
+                        case .mypage:
+                            MyPageView()
+                                .environment(\.diContainer, container)
+                        case .mypageEdit:
+                            MyPageEditView()
+                                .environment(\.diContainer, container)
+                        case .mypageEditInfo:
+                            MyInfoEditView()
+                                .environment(\.diContainer, container)
                         }
                     }
             }
         }
     }
-
+    
     return PreviewWrapper()
 }

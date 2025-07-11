@@ -130,7 +130,7 @@ struct ChallengePostsResponseDTO: Decodable {
     let posts: [ChallengePost]
 }
 
-struct ChallengePost2: Decodable, Identifiable {
+struct ChallengePost: Decodable, Identifiable {
     let id: Int
     let postUuid: String
     let title: String

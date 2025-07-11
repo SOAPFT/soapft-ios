@@ -164,16 +164,16 @@ struct ChallengeDetailResponse: Decodable {
 
 struct Participant: Decodable, Identifiable, Hashable {
     let userUuid: String
-    let nickname: String
-    let profileImage: String
+    let nickname: String?
+    let profileImage: String?
     
     var id: String { userUuid }
 }
 
 struct Creator: Decodable {
     let userUuid: String
-    let nickname: String
-    let profileImage: String
+    let nickname: String?
+    let profileImage: String?
 }
 
 

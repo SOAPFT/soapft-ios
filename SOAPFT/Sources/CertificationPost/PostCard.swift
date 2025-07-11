@@ -41,14 +41,14 @@ struct PostCardView: View {
 
     private var profileSection: some View {
         HStack {
-            KFImage(URL(string: post.author.profileImage))
+            KFImage(URL(string: post.user.profileImage))
                 .placeholder { Circle().fill(Color.gray.opacity(0.3)) }
                 .resizable()
                 .frame(width: 32, height: 32)
                 .clipShape(Circle())
 
             VStack(alignment: .leading) {
-                Text(post.author.nickname)
+                Text(post.user.nickname)
                     .font(.subheadline).bold()
                 Text(timeAgoString(from: createdTime))
                     .font(.caption)
@@ -89,10 +89,12 @@ struct PostCardView: View {
 
     private var actionButtons: some View {
         HStack(spacing: 20) {
+            /*
             Button(action: toggleLike) {
                 Label("\(post.likeCount + (state.isLiked ? 1 : 0))", systemImage: state.isLiked ? "heart.fill" : "heart")
                     .foregroundStyle(state.isLiked ? .red : .gray)
             }
+             
 
             Button(action: toggleComment) {
                 Label("\(post.commentCount)", systemImage: "text.bubble")
@@ -125,6 +127,7 @@ struct PostCardView: View {
                     secondaryButton: .cancel()
                 )
             }
+             */
         }
         .font(.caption)
     }
@@ -143,13 +146,3 @@ struct PostCardView: View {
 }
 
 
-#Preview {
-    PostCardView(
-        post: PostCardMockData,
-        createdTime: "2025-06-21T20:30:00.000Z",
-        state: PostUIState(),
-        toggleLike: {},
-        toggleComment: {},
-        toggleSuspicious: {}
-    )
-}
