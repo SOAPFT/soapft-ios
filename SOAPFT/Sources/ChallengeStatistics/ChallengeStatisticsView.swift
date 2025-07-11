@@ -9,19 +9,19 @@ import SwiftUI
 
 struct ChallengeStatisticsView: View {
     @StateObject var viewModel:ChallengeStatisticsViewModel
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text("챌린지 현황")
                 .font(Font.Pretend.pretendardSemiBold(size: 20))
                 .padding(.horizontal, 20)
-
+            
             Text("지금 바로 도전해보세요!")
                 .font(Font.Pretend.pretendardRegular(size: 16))
                 .foregroundStyle(.gray)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 4)
-
+            
             GoalCompletionRate(
                 goalCompletionRate: viewModel.data.goalCompletionRate,
                 challengeStartDate: viewModel.data.challengeStartDate,
@@ -31,7 +31,7 @@ struct ChallengeStatisticsView: View {
             )
             .padding(.vertical, 8)
             .padding(.horizontal)
-
+            
             CalenderView(
                 currentMonth: Calendar.current.date(from: DateComponents(year: viewModel.year, month: viewModel.month))!,
                 startMonth: Calendar.current.date(from: DateComponents(year: viewModel.challenge.startYear, month: viewModel.challenge.startMonth))!,
@@ -46,7 +46,7 @@ struct ChallengeStatisticsView: View {
 struct ChallengeStatisticsWrapper: View {
     @Environment(\.diContainer) private var container
     let challenge: ChallengeDetailResponse
-
+    
     var body: some View {
         let viewModel = ChallengeStatisticsViewModel(challengeService: container.challengeService, challenge: challenge)
         ChallengeStatisticsView(viewModel: viewModel)
@@ -56,23 +56,42 @@ struct ChallengeStatisticsWrapper: View {
 #Preview {
     struct PreviewWrapper: View {
         @StateObject var router = AppRouter()
-
+        
         var body: some View {
             let container = DIContainer(router: router)
-
+            
             NavigationStack(path: $router.path) {
                 HomeWrapper()
                     .environment(\.diContainer, container)
                     .navigationDestination(for: Route.self) { route in
                         switch route {
-                        case .MainTabbar:
+                        case .login:
+                            LoginView()
+                                .environment(\.diContainer, container)
+                        case .loginInfo:
+                            LoginInfoView()
+                                .environment(\.diContainer, container)
+                        case .mainTabbar:
                             MainTabbarView()
+                                .environment(\.diContainer, container)
+                        case .home:
+                            GroupMainView()
+                                .environment(\.diContainer, container)
+                        case .mypage:
+                            MyPageView()
+                                .environment(\.diContainer, container)
+                        case .mypageEdit:
+                            MyPageEditView()
+                                .environment(\.diContainer, container)
+                        case .mypageEditInfo:
+                            MyInfoEditView()
+                                .environment(\.diContainer, container)
                         }
                     }
             }
         }
     }
-
+    
     return PreviewWrapper()
 }
 

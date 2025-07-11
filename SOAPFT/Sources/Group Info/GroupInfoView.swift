@@ -11,21 +11,25 @@ import Kingfisher
 
 struct GroupInfoWrapper: View {
     @Environment(\.diContainer) private var container
-    let challenge: ChallengeDetailResponse = .errorMock
-    
-    @StateObject private var viewModel: GroupInfoViewModel
-    
-    init(challenge: ChallengeDetailResponse) {
-        _viewModel = StateObject(wrappedValue: GroupInfoViewModel(
-            challengeService: DIContainer(router: AppRouter()).challengeService,
-            id: challenge.challengeUuid // string이면 이렇게 캐스팅
+    let challenge: ChallengeDetailResponse
+
+    var body: some View {
+        GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
+            challengeService: container.challengeService,
+            id: challenge.challengeUuid
         ))
     }
-    
+}
+
+private struct GroupInfoWrapperBody: View {
+    @StateObject var viewModel: GroupInfoViewModel
+
     var body: some View {
         GroupInfoView(viewModel: viewModel)
     }
 }
+
+
 
 struct GroupInfoView: View {
     @ObservedObject var viewModel: GroupInfoViewModel
@@ -114,7 +118,7 @@ struct CreatorSection: View {
     var body: some View {
         HStack(spacing: 12) {
             if let creator = creator {
-                AsyncImage(url: URL(string: creator.profileImage)) { image in
+                AsyncImage(url: URL(string: creator.profileImage ?? "")) { image in
                     image.resizable().scaledToFill()
                 } placeholder: {
                     Circle().fill(Color.gray.opacity(0.3))
@@ -122,7 +126,7 @@ struct CreatorSection: View {
                 .frame(width: 48, height: 48)
                 .clipShape(Circle())
 
-                Text(creator.nickname)
+                Text(creator.nickname ?? "알 수 없음")
                     .font(.headline)
 
                 Spacer()
@@ -169,7 +173,7 @@ struct MemberListSection: View {
         VStack(spacing: 12) {
                 ForEach(viewModel.filteredParticipants, id: \.userUuid) { member in
                     HStack(spacing: 12) {
-                        KFImage(URL(string: member.profileImage))
+                        KFImage(URL(string: member.profileImage ?? ""))
                             .resizable()
                             .placeholder { ProgressView() }
                             .cancelOnDisappear(true)
@@ -177,7 +181,7 @@ struct MemberListSection: View {
                             .frame(width: 48, height: 48)
                             .clipShape(Circle())
                         
-                        Text(member.nickname)
+                        Text(member.nickname ?? "알 수 없음")
                         
                         if member.userUuid == viewModel.challenge.creatorUuid {
                             Image(systemName: "crown.fill")

@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Kingfisher
-
+/*
 struct MembersManagerView: View {
     @ObservedObject var viewModel: GroupInfoViewModel
     
@@ -84,6 +84,7 @@ struct MembersManagerView: View {
         }
     }
 }
+*/
 
 #Preview {
     //MembersManagerView(viewModel: GroupInfoViewModel(challenge: GroupInfoMockData))

@@ -76,7 +76,7 @@ struct GroupTabbarView: View {
                     .tag("Status")
                 UploadCertificationView()
                     .tag("Check")
-                CertificationPostView(viewModel: CertificationPostViewModel())
+                CertificationPostViewWrapper(ChallengeId: Challenge.challengeUuid)
                     .tag("List")
             }
             .tabViewStyle(.page(indexDisplayMode: .never))

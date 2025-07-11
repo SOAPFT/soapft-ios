@@ -17,7 +17,7 @@ enum PostAPI {
     case getPostDetail(postId: Int)
     case updatePost(postUuid: String, title: String, content: String, imageUrls: [String], isPublic: Bool)
     case deletePost(postId: Int)
-    case getChallengePosts(challengeId: Int, page: Int, limit: Int)
+    case getChallengePosts(challengeId: String, page: Int, limit: Int)
 }
 
 extension PostAPI: TargetType {

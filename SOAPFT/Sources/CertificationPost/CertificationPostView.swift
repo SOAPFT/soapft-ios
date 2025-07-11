@@ -8,6 +8,16 @@
 // MARK: - View
 import SwiftUI
 
+struct CertificationPostViewWrapper: View {
+    @Environment(\.diContainer) private var container
+    let ChallengeId: String
+    
+    var body: some View {
+        let viewModel = CertificationPostViewModel(postService: container.postService, likeServie: container.likeService, challengeId: ChallengeId)
+        CertificationPostView(viewModel: viewModel)
+    }
+}
+
 struct CertificationPostView: View {
     @StateObject var viewModel: CertificationPostViewModel
     @State private var selectedPostForComment: ChallengePost?
@@ -46,5 +56,5 @@ struct CertificationPostView: View {
 
 
 #Preview {
-    CertificationPostView(viewModel: CertificationPostViewModel())
+   
 }
