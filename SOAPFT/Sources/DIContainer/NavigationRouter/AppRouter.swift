@@ -18,6 +18,8 @@ enum Route: Hashable {
     case mypage
     case mypageEdit
     case mypageEditInfo
+    case GroupTabbar(ChallengeID: String)
+    case ChallengeSearchWrapper
 }
 
 class AppRouter: ObservableObject {

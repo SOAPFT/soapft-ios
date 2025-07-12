@@ -58,6 +58,10 @@ struct SOAPFTApp: App {
                         case .mypageEditInfo:
                             MyInfoEditView()
                                 .environment(\.diContainer, container)
+                        case .GroupTabbar(let ChallengeID):
+                            GroupTabbarWrapper(challengeID: ChallengeID)
+                        case .ChallengeSearchWrapper:
+                            ChallengeSearchWrapper()
 
                         }
                     }
