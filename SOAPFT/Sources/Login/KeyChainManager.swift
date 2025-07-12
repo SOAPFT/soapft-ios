@@ -8,6 +8,11 @@
 import SwiftUI
 import Security
 
+enum KeyChainKey {
+    static let accessToken = "accessToken"
+    static let refreshToken = "refreshToken"
+}
+
 final class KeyChainManager {
     static let shared = KeyChainManager()
     private init() {}
@@ -54,18 +59,19 @@ final class KeyChainManager {
     
     
     func readAccessToken() -> String? {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: "jwtToken",
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne
-        ]
-        var item: CFTypeRef?
-        if SecItemCopyMatching(query as CFDictionary, &item) == noErr {
-            if let data = item as? Data {
-                return String(data: data, encoding: .utf8)
-            }
-        }
-        return nil
+//        let query: [String: Any] = [
+//            kSecClass as String: kSecClassGenericPassword,
+//            kSecAttrAccount as String: "jwtToken",
+//            kSecReturnData as String: true,
+//            kSecMatchLimit as String: kSecMatchLimitOne
+//        ]
+//        var item: CFTypeRef?
+//        if SecItemCopyMatching(query as CFDictionary, &item) == noErr {
+//            if let data = item as? Data {
+//                return String(data: data, encoding: .utf8)
+//            }
+//        }
+//        return nil
+        return read(forKey: KeyChainKey.accessToken)
     }
 }

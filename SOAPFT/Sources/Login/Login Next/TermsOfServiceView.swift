@@ -74,9 +74,33 @@ struct TermsOfServiceView: View {
             
             //버튼
             Button(action: {
-                startOnboarding()
-                container.router.push(.mainTabbar)
-                dismiss()
+                guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+                    print("❌ accessToken 없음")
+                    return
+                }
+            
+                let nickname = loginInfoViewModel.nickname
+                let gender = loginInfoViewModel.genderForServer
+                let birthDate = loginInfoViewModel.birthFormattedServerFormat
+                
+                print("🚀 온보딩 요청 - 닉네임: \(nickname), 성별: \(gender), 생일: \(birthDate)")
+                
+                UserService.shared.onboarding(
+                    nickname: nickname,
+                    gender: gender,
+                    birthDate: birthDate,
+                    accessToken: accessToken
+                ) { result in
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let response):
+                            print("🎉 온보딩 성공: \(response)")
+                            container.router.push(.mainTabbar) // 또는 닫기: dismiss()
+                        case .failure(let error):
+                            print("❌ 온보딩 실패: \(error.localizedDescription)")
+                        }
+                    }
+                }
             }, label: {
                 Text("시작하기")
                     .foregroundStyle(Color.white)
@@ -96,35 +120,6 @@ struct TermsOfServiceView: View {
         viewModel.fourteenPermit &&
         viewModel.termsOfServicePermit &&
         viewModel.informationPermit
-    }
-    
-    private func startOnboarding() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let birthDateString = loginInfoViewModel.birthFormattedServerFormat
-        
-        guard let accessToken = KeyChainManager.shared.readAccessToken() else {
-            print("❌ 액세스 토큰 없음")
-            return
-        }
-        
-        UserService.shared.onboarding(
-            nickname: loginInfoViewModel.nickname,
-            gender: loginInfoViewModel.genderForServer,
-            birthDate: birthDateString,
-            accessToken: accessToken) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let response):
-                        print("🎉 온보딩 성공: \(response)")
-                        print("🔑 [Authorization 헤더]: Bearer \(accessToken)")
-                        // 필요시 다음 화면 이동 혹은 상태 변경 처리
-                    case .failure(let error):
-                        print("❌ 온보딩 실패: \(error.localizedDescription)")
-                        // 에러 처리 UI 추가 가능
-                    }
-                }
-            }
     }
 }
 

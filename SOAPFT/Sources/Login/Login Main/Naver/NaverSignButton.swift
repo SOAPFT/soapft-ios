@@ -10,6 +10,7 @@ import NidThirdPartyLogin
 
 struct NaverSignButton: View {
     @Environment(\.diContainer) private var container
+    @ObservedObject var loginInfoViewModel = LoginInfoViewModel()
     
     @State private var accessToken: String = ""
     @State private var loginError: String = ""
@@ -59,14 +60,22 @@ struct NaverSignButton: View {
                     print("RefreshToken: \(response.refreshToken)")
                     
                     // 토큰 저장
-                    KeyChainManager.shared.save(response.accessToken, forKey: "jwtToken")
+                    KeyChainManager.shared.save(response.accessToken, forKey: "accessToken")
                     KeyChainManager.shared.save(response.refreshToken, forKey: "refreshToken")
+                    
+                    if let token = KeyChainManager.shared.read(forKey: KeyChainKey.accessToken) {
+                        print("✅ 저장 후 읽은 토큰: \(token)")
+                    } else {
+                        print("❌ 저장 후 토큰 못 읽음")
+                    }
                     
                     // 다음 화면 이동
                     container.router.reset()
                     if response.isNewUser {
+                        print("🔥 isNewUser: ture")
                         container.router.push(.loginInfo)
                     } else {
+                        print("🔥 isNewUser: false")
                         container.router.push(.mainTabbar)
                     }
                     
