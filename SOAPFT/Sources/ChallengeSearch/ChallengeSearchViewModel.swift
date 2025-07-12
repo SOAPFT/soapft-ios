@@ -10,32 +10,41 @@ import Combine
 
 final class ChallengeSearchViewModel: ObservableObject {
     @Published var searchText: String = ""
-    @Published var filteredChallenges: [ChallengSearchModel] = []
+    @Published var filteredChallenges: [Challenge] = []
 
+    private let challengeService: ChallengeService
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
-        // 검색어가 변경될 때마다 필터링
+    init(challengeService: ChallengeService) {
+        self.challengeService = challengeService
+        
         $searchText
             .removeDuplicates()
-            .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
-            .sink { [weak self] text in
-                self?.filterChallenges(by: text)
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .sink { [weak self] keyword in
+                self?.fetchChallenges(keyword: keyword)
             }
             .store(in: &cancellables)
-
-        // 초기 값
-        filteredChallenges = ChallengSearchMockData
     }
 
-    private func filterChallenges(by keyword: String) {
-        if keyword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            filteredChallenges = []  // 검색어 없으면 빈 배열
-        } else {
-            filteredChallenges = ChallengSearchMockData.filter {
-                $0.title.localizedCaseInsensitiveContains(keyword)
+    private func fetchChallenges(keyword: String) {
+        let trimmed = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            self.filteredChallenges = []
+            return
+        }
+
+        challengeService.searchChallenges(keyword: trimmed, page: 1, limit: 15) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let challenges):
+                    self?.filteredChallenges = challenges
+                case .failure(let error):
+                    print("검색 실패: \(error.localizedDescription)")
+                    self?.filteredChallenges = []
+                }
             }
         }
     }
-
 }
+
