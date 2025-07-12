@@ -37,8 +37,17 @@ struct SOAPFTApp: App {
                         case .mainTabbar:
                             MainTabbarView()
                                 .environment(\.diContainer, container)
+                        case .groupEdit:
+                            GroupEditView()
+                                .environment(\.diContainer, container)
                         case .home:
                             GroupMainView()
+                                .environment(\.diContainer, container)
+                        case .groupCreate:
+                            GroupCreateView()
+                                .environment(\.diContainer, container)
+                        case .groupCreateNext:
+                            GroupCreateNextView()
                                 .environment(\.diContainer, container)
                         case .mypage:
                             MyPageView()

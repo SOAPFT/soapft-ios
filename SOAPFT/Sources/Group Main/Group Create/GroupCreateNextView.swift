@@ -9,6 +9,8 @@ import SwiftUI
 import PhotosUI
 
 struct GroupCreateNextView: View {
+    @StateObject private var viewModel = GroupCreateViewModel()
+    
     @State private var selectedProfileImage: UIImage?
     @State private var selectedProfileItem: PhotosPickerItem?
     @State private var selectedBannerImage: UIImage?
@@ -82,6 +84,7 @@ struct GroupCreateNextView: View {
                                     newItem?.loadTransferable(type: Data.self),
                                    let uiImage = UIImage(data: data) {
                                     selectedProfileImage = uiImage
+                                    viewModel.profileImage = uiImage
                                 }
                             }
                         }
@@ -126,6 +129,7 @@ struct GroupCreateNextView: View {
                                     newItem?.loadTransferable(type: Data.self),
                                    let uiImage = UIImage(data: data) {
                                     selectedBannerImage = uiImage
+                                    viewModel.bannerImage = uiImage
                                 }
                             }
                         }
@@ -164,6 +168,7 @@ struct GroupCreateNextView: View {
                 )
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 
@@ -179,7 +184,10 @@ extension GroupCreateNextView {
             title: title,
             message: message,
             btn1: btn1,
-            btn2: btn2
+            btn2: btn2,
+            onConfirm: {
+                viewModel.createChallenge(accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMzExMTk5LCJleHAiOjE3NTQ5MDMxOTl9.nHAtNcnzwzbgssAysdrdH2MoBRZzmoe1K6kdiW96mts")
+            }
         )
     }
 }

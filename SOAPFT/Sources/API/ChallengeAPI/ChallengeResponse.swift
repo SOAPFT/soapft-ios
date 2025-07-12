@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: -  공통 챌린지 모델
-struct Challenge: Decodable {
+struct Challenge: Decodable, Hashable {
     let id: Int
     let challengeUuid: String
     let title: String
@@ -25,8 +25,8 @@ struct Challenge: Decodable {
     let gender: String
     let maxMember: Int
     let currentMember: Int?
-    let creatorUuid: String
-    let participantUuid: [String]
+    let creatorUuid: String?
+    let participantUuid: [String]?
     let coinAmount: Int?
     let isStarted: Bool
     let isFinished: Bool
@@ -35,7 +35,7 @@ struct Challenge: Decodable {
     let createdAt: String?
     let updatedAt: String?
     
-    var status: String {
+    var status: String? {
         if isFinished {
             return "completed"
         } else if isStarted {
@@ -45,8 +45,8 @@ struct Challenge: Decodable {
         }
     }
 
-    var currentMembers: Int {
-        participantUuid.count
+    var currentMembers: Int? {
+        participantUuid?.count
     }
 }
 

@@ -74,6 +74,10 @@ final class FriendService {
         switch result {
         case .success(let response):
             do {
+                if let jsonString = String(data: response.data, encoding: .utf8) {
+                    print("📦 서버 응답 JSON:\n\(jsonString)")
+                }
+                
                 let decoded = try JSONDecoder().decode(T.self, from: response.data)
                 completion(.success(decoded))
             } catch {
@@ -84,6 +88,7 @@ final class FriendService {
             completion(.failure(error))
         }
     }
+
 
     private func handleEmptyResponse(
         _ result: Result<Response, MoyaError>,

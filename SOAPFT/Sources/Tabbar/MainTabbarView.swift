@@ -16,7 +16,7 @@ struct MainTabbarView: View {
             TabView (selection: $selectedTab){
                 HomeWrapper()
                     .tag("Main")
-                Text("Friends")
+                FriendsView()
                     .tag("Friends")
                 GroupMainView()
                     .tag("More")

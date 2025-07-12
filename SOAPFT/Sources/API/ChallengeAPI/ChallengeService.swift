@@ -86,18 +86,14 @@ final class ChallengeService {
         // 최근 챌린지 목록
         func getRecentChallenges(completion: @escaping (Result<[Challenge], Error>) -> Void) {
             provider.request(.recentChallenges) { result in
-                self.handleResponse(result, type: ChallengeListWithMetaResponse.self) {
-                    completion($0.map { $0.data })
-                }
+                self.handleResponse(result, type: [Challenge].self, completion: completion)
             }
         }
         
         // 인기 챌린지 목록
         func getPopularChallenges(completion: @escaping (Result<[Challenge], Error>) -> Void) {
             provider.request(.popularChallenges) { result in
-                self.handleResponse(result, type: ChallengeListWithMetaResponse.self) {
-                    completion($0.map { $0.data })
-                }
+                self.handleResponse(result, type: [Challenge].self, completion: completion)
             }
         }
         

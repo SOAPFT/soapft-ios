@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MoreGroupView: View {
-    @State private var viewModel = GroupMainViewModel()
+    @StateObject private var viewModel = GroupMainViewModel()
     let viewType: GroupMainViewModel.ChallengeViewType
     
     // 2열 그리드
@@ -18,45 +18,58 @@ struct MoreGroupView: View {
     ]
     
     var body: some View {
-        NavigationView {
-            VStack {
-                // 상단바
-                HStack {
-                    Button(action: {
-                        print("뒤로가기")
-                    }, label: {
-                        Image(systemName: "chevron.backward")
-                            .foregroundColor(Color.black)
-                    })
-                    
-                    Spacer()
-                    
-                    Text(viewType.title)
-                        .font(Font.Pretend.pretendardSemiBold(size: 16))
-                    
-                    Spacer()
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
+        VStack(spacing: 0) {
+            // 상단바
+            HStack {
+                Button(action: {
+                    print("뒤로가기")
+                }, label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundColor(Color.black)
+                })
                 
-                Divider()
-                    .background(Color.gray.opacity(0.3))
+                Spacer()
                 
-                // 스크롤뷰
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(viewModel.getChallenges(for: viewType), id: \.id) { challenge in
-                            ChallengeGridCard(challenge: challenge)
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 20)
-                }
+                Text(viewType.title)
+                    .font(Font.Pretend.pretendardSemiBold(size: 16))
+                
+                Spacer()
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            
+            Divider()
+                .background(Color.gray.opacity(0.3))
+            
+            // 스크롤뷰
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(viewModel.getChallenges(for: viewType), id: \.id) { challenge in
+                        ChallengeGridCard(challenge: challenge)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 20)
+            }
+        }
+        .navigationBarBackButtonHidden()
+        .onAppear() {
+            loadChallenges(for: viewType)
+        }
+    }
+    
+    private func loadChallenges(for type: GroupMainViewModel.ChallengeViewType) {
+        switch type {
+        case .hot:
+            viewModel.fetchHotChallenges()
+        case .recent:
+            viewModel.fetchRecentChallenges()
+        case .event:
+            return
         }
     }
 }
 
 #Preview {
-    MoreGroupView(viewType: .hot)
+    MoreGroupView(viewType: .recent)
 }

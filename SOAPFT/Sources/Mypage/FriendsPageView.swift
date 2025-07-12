@@ -9,16 +9,11 @@ import SwiftUI
 
 struct FriendsPageView: View {
     
-    private var notificationCount: Int = 3
-    private var nickname: String = "Haru"
-    private var postCount: Int = 12
-    private var friendCount: Int = 4
-    private var coinCount: Int = 39
-    
-    private var isFriend: Bool = false // 친구인가
-    private var isSentFriendRequest: Bool = false // 요청을 보냈는 가
-    private var isRecievedFriendRequest: Bool = false // 요청을 받았는 가
-    private var buttonMessage: String = ""
+    @StateObject private var viewModel: FriendsPageViewModel
+        
+    init(userUUID: String, accessToken: String) {
+        _viewModel = StateObject(wrappedValue: FriendsPageViewModel(userUUID: userUUID, accessToken: accessToken))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -26,15 +21,28 @@ struct FriendsPageView: View {
             topBarView
             
             // 메인 스크롤 영역
-            ScrollView {
-                VStack(spacing: 0) {
-                    // 프로필 섹션
-                    profileSection
-                    
-                    // 탭 뷰 (스크롤 없이)
-                    CustomTabView()
+            if viewModel.isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let error = viewModel.errorMessage {
+//                ProgressView()
+                Text(error)
+                    .foregroundColor(.red)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // 프로필 섹션
+                        profileSection
+                        
+                        // 탭 뷰 (스크롤 없이)
+                        CustomTabView()
+                    }
                 }
             }
+        }
+        .onAppear() {
+            viewModel.fetchOtherUserInfo()
         }
     }
     
@@ -67,25 +75,25 @@ struct FriendsPageView: View {
                 Circle()
                     .frame(width: 150)
                 
-                Text("\(nickname)")
+                Text(viewModel.nickname)
                     .font(Font.Pretend.pretendardMedium(size: 24))
                 
                 HStack {
                     Button(action: {
-                        
+                        handleFriendButtonTap()
                     }, label: {
                         HStack {
                             Text(friendButonText)
                                 .font(Font.Pretend.pretendardSemiBold(size: 14))
-                                .foregroundStyle((isFriend || isSentFriendRequest) ? Color.gray.opacity(0.8) : Color.white)
+                                .foregroundStyle((viewModel.isFriend || viewModel.isSentFriendRequest) ? Color.gray.opacity(0.8) : Color.white)
                         }
                         .frame(width: 110)
                         .padding(.vertical, 10)
-                        .background((isFriend || isSentFriendRequest) ? Color.gray.opacity(0.2) : Color.orange01.opacity(0.9))
+                        .background((viewModel.isFriend || viewModel.isSentFriendRequest) ? Color.gray.opacity(0.2) : Color.orange01.opacity(0.9))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     })
                     
-                    if isFriend {
+                    if viewModel.isFriend {
                         Spacer()
                         Button(action: {
                             
@@ -106,7 +114,7 @@ struct FriendsPageView: View {
                 
                 HStack {
                     VStack {
-                        Text("\(postCount)")
+                        Text("\(viewModel.postCount)")
                             .font(Font.Pretend.pretendardRegular(size: 22))
                         Text("Posts")
                             .font(Font.Pretend.pretendardLight(size: 16))
@@ -116,7 +124,7 @@ struct FriendsPageView: View {
                     Spacer().frame(width: 35)
                     
                     VStack {
-                        Text("\(friendCount)")
+                        Text("\(viewModel.friendCount)")
                             .font(Font.Pretend.pretendardRegular(size: 22))
                         Text("Friends")
                             .font(Font.Pretend.pretendardLight(size: 16))
@@ -131,19 +139,30 @@ struct FriendsPageView: View {
     }
     
     private var friendButonText: String {
-        if isFriend {
+        if viewModel.isFriend {
             return "친구 끊기"
-        } else if isRecievedFriendRequest {
+        } else if viewModel.isRecievedFriendRequest {
             return "친구 수락"
-        } else if isSentFriendRequest {
+        } else if viewModel.isSentFriendRequest {
             return "요청됨"
         } else {
             return "친구 신청"
         }
     }
+    
+    private func handleFriendButtonTap() {
+        if viewModel.isFriend {
+            viewModel.deleteFriend()
+        } else if viewModel.isRecievedFriendRequest {
+            viewModel.acceptFriendRequest()
+        } else if !viewModel.isSentFriendRequest {
+            viewModel.sendFriendRequest()
+        }
+        // 요청됨 상태일 때는 아무 것도 안 함
+    }
 }
 
 
-#Preview {
-    FriendsPageView()
-}
+//#Preview {
+//    FriendsPageView()
+//}

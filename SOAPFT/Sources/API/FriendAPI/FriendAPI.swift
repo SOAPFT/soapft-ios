@@ -38,7 +38,7 @@ extension FriendAPI: TargetType {
         case .deleteFriend(let friendId):
             return "/api/friendship/\(friendId)"
         case .friendList:
-            return "/api/auth/kakao"
+            return "/api/friendship/list"
         case .receivedRequests:
             return "/api/friendship/received-requests"
         case .sentRequests:
@@ -50,12 +50,12 @@ extension FriendAPI: TargetType {
         switch self {
         case .sendRequest,
              .acceptRequest,
-             .rejectRequest,
-             .friendList:
+             .rejectRequest:
+//             .friendList:
             return .post
         case .deleteFriend:
             return .delete
-        case .receivedRequests, .sentRequests:
+        case .receivedRequests, .sentRequests, .friendList:
             return .get
         }
     }
@@ -64,8 +64,8 @@ extension FriendAPI: TargetType {
         switch self {
         case .sendRequest(let addresseeUuid):
             return .requestParameters(parameters: ["addresseeUuid": addresseeUuid], encoding: JSONEncoding.default)
-        case .friendList(let parameters):
-            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .friendList:
+            return .requestPlain
         default:
             return .requestPlain
         }
@@ -76,7 +76,7 @@ extension FriendAPI: TargetType {
             "accept": "application/json",
             "Content-Type": "application/json",
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAyODUwLCJleHAiOjE3NTQ0OTQ4NTB9.AWkWZKZ2BcV4w2uubt2pbvcnh00pFLiiGgrkp2J7qwg"
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMjU3MTQzLCJleHAiOjE3NTQ4NDkxNDN9.ydJH9QQzGFeDdgU43PX4WWHwzVwhat_ayGTGctTUt0c"
         ]
     }
 
