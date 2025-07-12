@@ -22,7 +22,7 @@ struct homeNavBar: View {
                     .foregroundStyle(.black)
             }
             
-            NavigationLink(destination: ChallengeSearchWrapper()) {
+            Button(action: {container.router.push(.ChallengeSearchWrapper)}) {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.black)
             }
