@@ -23,7 +23,7 @@ final class HomeViewModel: ObservableObject {
 
         self.challengeService.getParticipatedChallenges(status: "all") { [weak self] (result: Result<[Challenge], Error>) in
             guard let self = self else { return }
-
+            
             DispatchQueue.main.async {
                 switch result {
                 case .success(let challenges):

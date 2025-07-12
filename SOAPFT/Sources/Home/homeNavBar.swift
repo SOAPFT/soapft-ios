@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct homeNavBar: View {
+    //DIContainer
+    @Environment(\.diContainer) private var container
     
     var body: some View {
         
@@ -20,7 +22,7 @@ struct homeNavBar: View {
                     .foregroundStyle(.black)
             }
             
-            Button(action: { /* 메뉴 열기 */ }) {
+            NavigationLink(destination: ChallengeSearchWrapper()) {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.black)
             }

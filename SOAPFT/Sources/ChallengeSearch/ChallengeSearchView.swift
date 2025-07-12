@@ -7,16 +7,23 @@
 
 import SwiftUI
 
+struct ChallengeSearchWrapper: View {
+    @Environment(\.diContainer) private var container
+    
+    var body: some View {
+        let viewModel = ChallengeSearchViewModel(challengeService: container.challengeService)
+        ChallengeSearchView(viewModel: viewModel)
+    }
+}
+
+
 struct ChallengeSearchView: View {
-    @StateObject private var viewModel = ChallengeSearchViewModel()
+    @StateObject var viewModel: ChallengeSearchViewModel
 
     var body: some View {
         VStack {
-            
-            //상단 네비게이션 바
             ChallengeSearchNavBar()
-            
-            // 검색창
+
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.gray)
@@ -29,7 +36,6 @@ struct ChallengeSearchView: View {
             .cornerRadius(10)
             .padding(.horizontal)
 
-            // 챌린지 리스트
             ScrollView {
                 if viewModel.filteredChallenges.isEmpty {
                     Text("검색 결과가 없습니다.")
@@ -37,37 +43,8 @@ struct ChallengeSearchView: View {
                         .padding()
                 } else {
                     LazyVStack(alignment: .leading, spacing: 12) {
-                        ForEach(viewModel.filteredChallenges) { challenge in
-                            Button(action: {
-                                // TODO: 나중에 상세화면 등으로 이동하는 로직 추가 예정
-                            }) {
-                                HStack(alignment: .top, spacing: 12) {
-                                    AsyncImage(url: URL(string: challenge.challengeImageURL)) { phase in
-                                        if let image = phase.image {
-                                            image.resizable().scaledToFill()
-                                        } else {
-                                            Circle().fill(Color.gray.opacity(0.2))
-                                        }
-                                    }
-                                    .frame(width: 32, height: 32)
-                                    .clipShape(Circle())
-
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(challenge.title)
-                                            .font(.headline)
-                                        Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
-                                            .font(.caption)
-                                            .foregroundStyle(.gray)
-                                    }
-
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .foregroundStyle(.gray)
-                                        .font(.caption)
-                                }
-                                .padding(.horizontal)
-                            }
-                            .buttonStyle(PlainButtonStyle()) // 시스템 버튼 스타일 제거
+                        ForEach(viewModel.filteredChallenges, id: \.challengeUuid) { challenge in
+                            ChallengeRowView(challenge: challenge)
                         }
                     }
                     .padding(.top, 10)
@@ -77,6 +54,42 @@ struct ChallengeSearchView: View {
     }
 }
 
+struct ChallengeRowView: View {
+    let challenge: Challenge
+
+    var body: some View {
+        NavigationLink(destination: GroupTabbarWrapper(challengeID: challenge.challengeUuid)) {
+            HStack(alignment: .top, spacing: 12) {
+                AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
+                    if let image = phase.image {
+                        image.resizable().scaledToFill()
+                    } else {
+                        Circle().fill(Color.gray.opacity(0.2))
+                    }
+                }
+                .frame(width: 32, height: 32)
+                .clipShape(Circle())
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(challenge.title)
+                        .font(.headline)
+                    Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
+                        .font(.caption)
+                        .foregroundStyle(.gray)
+                }
+
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.gray)
+                    .font(.caption)
+            }
+            .padding(.horizontal)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+
 #Preview {
-    ChallengeSearchView()
+    
 }
