@@ -43,7 +43,7 @@ struct UserDeleteResponseDTO: Decodable {
 struct MyProfileResponseDTO: Decodable {
     let userName: String?
     let userImage: String?
-    let userIntroduction: String
+    let userIntroduction: String?
     let userUuid: String
     let coins: Int
     let postCount: Int

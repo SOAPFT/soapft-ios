@@ -64,6 +64,10 @@ final class UserService {
     private func handleResponse<T: Decodable>(_ result: Result<Response, MoyaError>, completion: @escaping (Result<T, Error>) -> Void) {
         switch result {
         case .success(let response):
+            print("📡 [HTTP 상태 코드]: \(response.statusCode)")
+                print("📦 [응답 Raw]: \(String(data: response.data, encoding: .utf8) ?? "데이터 없음")")
+                print("📬 [응답 Header]: \(response.response?.allHeaderFields ?? [:])")
+            
             do {
                if let json = try JSONSerialization.jsonObject(with: response.data) as? [String: Any],
                   let success = json["success"] as? Bool,
@@ -77,10 +81,38 @@ final class UserService {
                    completion(.success(decodedData))
                }
            } catch {
+               print("❌ [Decoding 실패]: \(error.localizedDescription)")
                completion(.failure(error))
            }
         case .failure(let error):
+            print("❌ [요청 실패 - MoyaError]: \(error.localizedDescription)")
             completion(.failure(error))
         }
+    }
+}
+
+extension UserService {
+    func startOnboarding(
+        viewModel: LoginInfoViewModel,
+        completion: @escaping (Result<SignupResponseDTO, Error>) -> Void
+    ) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let birthDateString = viewModel.birthFormattedServerFormat
+
+        guard let accessToken = KeyChainManager.shared.readAccessToken() else {
+            print("❌ 액세스 토큰 없음")
+            completion(.failure(NSError(domain: "no_token", code: 401)))
+            return
+        }
+
+        print("🚀 온보딩 호출 - 닉네임: \(viewModel.nickname), 성별: \(viewModel.genderForServer), 생일: \(birthDateString)")
+        self.onboarding(
+            nickname: viewModel.nickname,
+            gender: viewModel.genderForServer,
+            birthDate: birthDateString,
+            accessToken: accessToken,
+            completion: completion
+        )
     }
 }

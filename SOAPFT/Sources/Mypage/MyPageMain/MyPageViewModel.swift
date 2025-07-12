@@ -25,10 +25,11 @@ final class MyPageViewModel: ObservableObject {
     }
     
     func fetchUserProfile() {
-        guard let accessToken = KeyChainManager.shared.readAccessToken() else {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
             print("❌ accessToken 없음")
             return
         }
+        print("✅ accessToken 있음: \(accessToken)")
 //        let accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAzNDA0LCJleHAiOjE3NTQ0OTU0MDR9.eeETUYLQy_W14flyNrvkSkJQm4CfqfsbrtfN7dOssl8"
         
         container.userService.getUserInfo(accessToken: accessToken) { [weak self] result in
