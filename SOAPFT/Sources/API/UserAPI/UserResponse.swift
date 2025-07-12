@@ -58,5 +58,14 @@ struct OtherUserProfileResponseDTO: Decodable {
     let userUuid: String
     let postCount: Int
     let friendCount: Int
+    let friendStatus: FriendStatus
 }
 
+enum FriendStatus: String, Decodable {
+    case noRelation = "no_relation"
+    case requestSent = "request_sent"
+    case requestReceived = "request_received"
+    case friends = "friends"
+    case blocked = "blocked"
+}
+ 

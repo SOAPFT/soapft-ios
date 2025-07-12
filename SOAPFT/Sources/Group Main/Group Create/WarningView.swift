@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct WarningView: View {
+    @Environment(\.diContainer) private var container
     @Binding var showPopUp: Bool
     
     let title: String // 공지 이름
     let message: String // 공지 내용
     let btn1: String // 왼쪽 버튼 text
     let btn2: String // 오른쪽 버튼 text
+    let onConfirm: () -> Void // 확인 버튼 눌렀을 때 실행할 동작
     
     var body: some View {
         ZStack {
@@ -41,7 +43,10 @@ struct WarningView: View {
                     Button(action: {
                         
                         print("확인 누름")
-                        
+                        onConfirm()          // createChallenge() 실행됨
+                        showPopUp = false    // 팝업 닫기
+                        container.router.reset()
+                        container.router.push(.home)
                     }, label: {
                         Text(btn1)
                             .font(Font.Pretend.pretendardMedium(size: 16))
@@ -89,9 +94,12 @@ struct WarningView: View {
 
 #Preview {
     WarningView(showPopUp: .constant(false),
-                      title: "챌린지를 생성하시겠습니까?",
-                      message: "챌린지 생성 후 수정 및 삭제가 불가합니다.\n가입 조건 및 인증 조건을 정확하게 입력하였는지 확인해주세요.",
-                      btn1: "생성하기",
-                      btn2: "취소"
+              title: "챌린지를 생성하시겠습니까?",
+              message: "챌린지 생성 후 수정 및 삭제가 불가합니다.\n가입 조건 및 인증 조건을 정확하게 입력하였는지 확인해주세요.",
+              btn1: "생성하기",
+              btn2: "취소",
+                onConfirm: {
+                    print("챌린지 생성 API 호출") // 실제 생성 로직 실행
+                }
     )
 }

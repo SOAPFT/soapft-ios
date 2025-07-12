@@ -1,28 +1,17 @@
 import Foundation
 import SwiftUI
 
-@Observable
-class GroupMainViewModel {
+final class GroupMainViewModel: ObservableObject {
+    private let challengeService = ChallengeService()
     
-    var Hot = [
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라")
-    ]
-    
-    var Recent = [
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라"),
-        GroupMainModel(imageName:"팀예시", title: "블라블라")
-    ]
+    @Published var hot: [Challenge] = []
+    @Published var recent: [Challenge] = []
+    @Published var event: [Challenge] = []
     
     enum ChallengeViewType {
         case hot
         case recent
+        case event
         
         var title: String {
             switch self {
@@ -30,16 +19,69 @@ class GroupMainViewModel {
                 return "지금 인기있는 챌린지 🔥"
             case .recent:
                 return "최근 개설된 챌린지 🌱"
+            case .event:
+                return "이벤트 챌린지 🎉"
             }
         }
     }
     
-    func getChallenges(for type: ChallengeViewType) -> [GroupMainModel] {
+    func getChallenges(for type: ChallengeViewType) -> [Challenge] {
         switch type {
         case .hot:
-            return Hot
+            return hot
         case .recent:
-            return Recent
+            return recent
+        case .event:
+            return event
+        }
+    }
+
+    // MARK: - 인기 챌린지
+    func fetchHotChallenges() {
+        challengeService.getPopularChallenges { [weak self] (result: Result<[Challenge], Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let challenges):
+                    print("✅ 인기 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
+                    challenges.forEach { print("🔥 인기 챌린지 타이틀: \($0.title)") }
+                    self?.hot = challenges
+                case .failure(let error):
+                    print("🔥 인기 챌린지 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // MARK: - 최근 챌린지
+    func fetchRecentChallenges() {
+        challengeService.getRecentChallenges { [weak self] (result: Result<[Challenge], Error>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let challenges):
+                    print("✅ 최근 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
+                    challenges.forEach { print("🌱 최근 챌린지 타이틀: \($0.title)") }
+                    self?.recent = challenges
+                case .failure(let error):
+                    print("🌱 최근 챌린지 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // MARK: - 이벤트 챌린지 (status = EVENT)
+    func fetchEventChallenges() {
+        print("🚀 이벤트 챌린지 API 호출 시작 - 파라미터: page=1, limit=20, type=EVENT, gender=NONE, status=before")
+        
+        challengeService.fetchChallenges(page: 1, limit: 10, type: "EVENT", gender: "NONE", status: "before") { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let challenges):
+                    print("✅ 이벤트 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
+                    self?.event = challenges
+                case .failure(let error):
+                    print("🎯 이벤트 챌린지 실패: \(error.localizedDescription)")
+                }
+            }
         }
     }
 }

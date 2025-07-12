@@ -6,6 +6,9 @@ struct AlertView: View {
     @State var showingSheet = false
     @StateObject var viewModel = AlertsViewModel()
     
+    // 네비게이션 대상 알림
+    @State private var selectedAlert: NotificationDTO? = nil
+    
     var body: some View {
         VStack {
             AlertHeader
@@ -26,8 +29,9 @@ struct AlertView: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-                .onAppear { //미리보기용
-                    viewModel.loadSampleDataIfNeeded()
+                .onAppear {
+                    viewModel.loadSampleDataIfNeeded() //미리보기용
+//                    viewModel.fetchAlerts()
                 }
             }
         }
@@ -63,8 +67,8 @@ struct AlertView: View {
                 isPresented: $showingSheet,
                 titleVisibility: .visible
             ) {
-                Button("모든 알림 삭제", role: .destructive) {
-                    viewModel.alerts.removeAll()
+                Button("모든 알림 읽음 처리", role: .destructive) {
+                    viewModel.markAllAsRead()
                 }
                 Button("취소", role: .cancel) {}
             }
@@ -74,28 +78,30 @@ struct AlertView: View {
     
     private func AlertCard() -> some View {
         ForEach(viewModel.alerts, id: \.id) { alert in
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(alert.alarm.byCharWrapping)
-                        .font(Font.Pretend.pretendardRegular(size: 14))
-                        .foregroundStyle(alert.isRead ? .gray: .black)
-                    
-                    Text(alert.time)
-                        .font(Font.Pretend.pretendardRegular(size: 12))
-                        .foregroundStyle(.gray)
+            Button(action: {
+                // 1. 읽음 처리
+                viewModel.markAsRead(alert: alert)
+                // 2. 네비게이션용 상태 변경
+                selectedAlert = alert
+            }) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(alert.title.byCharWrapping)
+                            .font(Font.Pretend.pretendardRegular(size: 14))
+                            .foregroundStyle(alert.isRead ? .gray: .black)
+                        Text(alert.createdAt)
+                            .font(Font.Pretend.pretendardRegular(size: 12))
+                            .foregroundStyle(.gray)
+                    }
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Spacer()
+                .padding(.vertical, 6)
+                .padding(.horizontal, 6)
             }
-            .padding(.vertical, 6)
-            .padding(.horizontal, 6)
             .frame(maxWidth: .infinity)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button(role: .destructive) {
-                    if let index = viewModel.alerts.firstIndex(where: { $0.id == alert.id }) {
-                        viewModel.alerts.remove(at: index)
-                    }
+                    viewModel.deleteAlert(alert: alert)
                 } label: {
                     Label("삭제", systemImage: "trash")
                 }

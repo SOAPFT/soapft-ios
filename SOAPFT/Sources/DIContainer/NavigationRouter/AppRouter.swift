@@ -11,7 +11,10 @@ enum Route: Hashable {
     case login
     case loginInfo
     case mainTabbar
+    case groupEdit
     case home
+    case groupCreate
+    case groupCreateNext
     case mypage
     case mypageEdit
     case mypageEditInfo

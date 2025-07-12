@@ -9,8 +9,8 @@ import SwiftUI
 import PhotosUI
 
 struct GroupEditView: View {
-    let initialProfileURL: String
-    let initialBannerURL: String
+    let initialProfileURL: String = ""
+    let initialBannerURL: String = ""
     
     @State private var selectedProfileImage: UIImage?
     @State private var selectedProfileItem: PhotosPickerItem?
@@ -172,9 +172,6 @@ struct GroupEditView: View {
 }
 
 #Preview {
-    GroupEditView(
-        initialProfileURL: GroupInfoMockData.profile ?? "",
-        initialBannerURL: GroupInfoMockData.banner ?? ""
-    )
+    GroupEditView()
 }
 

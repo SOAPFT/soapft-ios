@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ChallengeGridCard: View {
-    let challenge: GroupMainModel
+    let challenge: Challenge
+    
     var body: some View {
         VStack(spacing: 12) {
-            Image(challenge.imageName)
+            Image(challenge.banner ?? "")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(height: 120)

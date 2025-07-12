@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct GroupMainView: View {
-    @State private var GroupMainViewModel: GroupMainViewModel = .init()
-    
+    @Environment(\.diContainer) private var container
+    @StateObject private var viewModel = GroupMainViewModel()
+        
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack { // 상단 고정 부분
                 // 로고
                 
@@ -27,6 +28,8 @@ struct GroupMainView: View {
             .padding(.bottom, 8)
             .padding(.horizontal, 12)
             
+            Divider()
+            
             ScrollView { // 스크롤뷰
                 Spacer()
                 
@@ -48,53 +51,72 @@ struct GroupMainView: View {
             }
             .padding(.horizontal, 12)
         }
+        .onAppear() {
+            viewModel.fetchHotChallenges()
+            viewModel.fetchRecentChallenges()
+            viewModel.fetchEventChallenges()
+        }
+        .navigationBarBackButtonHidden()
     }
     
     private var NewChallenge: some View {
-        HStack {
-            Text("새로운 챌린지 만들기")
-                .font(Font.Pretend.pretendardMedium(size: 12))
-            
-            Spacer()
-            
+        VStack {
             Button(action: {
                 print("new challenge")
+                container.router.push(.groupCreate)
             }, label: {
-                Image(systemName: "plus.circle.fill")
-                    .foregroundStyle(Color.black)
+                HStack {
+                    Text("새로운 챌린지 만들기")
+                        .font(Font.Pretend.pretendardMedium(size: 16))
+                        .foregroundStyle(Color.black)
+                    Spacer()
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundStyle(Color.black)
+                }
             })
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            
+            Divider()
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .strokeBorder(Color.black, lineWidth: 0.8)
-                .background(Color.clear)
-        )
-        .frame(maxWidth: .infinity)
     }
     
     private var ChallengeBannerView: some View {
-        TabView {
-            ForEach(0..<3, id: \.self) { index in
-                BannerCard(index: index)
-                    .padding(.horizontal, 8)
+        Group {
+            HStack {
+                Text("이벤트 챌린지 🎉")
+                    .font(Font.Pretend.pretendardRegular(size: 16))
+                Spacer()
+            }
+            if viewModel.event.isEmpty {
+                Text("현재 참여 가능한 이벤트가 없습니다.")
+                    .foregroundColor(.gray)
+                    .frame(height: 260)
+            } else {
+                TabView {
+                    ForEach(viewModel.event.indices, id: \.self) { index in
+                        BannerCard(index: index)
+                            .padding(.horizontal, 8)
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                .frame(height: 260)
+                .onAppear {
+                    UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemGray
+                    UIPageControl.appearance().pageIndicatorTintColor = UIColor.systemGray6
+                }
             }
         }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-        .frame(height: 260)
-        .onAppear {
-            UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemGray
-            UIPageControl.appearance().pageIndicatorTintColor = UIColor.systemGray6
-        }
     }
-    
+
     private func BannerCard(index: Int) -> some View {
         VStack(spacing: 16) {
             Spacer()
             
-            Text("지금 새로운 챌린지가 열렸습니다!")
-                .font(Font.Pretend.pretendardRegular(size: 14))
+            Text(viewModel.event.first?.title ?? "")
+            
+            Image("")
+                .padding(.horizontal, 16)
             
             Button(action: {
                 print("지금 참여하기 \(index)")
@@ -143,8 +165,8 @@ struct GroupMainView: View {
             
             ScrollView (.horizontal) {
                 LazyHStack (spacing: 17) {
-                    ForEach(GroupMainViewModel.Hot, id: \.self) { challenge in
-                        ChallengeCard(Name: challenge.imageName, Title: challenge.title)
+                    ForEach(viewModel.hot, id: \.self) { challenge in
+                        ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
                     }
                 }
             }
@@ -193,8 +215,8 @@ struct GroupMainView: View {
             
             ScrollView (.horizontal) {
                 LazyHStack (spacing: 17) {
-                    ForEach(GroupMainViewModel.Recent, id: \.self) { challenge in
-                        ChallengeCard(Name: challenge.imageName, Title: challenge.title)
+                    ForEach(viewModel.recent, id: \.self) { challenge in
+                        ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
                     }
                 }
             }
