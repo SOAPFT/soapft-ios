@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FriendsPageView: View {
-    
+    @Environment(\.diContainer) private var container
     @StateObject private var viewModel: FriendsPageViewModel
         
     init(userUUID: String, accessToken: String) {
@@ -25,7 +25,7 @@ struct FriendsPageView: View {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let error = viewModel.errorMessage {
-//                ProgressView()
+                ProgressView()
                 Text(error)
                     .foregroundColor(.red)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -36,7 +36,7 @@ struct FriendsPageView: View {
                         profileSection
                         
                         // 탭 뷰 (스크롤 없이)
-                        CustomTabView()
+                        FriendsCustomTabView(userUUID: viewModel.userUUID)
                     }
                 }
             }
@@ -44,13 +44,16 @@ struct FriendsPageView: View {
         .onAppear() {
             viewModel.fetchOtherUserInfo()
         }
+        .navigationBarBackButtonHidden()
     }
     
     // MARK: - 상단바 (고정)
     private var topBarView: some View {
         VStack(spacing: 0) {
             HStack {
-                Button(action: { }) {
+                Button(action: {
+                    container.router.pop()
+                }) {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.black)
                         .font(.system(size: 18))
@@ -72,8 +75,25 @@ struct FriendsPageView: View {
             Spacer().frame(height: 20)
             
             VStack(spacing: 20) {
-                Circle()
-                    .frame(width: 150)
+                let trimmedImage = viewModel.userImage.trimmingCharacters(in: .whitespaces)
+                
+                if !trimmedImage.isEmpty, let imageUrl = URL(string: trimmedImage) {
+                    AsyncImage(url: imageUrl) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 150, height: 150)
+                            .foregroundStyle(Color.gray)
+                    }
+                    .frame(width: 150, height: 150)
+                    .clipShape(Circle())
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .frame(width: 150, height: 150)
+                        .foregroundStyle(Color.gray)
+                }
                 
                 Text(viewModel.nickname)
                     .font(Font.Pretend.pretendardMedium(size: 24))

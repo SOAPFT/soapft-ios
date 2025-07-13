@@ -2,7 +2,8 @@ import SwiftUI
 import UIKit
 
 struct AlertView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.diContainer) private var container
+//    @Environment(\.dismiss) var dismiss
     @State var showingSheet = false
     @StateObject var viewModel = AlertsViewModel()
     
@@ -30,8 +31,8 @@ struct AlertView: View {
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .onAppear {
-                    viewModel.loadSampleDataIfNeeded() //미리보기용
-//                    viewModel.fetchAlerts()
+//                    viewModel.loadSampleDataIfNeeded() //미리보기용
+                    viewModel.fetchAlerts()
                 }
             }
         }
@@ -41,7 +42,7 @@ struct AlertView: View {
     private var AlertHeader: some View {
         HStack {
             Button(action: {
-                dismiss()
+                container.router.pop()
             }, label: {
                 Image(systemName: "chevron.backward")
                     .foregroundStyle(Color.black)
@@ -72,8 +73,9 @@ struct AlertView: View {
                 }
                 Button("취소", role: .cancel) {}
             }
+            Divider()
         }
-        .padding(.horizontal, 10)
+        .padding()
     }
     
     private func AlertCard() -> some View {
@@ -86,7 +88,7 @@ struct AlertView: View {
             }) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(alert.title.byCharWrapping)
+                        Text(alert.content.byCharWrapping)
                             .font(Font.Pretend.pretendardRegular(size: 14))
                             .foregroundStyle(alert.isRead ? .gray: .black)
                         Text(alert.createdAt)

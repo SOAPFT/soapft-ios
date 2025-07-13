@@ -51,6 +51,7 @@ struct ChallengeSearchView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

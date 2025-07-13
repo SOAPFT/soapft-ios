@@ -46,20 +46,24 @@ struct MyPageView: View {
                 Spacer()
                 
                 ZStack {
-                    Button(action: { }) {
-                        Image(systemName: "bell")
-                            .foregroundColor(.black)
-                            .font(.system(size: 18))
-                    }
-                    
-                    if viewModel.notificationCount > 0 {
-                        Text("\(viewModel.notificationCount)")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .padding(4)
-                            .background(Color.red)
-                            .clipShape(Circle())
-                            .offset(x: 8, y: -8)
+                    Button(action: {
+                        container.router.push(.alert)
+                    }) {
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "bell")
+                                .foregroundStyle(Color.black)
+                                .font(.system(size: 18))
+
+                            if viewModel.notificationCount > 0 {
+                                Text("\(viewModel.notificationCount)")
+                                    .font(.caption2)
+                                    .foregroundStyle(.white)
+                                    .padding(5)
+                                    .background(Color.red)
+                                    .clipShape(Circle())
+                                    .offset(x: 8, y: -8)
+                            }
+                        }
                     }
                 }
                 
@@ -71,9 +75,7 @@ struct MyPageView: View {
                         .font(.system(size: 18))
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color.white)
+            .padding()
             
             Divider()
                 .background(Color.gray.opacity(0.3))
@@ -104,7 +106,11 @@ struct MyPageView: View {
                     AsyncImage(url: URL(string: userImage)) { image in
                         image.resizable()
                     } placeholder: {
-                        Circle().foregroundStyle(Color.gray.opacity(0.3))
+//                        Circle().foregroundStyle(Color.gray.opacity(0.3))
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 150, height: 150)
+                            .foregroundStyle(Color.gray)
                     }
                     .frame(width: 150, height: 150)
                     .clipShape(Circle())
@@ -120,7 +126,7 @@ struct MyPageView: View {
                 
                 if (viewModel.userIntroduction ?? "").isEmpty {
                     Button(action: {
-                        
+                        container.router.push(.mypageEditInfo)
                     }, label: {
                         HStack {
                             Image(systemName: "plus")

@@ -23,15 +23,15 @@ final class FriendService {
     }
 
     // 친구 요청 수락
-    func acceptFriendRequest(requestId: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        provider.request(.acceptRequest(requestId: requestId)) {
+    func acceptFriendRequest(friendId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.acceptRequest(friendId: friendId)) {
             self.handleEmptyResponse($0, completion: completion)
         }
     }
 
     // 친구 요청 거절
-    func rejectFriendRequest(requestId: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        provider.request(.rejectRequest(requestId: requestId)) {
+    func rejectFriendRequest(friendId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.request(.rejectRequest(friendId: friendId)) {
             self.handleEmptyResponse($0, completion: completion)
         }
     }
@@ -44,18 +44,49 @@ final class FriendService {
     }
 
     // 친구 목록 조회
-    func fetchFriendList(parameters: [String: Any], completion: @escaping (Result<[Friend], Error>) -> Void) {
-        provider.request(.friendList(parameters: parameters)) {
-            self.decode($0, as: FriendListResponse.self) { completion($0.map { $0.friends }) }
+    func fetchFriendList(completion: @escaping (Result<[Friend], Error>) -> Void) {
+        print("[FriendService] fetchFriendList called")
+
+        provider.request(.friendList) { result in
+            switch result {
+            case .success(let response):
+                print("[FriendService] fetchFriendList response statusCode: \(response.statusCode)")
+                print("[FriendService] fetchFriendList response raw JSON:\n\(String(data: response.data, encoding: .utf8) ?? "nil")")
+
+                do {
+                    let decoded = try JSONDecoder().decode(FriendListResponse.self, from: response.data)
+                    print("[FriendService] fetchFriendList decoded friends count: \(decoded.friends.count)")
+                    completion(.success(decoded.friends))
+                } catch {
+                    print("❌ JSON 디코딩 실패: \(error)")
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                print("❌ 네트워크 실패: \(error)")
+                completion(.failure(error))
+            }
         }
     }
 
+
     // 받은 친구 요청 목록 조회
     func fetchReceivedRequests(completion: @escaping (Result<[ReceivedFriendRequest], Error>) -> Void) {
+        print("[FriendService] fetchReceivedRequests called")
+        
         provider.request(.receivedRequests) {
-            self.decode($0, as: ReceivedFriendRequestsResponse.self) { completion($0.map { $0.receivedRequests }) }
+            self.decode($0, as: ReceivedFriendRequestsResponse.self) { result in
+                switch result {
+                case .success(let decoded):
+                    print("[FriendService] receivedRequests decoded count: \(decoded.receivedRequests.count)")
+                    completion(.success(decoded.receivedRequests))
+                case .failure(let error):
+                    print("❌ 받은 요청 디코딩 실패: \(error)")
+                    completion(.failure(error))
+                }
+            }
         }
     }
+
 
     // 보낸 친구 요청 목록 조회
     func fetchSentRequests(completion: @escaping (Result<[SentFriendRequest], Error>) -> Void) {
@@ -63,6 +94,27 @@ final class FriendService {
             self.decode($0, as: SentFriendRequestsResponse.self) { completion($0.map { $0.sentRequests }) }
         }
     }
+    
+    // 친구 검색
+    func searchFriends(keyword: String, completion: @escaping (Result<[SearchedFriend], Error>) -> Void) {
+        provider.request(.searchFriend(keyword: keyword)) { result in
+            switch result {
+            case .success(let response):
+                do {
+                    let decoded = try JSONDecoder().decode([SearchedFriend].self, from: response.data)
+                    completion(.success(decoded))
+                } catch {
+                    print("❌ 디코딩 실패: \(error)")
+                    print("📦 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                print("❌ 요청 실패: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
 
     // MARK: - 공통 디코딩 처리
 

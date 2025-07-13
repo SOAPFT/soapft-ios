@@ -43,6 +43,12 @@ struct SOAPFTApp: App {
                         case .home:
                             GroupMainView()
                                 .environment(\.diContainer, container)
+                        case .friendPage(let userUUID, let accessToken):
+                            FriendsPageView(userUUID: userUUID, accessToken: accessToken)
+                                .environment(\.diContainer, container)
+                        case .friendsRequest:
+                            FriendsRequestView()
+                                .environment(\.diContainer, container)
                         case .groupCreate:
                             GroupCreateView()
                                 .environment(\.diContainer, container)
@@ -58,11 +64,13 @@ struct SOAPFTApp: App {
                         case .mypageEditInfo:
                             MyInfoEditView()
                                 .environment(\.diContainer, container)
+                        case .alert:
+                            AlertView()
+                                .environment(\.diContainer, container)
                         case .GroupTabbar(let ChallengeID):
                             GroupTabbarWrapper(challengeID: ChallengeID)
                         case .ChallengeSearchWrapper:
                             ChallengeSearchWrapper()
-
                         }
                     }
                     .onOpenURL { url in

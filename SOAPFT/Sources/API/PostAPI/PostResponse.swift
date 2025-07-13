@@ -116,7 +116,7 @@ struct OtherUserCalendarResponseDTO: Decodable {
 
         struct CalendarPost: Decodable {
             let postUuid: String
-            let thumbnailUrl: String
+            let imageUrl: [String]
         }
     }
 }

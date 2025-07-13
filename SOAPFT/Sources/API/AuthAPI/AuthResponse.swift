@@ -14,12 +14,12 @@ struct KakaoResponseDTO: Codable {
     let isNewUser: Bool
     let message: String
 
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case refreshToken = "refresh_token"
-        case isNewUser
-        case message
-    }
+//    enum CodingKeys: String, CodingKey {
+//        case accessToken = "access_token"
+//        case refreshToken = "refresh_token"
+//        case isNewUser
+//        case message
+//    }
 }
 
 // 네이버 로그인 응답 DTO

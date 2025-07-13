@@ -6,27 +6,38 @@ struct GroupMainView: View {
         
     var body: some View {
         VStack(spacing: 0) {
-            HStack { // 상단 고정 부분
+            HStack(spacing: 12) { // 상단 고정 부분
                 // 로고
                 
                 Spacer()
                 
                 Button(action: {
-                    
+                    container.router.push(.alert)
                 }, label: {
-                    Image(systemName: "bell")
-                        .foregroundStyle(Color.black)
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "bell")
+                            .foregroundStyle(Color.black)
+                            .font(.system(size: 18))
+
+                        if viewModel.notificationCount > 0 {
+                            Text("\(viewModel.notificationCount)")
+                                .font(.caption2)
+                                .foregroundStyle(.white)
+                                .padding(5)
+                                .background(Color.red)
+                                .clipShape(Circle())
+                                .offset(x: 8, y: -8)
+                        }
+                    }
                 })
                 
-                Button(action: {
-                    
-                }, label: {
+                NavigationLink(destination: ChallengeSearchWrapper()) {
                     Image(systemName: "magnifyingglass")
-                        .foregroundStyle(Color.black)
-                })
+                        .foregroundStyle(.black)
+                        .font(.system(size: 18))
+                }
             }
-            .padding(.bottom, 8)
-            .padding(.horizontal, 12)
+            .padding()
             
             Divider()
             
@@ -55,6 +66,7 @@ struct GroupMainView: View {
             viewModel.fetchHotChallenges()
             viewModel.fetchRecentChallenges()
             viewModel.fetchEventChallenges()
+            viewModel.fetchNotificationCount()
         }
         .navigationBarBackButtonHidden()
     }
@@ -110,13 +122,41 @@ struct GroupMainView: View {
     }
 
     private func BannerCard(index: Int) -> some View {
-        VStack(spacing: 16) {
+        let challenge = viewModel.event[index]
+        
+        return VStack(spacing: 16) {
             Spacer()
             
-            Text(viewModel.event.first?.title ?? "")
+            Text(challenge.title)
             
-            Image("")
-                .padding(.horizontal, 16)
+            if let bannerUrlString = challenge.banner,
+               let url = URL(string: bannerUrlString),
+               !bannerUrlString.isEmpty {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    Color.gray.opacity(0.3)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.white)
+                        )
+                }
+                .frame(width: 100, height: 100)
+                .clipped()
+                .cornerRadius(8)
+            } else {
+                // fallback 이미지 또는 기본 색상
+                ZStack {
+                    Color.gray.opacity(0.3)
+                    Image(systemName: "photo")
+                        .foregroundColor(.white)
+                }
+                .frame(width: 100, height: 100)
+                .cornerRadius(8)
+            }
+            
             
             Button(action: {
                 print("지금 참여하기 \(index)")
@@ -176,14 +216,40 @@ struct GroupMainView: View {
     
     private func ChallengeCard(Name: String, Title: String) -> some View {
         VStack {
-            Image(Name)
-                .resizable()
+            if let url = URL(string: Name), !Name.isEmpty {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    Color.gray.opacity(0.3)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.white)
+                        )
+                }
+                .frame(width: 100, height: 100)
+                .clipped()
+                .cornerRadius(8)
+            } else {
+                // fallback 이미지 또는 기본 색상
+                ZStack {
+                    Color.gray.opacity(0.3)
+                    Image(systemName: "photo")
+                        .foregroundColor(.white)
+                }
                 .frame(width: 100, height: 100)
                 .cornerRadius(8)
-            
+            }
+
             HStack {
                 Text(Title)
                     .font(Font.Pretend.pretendardLight(size: 12))
+                    .foregroundStyle(Color.black)
+                    .frame(width: 100, height: 30, alignment: .leading)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 
                 Spacer()
             }

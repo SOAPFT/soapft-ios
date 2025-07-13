@@ -3,10 +3,13 @@ import SwiftUI
 
 final class GroupMainViewModel: ObservableObject {
     private let challengeService = ChallengeService()
+    private let notificationsService = NotificationService()
     
     @Published var hot: [Challenge] = []
     @Published var recent: [Challenge] = []
     @Published var event: [Challenge] = []
+    
+    @Published var notificationCount: Int = 0
     
     enum ChallengeViewType {
         case hot
@@ -21,6 +24,26 @@ final class GroupMainViewModel: ObservableObject {
                 return "최근 개설된 챌린지 🌱"
             case .event:
                 return "이벤트 챌린지 🎉"
+            }
+        }
+    }
+    
+    // MARK: - 알림 개수
+    func fetchNotificationCount() {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
+        notificationsService.fetchUnreadCount(accessToken: accessToken) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let noti):
+                    self?.notificationCount = noti.unreadCount
+                    print("✅ 알림 개수 fetch 성공: \(noti)")
+                case .failure(let error):
+                    print("❌ 알림 개수 fetch 실패: \(error.localizedDescription)")
+                }
             }
         }
     }

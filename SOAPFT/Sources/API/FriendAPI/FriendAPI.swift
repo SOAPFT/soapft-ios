@@ -10,12 +10,13 @@ import Foundation
 
 enum FriendAPI {
     case sendRequest(addresseeUuid: String)
-    case acceptRequest(requestId: String)
-    case rejectRequest(requestId: String)
+    case acceptRequest(friendId: String)
+    case rejectRequest(friendId: String)
     case deleteFriend(friendId: String)
-    case friendList(parameters: [String: Any])
+    case friendList
     case receivedRequests
     case sentRequests
+    case searchFriend(keyword: String)
 }
 
 extension FriendAPI: TargetType {
@@ -43,6 +44,8 @@ extension FriendAPI: TargetType {
             return "/api/friendship/received-requests"
         case .sentRequests:
             return "/api/friendship/sent-requests"
+        case .searchFriend:
+            return "/api/friendship/friends/search"
         }
     }
 
@@ -55,7 +58,7 @@ extension FriendAPI: TargetType {
             return .post
         case .deleteFriend:
             return .delete
-        case .receivedRequests, .sentRequests, .friendList:
+        case .receivedRequests, .sentRequests, .friendList, .searchFriend:
             return .get
         }
     }
@@ -64,6 +67,8 @@ extension FriendAPI: TargetType {
         switch self {
         case .sendRequest(let addresseeUuid):
             return .requestParameters(parameters: ["addresseeUuid": addresseeUuid], encoding: JSONEncoding.default)
+        case .searchFriend(let keyword):
+            return .requestParameters(parameters: ["keyword": keyword], encoding: URLEncoding.default)
         case .friendList:
             return .requestPlain
         default:
@@ -72,12 +77,16 @@ extension FriendAPI: TargetType {
     }
 
     var headers: [String: String]? {
-        return [
+        var defaultHeaders: [String: String] = [
             "accept": "application/json",
-            "Content-Type": "application/json",
-            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMjU3MTQzLCJleHAiOjE3NTQ4NDkxNDN9.ydJH9QQzGFeDdgU43PX4WWHwzVwhat_ayGTGctTUt0c"
+            "Content-Type": "application/json"
         ]
+
+        if let accessToken = KeyChainManager.shared.read(forKey: "accessToken") {
+            defaultHeaders["Authorization"] = "Bearer \(accessToken)"
+        }
+
+        return defaultHeaders
     }
 
     var sampleData: Data {
