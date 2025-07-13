@@ -36,6 +36,8 @@ extension NotificationAPI: TargetType {
 
     var path: String {
         switch self {
+        case .fetchNotifications:
+            return "/api/notifications"
         case .fetchUnreadCount:
             return "/api/notifications/unread-count"
         case .markAsRead:
@@ -106,7 +108,8 @@ extension NotificationAPI: TargetType {
              let .markAsRead(_, accessToken),
              let .markAllAsRead(_, accessToken),
              let .deleteNotification(_, accessToken):
-            headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I"
+
+            headers["Authorization"] = "Bearer \(accessToken)"
             headers["Content-Type"] = "application/json"
         }
 

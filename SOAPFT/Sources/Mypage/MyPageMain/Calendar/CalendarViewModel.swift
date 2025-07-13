@@ -19,10 +19,15 @@ final class CalendarViewModel: ObservableObject {
     }
     
     func fetchCalendar(year: Int, month: Int) {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
         guard !isLoading else { return }
         isLoading = true
         
-        container.postService.getCalendar(year: year, month: month) { [weak self] result in
+        container.postService.getCalendar(year: year, month: month, accessToken: accessToken) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.isLoading = false

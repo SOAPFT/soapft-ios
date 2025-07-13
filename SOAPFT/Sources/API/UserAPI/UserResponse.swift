@@ -52,13 +52,14 @@ struct MyProfileResponseDTO: Decodable {
 
 // 다른 사용자 정보 조회
 struct OtherUserProfileResponseDTO: Decodable {
-    let userName: String
-    let userImage: String
-    let userIntroduction: String
+    let userName: String?
+    let userImage: String?
+    let userIntroduction: String?
     let userUuid: String
     let postCount: Int
     let friendCount: Int
-    let friendStatus: FriendStatus
+    let friendStatus: String
+    let friendId: Int?
 }
 
 enum FriendStatus: String, Decodable {

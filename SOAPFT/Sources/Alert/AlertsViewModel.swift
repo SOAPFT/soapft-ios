@@ -5,14 +5,17 @@ class AlertsViewModel: ObservableObject {
     @Published var alerts: [NotificationDTO] = []
     
     private var cancellables = Set<AnyCancellable>()
-    private var notificationService = NotificationService.shared
     
     private var currentPage = 1
     private let pageLimit = 20
-    private var accessToken: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMjU3MTQzLCJleHAiOjE3NTQ4NDkxNDN9.ydJH9QQzGFeDdgU43PX4WWHwzVwhat_ayGTGctTUt0c"
     
-    func fetchAlerts(unreadOnly: Bool = false) {
-        notificationService.fetchNotifications(
+    func fetchAlerts(unreadOnly: Bool = true) {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
+        NotificationService.shared.fetchNotifications(
             page: currentPage,
             limit: pageLimit,
             unreadOnly: unreadOnly,
@@ -32,8 +35,13 @@ class AlertsViewModel: ObservableObject {
     
     // MARK: - 특정 알림 읽음 처리
     func markAsRead(alert: NotificationDTO) {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
         guard !alert.isRead else { return }
-        notificationService.markAsRead(
+        NotificationService.shared.markAsRead(
             notificationIds: [alert.id],
             accessToken: accessToken
         ) { [weak self] result in
@@ -51,10 +59,15 @@ class AlertsViewModel: ObservableObject {
     
     // MARK: - 전체 알림 읽음 처리
     func markAllAsRead() {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
         let unreadIds = alerts.filter { !$0.isRead }.map { $0.id }
         guard !unreadIds.isEmpty else { return }
         
-        notificationService.markAllAsRead(
+        NotificationService.shared.markAllAsRead(
             notificationIds: unreadIds,
             accessToken: accessToken
         ) { [weak self] result in
@@ -72,7 +85,12 @@ class AlertsViewModel: ObservableObject {
     
     // MARK: - 알림 삭제
     func deleteAlert(alert: NotificationDTO) {
-        notificationService.deleteNotification(
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
+        NotificationService.shared.deleteNotification(
             id: alert.id,
             accessToken: accessToken
         ) { [weak self] result in
@@ -92,14 +110,14 @@ class AlertsViewModel: ObservableObject {
         }
     }
     
-    // MARK: - 미리보기용 샘플 데이터 로드
-        func loadSampleDataIfNeeded() {
-            if alerts.isEmpty {
-                // 실제 구현 시 서버에서 불러오도록 변경하세요
-                alerts = [
-                    NotificationDTO(id: 1, recipientUuid: "r1", senderUuid: "s1", type: "info", title: "[JIWOO] 새로운 알림", content: "홍길동님이 회원님의 게시글에 댓글을 남겼습니다.", data: NotificationData(friendRequestId: 101), isRead: false, isSent: true, createdAt: "2025-07-11T12:00:00", updatedAt: "2025-07-11T12:00:00"),
-                    NotificationDTO(id: 2, recipientUuid: "r1", senderUuid: "s2", type: "info", title: "[JIWOO] 새로운 알림", content: "오운완 그룹에 가입되었습니다.", data: NotificationData(friendRequestId: 102), isRead: true, isSent: true, createdAt: "2025-07-10T11:00:00", updatedAt: "2025-07-10T11:00:00"),
-                ]
-            }
-        }
+//    // MARK: - 미리보기용 샘플 데이터 로드
+//        func loadSampleDataIfNeeded() {
+//            if alerts.isEmpty {
+//                // 실제 구현 시 서버에서 불러오도록 변경하세요
+//                alerts = [
+//                    NotificationDTO(id: 1, recipientUuid: "r1", senderUuid: "s1", type: "info", title: "[JIWOO] 새로운 알림", content: "홍길동님이 회원님의 게시글에 댓글을 남겼습니다.", data: NotificationData(friendRequestId: 101), isRead: false, isSent: true, createdAt: "2025-07-11T12:00:00", updatedAt: "2025-07-11T12:00:00"),
+//                    NotificationDTO(id: 2, recipientUuid: "r1", senderUuid: "s2", type: "info", title: "[JIWOO] 새로운 알림", content: "오운완 그룹에 가입되었습니다.", data: NotificationData(friendRequestId: 102), isRead: true, isSent: true, createdAt: "2025-07-10T11:00:00", updatedAt: "2025-07-10T11:00:00"),
+//                ]
+//            }
+//        }
 }

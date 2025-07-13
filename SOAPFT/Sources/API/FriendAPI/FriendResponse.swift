@@ -14,7 +14,7 @@ struct Friend: Decodable {
     let friendId: Int
     let friendUuid: String
     let nickname: String
-    let profileImage: String
+    let profileImage: String?
     let status: String  // 예: "ACCEPTED"
     let createdAt: String
 }
@@ -28,7 +28,7 @@ struct ReceivedFriendRequest: Decodable {
     let requestId: Int
     let requesterUuid: String
     let nickname: String
-    let profileImage: String
+    let profileImage: String?
     let createdAt: String
 }
 
@@ -46,3 +46,10 @@ struct SentFriendRequest: Decodable {
     let createdAt: String
 }
 
+// MARK: - 친구 검색 응답
+struct SearchedFriend: Decodable {
+    let userUuid: String
+    let nickname: String
+    let profileImage: String
+    let isFriend: Bool
+}

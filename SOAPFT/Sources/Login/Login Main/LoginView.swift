@@ -12,25 +12,30 @@ struct LoginView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            // 로고
-            Text("한땀한땀")
-                .font(Font.Pretend.pretendardBold(size: 24))
-            
-            VStack(spacing: 20) {
-                // 카카오 로그인
-                KakoSignButton()
-                
-                // 네이버 로그인
-                NaverSignButton()
-                
-                // Apple 로그인
-                Button(action: {
-                    // 로그인 성공 후 홈으로 이동
-                    container.router.push(.mainTabbar)
-                    KeyChainManager.shared.save("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I", forKey: "accessToken")
-                }) {
-                    Text("테스트")
+            ZStack {
+                // 로고
+                Text("한땀한땀")
+                    .font(Font.Pretend.pretendardBold(size: 24))
+
+                VStack(spacing: 20) {
+                    Spacer()
+                    // 카카오 로그인
+                    KakoSignButton()
+                    
+                    // 네이버 로그인
+                    NaverSignButton()
+                    
+                    // Apple 로그인
+                    
+                    // 테스트
+                    Button(action: {
+                        // 로그인 성공 후 홈으로 이동
+                        container.router.push(.mainTabbar)
+                    }) {
+                       Text("테스트")
+                    }
                 }
+                .padding(.bottom, 30)
             }
         }
         .navigationBarBackButtonHidden()

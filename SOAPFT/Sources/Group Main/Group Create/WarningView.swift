@@ -45,7 +45,6 @@ struct WarningView: View {
                         print("확인 누름")
                         onConfirm()          // createChallenge() 실행됨
                         showPopUp = false    // 팝업 닫기
-                        container.router.reset()
                         container.router.push(.home)
                     }, label: {
                         Text(btn1)
