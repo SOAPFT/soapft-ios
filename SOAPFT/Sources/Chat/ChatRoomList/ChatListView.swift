@@ -7,30 +7,54 @@
 
 import SwiftUI
 
-struct ChatListView: View {
-    let rooms: [ChatRoomDTO]
-
+struct ChatListWrapper: View {
+    @Environment(\.diContainer) private var container
+    
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(rooms, id: \.roomUuid) { room in
-                        ChatRoomCell(room: room)
+        let viewModel = ChatListViewModel(chatService: container.chatService, userService: container.userService)
+        ChatListView(viewModel: viewModel)
+        
+    }
+}
+
+
+struct ChatListView: View {
+    @StateObject private var viewModel: ChatListViewModel
+    @Environment(\.diContainer) private var container
+
+    init(viewModel: ChatListViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    
+    var body: some View {
+            Group {
+                if let currentUserUuid = viewModel.userUuid {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(viewModel.chatRooms, id: \.roomUuid) { room in
+                                ChatRoomCell(room: room, currentUserUuid: currentUserUuid)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
                     }
+                } else {
+                    ProgressView("사용자 정보 로딩 중...")
                 }
-                .padding(.horizontal)
-                .padding(.top, 8)
             }
-        }
     }
 }
 
 struct ChatRoomCell: View {
-    let room: ChatRoomDTO
-
+    let room: ChatRoom
+    @Environment(\.diContainer) private var container
+    let currentUserUuid: String
+    
+    
     var body: some View {
         Button(action: {
-            
+            container.router.push(.ChatRoomWrapper(currentUserUuid: currentUserUuid, roomId: room.roomUuid, chatRoomName: room.name))
         }) {
             HStack(spacing: 12) {
                 AsyncImage(url: URL(string: room.participants.first?.profileImage ?? "")) { phase in
@@ -49,12 +73,6 @@ struct ChatRoomCell: View {
                     Text(room.name)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.black)
-                    
-                    if let challenge = room.challenge {
-                        Text(challenge.title)
-                            .font(.system(size: 14))
-                            .foregroundStyle(.gray)
-                    }
                 }
                 
                 Spacer()
@@ -72,5 +90,5 @@ struct ChatRoomCell: View {
 
 
 #Preview {
-    ChatListView(rooms: mockChatRooms)
+    
 }

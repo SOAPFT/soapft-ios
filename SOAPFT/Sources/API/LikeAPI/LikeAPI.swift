@@ -60,7 +60,7 @@ extension LikeAPI: TargetType {
         case .like(_, let accessToken),
              .unlike(_, let accessToken),
              .checkLikeStatus(_, let accessToken):
-            headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAzNDA0LCJleHAiOjE3NTQ0OTU0MDR9.eeETUYLQy_W14flyNrvkSkJQm4CfqfsbrtfN7dOssl8"
+            headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I"
             headers["Content-Type"] = "application/json"
         }
 

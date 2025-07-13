@@ -62,6 +62,11 @@ struct SOAPFTApp: App {
                             GroupTabbarWrapper(challengeID: ChallengeID)
                         case .ChallengeSearchWrapper:
                             ChallengeSearchWrapper()
+                        case .ChatRoomWrapper(let currentUserUuid,let roomId,let chatRoomName):
+                            ChatRoomWrapper(currentUserUuid: currentUserUuid, roomId: roomId, chatRoomName: chatRoomName)
+                        case .ChatListWrapper:
+                            ChatListWrapper()
+                            
 
                         }
                     }

@@ -19,7 +19,7 @@ final class ChatService {
     }
 
     // MARK: - 채팅방 목록
-    func getRooms(type: String, page: Int, limit: Int, completion: @escaping (Result<ChatRoomListResponse, Error>) -> Void) {
+    func getRooms(type: String?, page: Int, limit: Int, completion: @escaping (Result<ChatRoomListResponse, Error>) -> Void) {
         provider.request(.getRooms(type: type, page: page, limit: limit)) { result in
             self.handleResponse(result, type: ChatRoomListResponse.self, completion: completion)
         }
@@ -41,7 +41,7 @@ final class ChatService {
 
     // MARK: - 메시지 목록 조회
     func getMessages(roomId: String, page: Int, limit: Int, lastMessageId: Int? = nil, beforeMessageId: Int? = nil, completion: @escaping (Result<ChatMessageListResponse, Error>) -> Void) {
-        provider.request(.getMessages(roomId: roomId, page: page, limit: limit, lastMessageId: lastMessageId, beforeMessageId: beforeMessageId)) { result in
+        provider.request(.getMessages(roomId: roomId, page: page, limit: limit, lastMessageId: lastMessageId, beforeMessageId: beforeMessageId)) { (result: Result<Response, MoyaError>) in
             self.handleResponse(result, type: ChatMessageListResponse.self, completion: completion)
         }
     }

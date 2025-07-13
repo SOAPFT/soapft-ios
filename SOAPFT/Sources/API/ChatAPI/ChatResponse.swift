@@ -35,7 +35,7 @@ struct ChatRoomCreationResponse: Decodable {
     let name: String
     let participantUuids: [String]
     let challengeUuid: String
-    let lastMessage: ChatMessage?
+    let lastMessage: ChatRoomLastMessage?
     let lastMessageAt: String?
     let unreadCount: Int
     let createdAt: String
@@ -52,21 +52,25 @@ struct ChatRoom: Decodable {
     let type: String
     let name: String
     let participants: [ChatParticipant]
-    let challenge: ChatChallenge?
-    let lastMessage: ChatMessage?
+    let challengeUuid: String
+    let lastMessage: ChatRoomLastMessage?
+    let lastMessageAt: String
     let unreadCount: Int
-    let isPinned: Bool
-    let isMuted: Bool
     let createdAt: String
-    let updatedAt: String
+}
+
+struct ChatRoomLastMessage: Decodable {
+    let id: Int
+    let type: String
+    let content: String
+    let senderUuid: String
+    let createdAt: String
 }
 
 struct ChatParticipant: Decodable {
     let userUuid: String
     let nickname: String
-    let profileImage: String
-    let isOnline: Bool
-    let lastSeenAt: String
+    let profileImage: String?   
 }
 
 struct ChatChallenge: Decodable {
@@ -114,21 +118,27 @@ struct ChatRoomSettings: Decodable {
 struct ChatMessage: Decodable {
     let id: Int
     let roomUuid: String?
-    let content: String
     let type: String
+    let content: String
     let imageUrl: String?
     let sender: Sender
-    let replyTo: ReplyTo?
+    let isRead: Bool
     let readByUuids: [String]
-    let sentAt: String
-    let isEdited: Bool?
-    let isDeleted: Bool?
-    let editedAt: String?
+    let isMyMessage: Bool
+    let createdAt: String // 또는 Date (추가 설명 아래 참고)
 }
 
 struct ChatMessageListResponse: Decodable {
     let messages: [ChatMessage]
-    let pagination: Pagination
+    let pagination: ChatPagination
+}
+
+struct ChatPagination: Decodable {
+    let currentPage: Int
+    let totalPages: Int
+    let totalItems: Int
+    let itemsPerPage: Int
+    let hasNext: Bool?
 }
 
 

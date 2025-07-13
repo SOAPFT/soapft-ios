@@ -10,7 +10,7 @@ import Moya
 
 enum ChatAPI {
     case createRoom(type: String, participantUuids: [String], name: String, challengeUuid: String)
-    case getRooms(type: String, page: Int, limit: Int)
+    case getRooms(type: String?, page: Int, limit: Int)
     case getRoomDetail(uuid: String)
     case sendMessage(roomId: String, content: String, type: String, imageUrl: String?, replyTo: Int?)
     case getMessages(roomId: String, page: Int, limit: Int, lastMessageId: Int?, beforeMessageId: Int?)
@@ -32,7 +32,7 @@ extension ChatAPI: TargetType {
         case .createRoom:
             return "/api/chat/room"
         case .getRooms:
-            return "/chat/rooms"
+            return "/api/chat/rooms"
         case let .getRoomDetail(uuid):
             return "/api/chat/room/\(uuid)"
         case let .sendMessage(roomId, _, _, _, _):
@@ -70,11 +70,15 @@ extension ChatAPI: TargetType {
             ], encoding: JSONEncoding.default)
 
         case let .getRooms(type, page, limit):
-            return .requestParameters(parameters: [
-                "type": type,
+            var params: [String: Any] = [
                 "page": page,
                 "limit": limit
-            ], encoding: URLEncoding.queryString)
+            ]
+            // type이 nil이면 아예 쿼리 파라미터에 포함 안 됨
+            if let type = type {
+                params["type"] = type
+            }
+            return .requestParameters(parameters: params, encoding: URLEncoding.queryString)
 
         case .getRoomDetail:
             return .requestPlain
@@ -121,7 +125,7 @@ extension ChatAPI: TargetType {
             "accept": "application/json",
             "Accept-Language": "ko-KR",
             "User-Agent": "iOS-App",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUxOTAyODUwLCJleHAiOjE3NTQ0OTQ4NTB9.AWkWZKZ2BcV4w2uubt2pbvcnh00pFLiiGgrkp2J7qwg"
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I"
         ]
     }
 

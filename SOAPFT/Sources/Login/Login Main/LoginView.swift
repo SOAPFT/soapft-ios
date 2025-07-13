@@ -27,6 +27,7 @@ struct LoginView: View {
                 Button(action: {
                     // 로그인 성공 후 홈으로 이동
                     container.router.push(.mainTabbar)
+                    KeyChainManager.shared.save("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I", forKey: "accessToken")
                 }) {
                     Text("테스트")
                 }
@@ -37,5 +38,4 @@ struct LoginView: View {
 }
 
 #Preview {
-
 }
