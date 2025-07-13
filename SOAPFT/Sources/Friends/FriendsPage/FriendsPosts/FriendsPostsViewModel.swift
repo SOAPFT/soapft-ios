@@ -1,14 +1,15 @@
 //
-//  PostViewModel.swift
+//  FriendsPostsViewModel.swift
 //  SOAPFT
 //
-//  Created by 홍지우 on 7/3/25.
+//  Created by 홍지우 on 7/13/25.
 //
 
 import Foundation
 
-class PostViewModel: ObservableObject {
+class FriendsPostViewModel: ObservableObject {
     var container: DIContainer!
+    private let userUUID: String
     
     @Published var message: String = ""
     @Published var total: Int = 0
@@ -17,8 +18,9 @@ class PostViewModel: ObservableObject {
     @Published var posts: [Post] = []
     @Published var isLoading: Bool = false
     
-    init(container: DIContainer) {
+    init(container: DIContainer, userUUID: String) {
         self.container = container
+        self.userUUID = userUUID
     }
     
     func fetchPosts() {

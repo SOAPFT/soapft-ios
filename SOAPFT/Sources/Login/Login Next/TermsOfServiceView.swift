@@ -95,7 +95,8 @@ struct TermsOfServiceView: View {
                         switch result {
                         case .success(let response):
                             print("🎉 온보딩 성공: \(response)")
-                            container.router.push(.mainTabbar) // 또는 닫기: dismiss()
+                            container.router.push(.mainTabbar)
+                            dismiss()
                         case .failure(let error):
                             print("❌ 온보딩 실패: \(error.localizedDescription)")
                         }

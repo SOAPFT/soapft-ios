@@ -65,8 +65,8 @@ final class UserService {
         switch result {
         case .success(let response):
             print("📡 [HTTP 상태 코드]: \(response.statusCode)")
-                print("📦 [응답 Raw]: \(String(data: response.data, encoding: .utf8) ?? "데이터 없음")")
-                print("📬 [응답 Header]: \(response.response?.allHeaderFields ?? [:])")
+                print("📦 [user 응답 Raw]: \(String(data: response.data, encoding: .utf8) ?? "데이터 없음")")
+                print("📬 [user 응답 Header]: \(response.response?.allHeaderFields ?? [:])")
             
             do {
                if let json = try JSONSerialization.jsonObject(with: response.data) as? [String: Any],
@@ -81,11 +81,11 @@ final class UserService {
                    completion(.success(decodedData))
                }
            } catch {
-               print("❌ [Decoding 실패]: \(error.localizedDescription)")
+               print("❌ [user Decoding 실패]: \(error.localizedDescription)")
                completion(.failure(error))
            }
         case .failure(let error):
-            print("❌ [요청 실패 - MoyaError]: \(error.localizedDescription)")
+            print("❌ [user 요청 실패 - MoyaError]: \(error.localizedDescription)")
             completion(.failure(error))
         }
     }

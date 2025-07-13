@@ -103,10 +103,14 @@ final class NotificationService {
     ) {
         switch result {
         case .success(let response):
+            if let jsonString = String(data: response.data, encoding: .utf8) {
+                print("📦 응답 본문:\n\(jsonString)")
+            }
             do {
                 let decodedData = try JSONDecoder().decode(T.self, from: response.data)
                 completion(.success(decodedData))
             } catch {
+                print("❌ 디코딩 실패: \(error)")
                 completion(.failure(error))
             }
         case .failure(let error):

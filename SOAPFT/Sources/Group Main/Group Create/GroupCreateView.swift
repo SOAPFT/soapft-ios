@@ -29,11 +29,10 @@ struct GroupCreateView: View {
                     Spacer()
                 }
 
-                Text("그룹 생성")
+                Text("챌린지 생성")
                     .font(Font.Pretend.pretendardBold(size: 16))
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
+            .padding()
             
             Divider()
                 .background(Color.gray.opacity(0.3))

@@ -30,9 +30,14 @@ class CertificationPostViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     func fetchPosts() {
+        guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.postService.getChallengePosts(challengeId: self.challengeId, page: self.currentPage, limit: 10) { [weak self] (result: Result<ChallengePostsResponseDTO, Error>) in
+            self.postService.getChallengePosts(challengeId: self.challengeId, page: self.currentPage, limit: 10, accessToken: accessToken) { [weak self] (result: Result<ChallengePostsResponseDTO, Error>) in
                 guard let self = self else { return }
 
                 DispatchQueue.main.async {

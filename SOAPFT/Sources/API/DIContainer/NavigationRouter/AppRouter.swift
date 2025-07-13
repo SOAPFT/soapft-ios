@@ -13,11 +13,14 @@ enum Route: Hashable {
     case mainTabbar
     case groupEdit
     case home
+    case friendPage(userUUID: String, accessToken: String)
+    case friendsRequest
     case groupCreate
     case groupCreateNext
     case mypage
     case mypageEdit
     case mypageEditInfo
+    case alert
 }
 
 class AppRouter: ObservableObject {
