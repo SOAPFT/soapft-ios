@@ -57,9 +57,10 @@ struct ChallengeSearchView: View {
 
 struct ChallengeRowView: View {
     let challenge: Challenge
-
+    @Environment(\.diContainer) private var container
+    
     var body: some View {
-        NavigationLink(destination: GroupTabbarWrapper(challengeID: challenge.challengeUuid)) {
+        Button(action: {container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))}) {
             HStack(alignment: .top, spacing: 12) {
                 AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
                     if let image = phase.image {

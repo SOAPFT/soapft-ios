@@ -61,9 +61,9 @@ struct Home: View {
                     } else {
                         LazyVGrid(columns: columns, spacing: 16) {
                             ForEach(viewModel.filteredChallenges, id: \.id) { challenge in
-                                NavigationLink(
-                                    destination: GroupTabbarWrapper(challengeID: challenge.challengeUuid)
-                                ) {
+                                Button(action: {
+                                    container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                                }){
                                     ChallengeItemView(challenge: challenge)
                                 }
                             }
@@ -85,52 +85,6 @@ struct HomeWrapper: View {
     }
 }
 
-//#Preview {
-//    struct PreviewWrapper: View {
-//        @StateObject var router = AppRouter()
-//        
-//        var body: some View {
-//            let container = DIContainer(router: router)
-//            
-//            NavigationStack(path: $router.path) {
-//                HomeWrapper()
-//                    .environment(\.diContainer, container)
-//                    .navigationDestination(for: Route.self) { route in
-//                        switch route {
-//                        case .login:
-//                            LoginView()
-//                                .environment(\.diContainer, container)
-//                        case .loginInfo:
-//                            LoginInfoView()
-//                                .environment(\.diContainer, container)
-//                        case .mainTabbar:
-//                            MainTabbarView()
-//                                .environment(\.diContainer, container)
-//                        case .groupEdit:
-//                            GroupEditView()
-//                                .environment(\.diContainer, container)
-//                        case .home:
-//                            GroupMainView()
-//                                .environment(\.diContainer, container)
-//                        case .groupCreate:
-//                            GroupCreateView()
-//                                .environment(\.diContainer, container)
-//                        case .groupCreateNext:
-//                            GroupCreateNextView()
-//                        case .mypage:
-//                            MyPageView()
-//                                .environment(\.diContainer, container)
-//                        case .mypageEdit:
-//                            MyPageEditView()
-//                                .environment(\.diContainer, container)
-//                        case .mypageEditInfo:
-//                            MyInfoEditView()
-//                                .environment(\.diContainer, container)
-//                        }
-//                    }
-//            }
-//        }
-//    }
-//    
-//    return PreviewWrapper()
-//}
+#Preview {
+}
+

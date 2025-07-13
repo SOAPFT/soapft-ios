@@ -67,6 +67,10 @@ struct SOAPFTApp: App {
                         case .alert:
                             AlertView()
                                 .environment(\.diContainer, container)
+                        case .GroupTabbar(let ChallengeID):
+                            GroupTabbarWrapper(challengeID: ChallengeID)
+                        case .ChallengeSearchWrapper:
+                            ChallengeSearchWrapper()
                         }
                     }
                     .onOpenURL { url in

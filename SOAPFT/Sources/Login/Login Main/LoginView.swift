@@ -43,7 +43,7 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+
 }
 
 //#Preview {
