@@ -108,6 +108,7 @@ extension NotificationAPI: TargetType {
              let .markAsRead(_, accessToken),
              let .markAllAsRead(_, accessToken),
              let .deleteNotification(_, accessToken):
+
             headers["Authorization"] = "Bearer \(accessToken)"
             headers["Content-Type"] = "application/json"
         }

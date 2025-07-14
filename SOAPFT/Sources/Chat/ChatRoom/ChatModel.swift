@@ -50,3 +50,4 @@ struct PaginationDTO: Codable {
     let itemsPerPage: Int
     let hasNext: Bool
 }
+

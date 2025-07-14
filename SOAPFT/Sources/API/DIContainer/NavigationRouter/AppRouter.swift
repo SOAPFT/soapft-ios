@@ -23,6 +23,8 @@ enum Route: Hashable {
     case alert
     case GroupTabbar(ChallengeID: String)
     case ChallengeSearchWrapper
+    case ChatRoomWrapper(currentUserUuid: String, roomId: String, chatRoomName: String)
+    case ChatListWrapper
 }
 
 class AppRouter: ObservableObject {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MessageText: View {
-    let message: ChatMessageDTO
+    let message: ChatMessage
     let currentUserUuid: String
 
     var isMe: Bool {
@@ -17,22 +17,6 @@ struct MessageText: View {
 
     var body: some View {
         VStack(alignment: isMe ? .trailing : .leading, spacing: 4) {
-            // 답장 메시지
-            if let reply = message.replyTo {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("↪︎ \(reply.sender.nickname)")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
-                    Text("\"\(reply.content)\"")
-                        .font(.caption2)
-                        .foregroundStyle(.gray)
-                        .lineLimit(1)
-                }
-                .padding(6)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
-            }
-
             // 본문 메시지
             Group {
                 if message.type == "TEXT" {
@@ -63,7 +47,7 @@ struct MessageText: View {
 
 
 struct ChatMessageView: View {
-    let message: ChatMessageDTO
+    let message: ChatMessage
     let currentUserUuid: String
 
     var isMe: Bool {
@@ -115,12 +99,4 @@ struct ChatMessageView: View {
 
 
 #Preview {
-    ChatMessageView(
-        message: mockMessages[0], // 혹은 mockMessages.first!
-        currentUserUuid: me.userUuid
-    )
-    ChatMessageView(
-        message: mockMessages[1], // 혹은 mockMessages.first!
-        currentUserUuid: me.userUuid
-    )
 }

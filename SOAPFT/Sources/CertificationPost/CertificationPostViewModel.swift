@@ -11,13 +11,17 @@ import Combine
 
 class CertificationPostViewModel: ObservableObject {
     @Published var posts: [ChallengePost] = []
-    @Published var postUIStates: [String: PostUIState] = [:] // key = postUuid
+    @Published var postUIStates: [String: PostUIState] = [:]
     @Published var isLoading = false
+    @Published var hasMore = true
     
     private let postService: PostService
     private let likeService: LikeService
     private let challengeId: String
     private var currentPage: Int = 1
+    private let limit: Int = 10
+    
+    private var cancellables = Set<AnyCancellable>()
     
     init(postService: PostService, likeServie: LikeService, challengeId: String){
         self.postService = postService
@@ -26,9 +30,6 @@ class CertificationPostViewModel: ObservableObject {
         fetchPosts()
     }
     
-
-    private var cancellables = Set<AnyCancellable>()
-
     func fetchPosts() {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
             print("❌ accessToken 없음")
@@ -39,67 +40,43 @@ class CertificationPostViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.postService.getChallengePosts(challengeId: self.challengeId, page: self.currentPage, limit: 10, accessToken: accessToken) { [weak self] (result: Result<ChallengePostsResponseDTO, Error>) in
                 guard let self = self else { return }
-
+                
                 DispatchQueue.main.async {
+                    self.isLoading = false
                     switch result {
-                    case .success(let ChallengePostsResponseDTO):
-                        self.posts.append(contentsOf: ChallengePostsResponseDTO.posts)
-                        // 상태 초기화는 posts가 업데이트된 이후에 실행
-                        self.currentPage += 10
-                        let newStates = ChallengePostsResponseDTO.posts.reduce(into: self.postUIStates) { dict, post in
-                            dict[post.postUuid] = PostUIState()
+                    case .success(let response):
+                        self.posts.append(contentsOf: response.posts)
+                        
+                        // 다음 페이지 요청을 위한 증가
+                        self.currentPage += 1
+                        
+                        // 더 가져올 게 없으면 hasMore false
+                        self.hasMore = response.posts.count == self.limit
+                        
+                        // 상태 추가 (기존 상태는 유지하고 누락된 것만 추가)
+                        for post in response.posts {
+                            if self.postUIStates[post.postUuid] == nil {
+                                self.postUIStates[post.postUuid] = PostUIState()
+                            }
                         }
-                        self.postUIStates = newStates
-                        self.isLoading = false
                     case .failure(let error):
                         print("챌린지 불러오기 실패: \(error)")
-                        self.isLoading = false
+                        self.hasMore = false
                     }
                 }
             }
-            
-           
         }
-    }
-
-    func toggleLike(for post: ChallengePost) {
-        guard let state = postUIStates[post.postUuid] else { return }
-        state.isLiked.toggle()
-    }
-
-    func toggleSuspicion(for post: ChallengePost) {
-        guard let state = postUIStates[post.postUuid] else { return }
-        state.isSuspicious.toggle()
-    }
-
-    func toggleCommentSheet(for post: ChallengePost) {
-        guard let state = postUIStates[post.postUuid] else { return }
-        state.showCommentSheet.toggle()
-    }
-}
-
-// MARK: - 시간 포맷팅 헬퍼
-func timeAgoString(from isoDateString: String) -> String {
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-    
-    guard let date = formatter.date(from: isoDateString) else {
-        return "알 수 없음"
-    }
-
-    let now = Date()
-    let secondsAgo = Int(now.timeIntervalSince(date))
-    
-    switch secondsAgo {
-    case ..<60:
-        return "방금 전"
-    case 60..<3600:
-        return "\(secondsAgo / 60)분 전"
-    case 3600..<86400:
-        return "\(secondsAgo / 3600)시간 전"
-    case 86400..<172800:
-        return "어제"
-    default:
-        return "\(secondsAgo / 86400)일 전"
+        
+        func toggleLike(for post: ChallengePost) {
+            postUIStates[post.postUuid]?.isLiked.toggle()
+        }
+        
+        func toggleSuspicion(for post: ChallengePost) {
+            postUIStates[post.postUuid]?.isSuspicious.toggle()
+        }
+        
+        func toggleCommentSheet(for post: ChallengePost) {
+            postUIStates[post.postUuid]?.showCommentSheet.toggle()
+        }
     }
 }

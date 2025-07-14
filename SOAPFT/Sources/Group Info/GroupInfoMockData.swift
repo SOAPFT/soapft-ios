@@ -14,7 +14,7 @@ let GroupInfoMockData = ChallengeDetailResponse(
     banner: "https://example.com/banner.png",
     introduce: "이 챌린지는 건강을 위한 모의 챌린지입니다.",
     verificationGuide: "사진을 인증해주세요.",
-    startDate: "2025-07-01T00:00:00.000Z",
+    startDate: "2025-07-14T00:00:00.000Z",
     endDate: "2025-08-01T00:00:00.000Z",
     goal: 3,
     startAge: 20,

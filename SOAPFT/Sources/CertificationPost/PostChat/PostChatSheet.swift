@@ -168,6 +168,32 @@ struct CommentView: View {
     }
 }
 
+// MARK: - 시간 포맷팅 헬퍼
+func timeAgoString(from isoDateString: String) -> String {
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    
+    guard let date = formatter.date(from: isoDateString) else {
+        return "알 수 없음"
+    }
+
+    let now = Date()
+    let secondsAgo = Int(now.timeIntervalSince(date))
+    
+    switch secondsAgo {
+    case ..<60:
+        return "방금 전"
+    case 60..<3600:
+        return "\(secondsAgo / 60)분 전"
+    case 3600..<86400:
+        return "\(secondsAgo / 3600)시간 전"
+    case 86400..<172800:
+        return "어제"
+    default:
+        return "\(secondsAgo / 86400)일 전"
+    }
+}
+
 #Preview {
     PostChatSheet(viewModel: PostChatViewModel(postUuid: "dummy-uuid"))
 }
