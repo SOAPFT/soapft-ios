@@ -59,21 +59,23 @@ struct GoalCompletionRate: View {
                     .font(Font.Pretend.pretendardLight(size: 16))
                 
                 Spacer()
+                
+                Image(systemName:"person.3.sequence.fill")
+                    .font(.system(size: 14))
+                Text("\(currentMember)명 도전 중")
+                    .font(Font.Pretend.pretendardRegular(size: 14))
             }
             .padding()
             
             HStack{
                 Image(systemName:"calendar")
                     .font(.system(size: 14))
-                Text("\(challengeStartDate)~\(challengeEndDate)")
+                Text("\(formatDateRange(start:challengeStartDate,end:challengeEndDate))")
                     .font(Font.Pretend.pretendardLight(size: 14))
                 
                 Spacer()
                 
-                Image(systemName:"person.3.sequence.fill")
-                    .font(.system(size: 14))
-                Text("\(currentMember)명 도전 중")
-                    .font(Font.Pretend.pretendardRegular(size: 14))
+            
             }
             .padding(.horizontal)
             
@@ -90,6 +92,25 @@ struct GoalCompletionRate: View {
                         .stroke(Color.gray.opacity(0.3))
         )
         
+    }
+    
+    // MARK: - 날짜 포맷 변경
+    func formatDateRange(start: String, end: String) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        displayFormatter.dateFormat = "yyyy년 M월 d일"
+
+        if let startDate = formatter.date(from: start),
+           let endDate = formatter.date(from: end) {
+            let startStr = displayFormatter.string(from: startDate)
+            let endStr = displayFormatter.string(from: endDate)
+            return "\(startStr) ~ \(endStr)"
+        } else {
+            return "날짜 형식 오류"
+        }
     }
 }
 

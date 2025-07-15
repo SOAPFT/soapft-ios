@@ -43,8 +43,10 @@ struct CertificationPostNavBar: View {
                         .frame(width: 18, height: 24)
                         .contentShape(Rectangle())
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 10)
+                
             }
+            .padding(.top, 10)
     }
 }
 

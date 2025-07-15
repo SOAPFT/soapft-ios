@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 
 class CertificationPostViewModel: ObservableObject {
-    @Published var posts: [ChallengePost] = []
+    @Published var posts: [Post] = []
     @Published var postUIStates: [String: PostUIState] = [:]
     @Published var isLoading = false
     @Published var hasMore = true
@@ -22,6 +22,8 @@ class CertificationPostViewModel: ObservableObject {
     private let limit: Int = 10
     
     private var cancellables = Set<AnyCancellable>()
+    
+    @Published var commentCounts: [String: Int] = [:]
     
     init(postService: PostService, likeServie: LikeService, challengeId: String){
         self.postService = postService
@@ -56,7 +58,7 @@ class CertificationPostViewModel: ObservableObject {
                         // 상태 추가 (기존 상태는 유지하고 누락된 것만 추가)
                         for post in response.posts {
                             if self.postUIStates[post.postUuid] == nil {
-                                self.postUIStates[post.postUuid] = PostUIState()
+                                self.postUIStates[post.postUuid] = PostUIState.init(postUuid: post.postUuid, likeService: self.likeService)
                             }
                         }
                     case .failure(let error):
@@ -66,17 +68,48 @@ class CertificationPostViewModel: ObservableObject {
                 }
             }
         }
+    }
+
         
-        func toggleLike(for post: ChallengePost) {
-            postUIStates[post.postUuid]?.isLiked.toggle()
+    func toggleLike(for post: Post) {
+        guard let state = postUIStates[post.postUuid],
+              let index = posts.firstIndex(where: { $0.postUuid == post.postUuid }) else { return }
+
+        if state.isLiked {
+            likeService.unlike(postId: post.postUuid) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        state.isLiked = false
+                        self.posts[index].likeCount = response.likeCount
+                    case .failure(let error):
+                        print("❌ 좋아요 취소 실패: \(error)")
+                    }
+                }
+            }
+        } else {
+            likeService.like(postId: post.postUuid) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        state.isLiked = true
+                        self.posts[index].likeCount = response.likeCount
+                    case .failure(let error):
+                        print("❌ 좋아요 추가 실패: \(error)")
+                    }
+                }
+            }
         }
+    }
+    
         
-        func toggleSuspicion(for post: ChallengePost) {
+        func toggleSuspicion(for post: Post) {
             postUIStates[post.postUuid]?.isSuspicious.toggle()
         }
         
-        func toggleCommentSheet(for post: ChallengePost) {
+        func toggleCommentSheet(for post: Post) {
             postUIStates[post.postUuid]?.showCommentSheet.toggle()
         }
-    }
+    
+        
 }

@@ -19,6 +19,7 @@ final class DIContainer: ObservableObject {
     let challengeService: ChallengeService
     let chatService: ChatService
     let friendService: FriendService
+    let commentService: CommentService
 
     init(router: AppRouter) {
         self.router = router
@@ -32,6 +33,7 @@ final class DIContainer: ObservableObject {
         self.challengeService = ChallengeService()
         self.chatService = ChatService()
         self.friendService = FriendService()
+        self.commentService = CommentService()
     }
 }
 

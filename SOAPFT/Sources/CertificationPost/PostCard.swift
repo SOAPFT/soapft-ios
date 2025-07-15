@@ -10,7 +10,7 @@ import SwiftUI
 import Kingfisher
 
 struct PostCardView: View {
-    let post: ChallengePost
+    let post: Post
     let createdTime: String
     @ObservedObject var state: PostUIState
     let toggleLike: () -> Void
@@ -19,6 +19,8 @@ struct PostCardView: View {
     
     @State private var showSuspiciousAlert = false
     @State private var currentImageIndex: Int = 0
+    
+    let commentCount: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -41,7 +43,7 @@ struct PostCardView: View {
 
     private var profileSection: some View {
         HStack {
-            KFImage(URL(string: post.user.profileImage))
+            KFImage(URL(string: post.user.profileImage ?? ""))
                 .placeholder { Circle().fill(Color.gray.opacity(0.3)) }
                 .resizable()
                 .frame(width: 32, height: 32)
@@ -89,15 +91,14 @@ struct PostCardView: View {
 
     private var actionButtons: some View {
         HStack(spacing: 20) {
-            /*
             Button(action: toggleLike) {
-                Label("\(post.likeCount + (state.isLiked ? 1 : 0))", systemImage: state.isLiked ? "heart.fill" : "heart")
+                Label("\(post.likeCount)", systemImage: state.isLiked ? "heart.fill" : "heart")
                     .foregroundStyle(state.isLiked ? .red : .gray)
             }
              
 
             Button(action: toggleComment) {
-                Label("\(post.commentCount)", systemImage: "text.bubble")
+                Label("\(commentCount)", systemImage: "text.bubble")
                     .foregroundStyle(.gray)
             }
 
@@ -113,7 +114,6 @@ struct PostCardView: View {
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 14, height: 14)
-                    Text(state.isSuspicious ? "1" : "0")
                 }
                 .foregroundStyle(state.isSuspicious ? .orange : .gray)
             }
@@ -127,7 +127,6 @@ struct PostCardView: View {
                     secondaryButton: .cancel()
                 )
             }
-             */
         }
         .font(.caption)
     }

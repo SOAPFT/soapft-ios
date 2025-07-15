@@ -22,6 +22,9 @@ enum ChallengeAPI {
     case progress(id: String)
     case leaveChallenge(id: String)
     case monthlyStats(id: String, year: Int, month: Int)
+    case reportPost(postUuid: String)
+    case precheckImages(challengeUuid: String, images: [Data])
+    case createVerifiedPost(parameters: [String: Any])
 }
 
 extension ChallengeAPI: TargetType {
@@ -32,8 +35,8 @@ extension ChallengeAPI: TargetType {
         }
         return url
     }
-
-
+    
+    
     var path: String {
         switch self {
         case .userChallenges:
@@ -60,12 +63,18 @@ extension ChallengeAPI: TargetType {
             return "/api/challenge/\(id)/leave"
         case .monthlyStats(let id, _, _):
             return "/api/challenge/\(id)/stats"
+        case .reportPost(let postUuid):
+            return "/api/post/post/\(postUuid)/report"
+        case .precheckImages:
+            return "/api/post/precheck-images"
+        case .createVerifiedPost:
+            return "/api/post/create-verified"
         }
     }
-
+    
     var method: Moya.Method {
         switch self {
-        case .createChallenge:
+        case .createChallenge,.reportPost, .precheckImages, .createVerifiedPost:
             return .post
         case .updateChallenge:
             return .patch
@@ -77,7 +86,7 @@ extension ChallengeAPI: TargetType {
             return .get
         }
     }
-
+    
     var task: Task {
         switch self {
         case .userChallenges(let status):
@@ -90,20 +99,40 @@ extension ChallengeAPI: TargetType {
             return .requestParameters(parameters: ["year": year, "month": month], encoding: URLEncoding.queryString)
         case .createChallenge(let parameters), .updateChallenge(_, let parameters):
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .reportPost:
+            return .requestPlain
+            
+        case .precheckImages(let challengeUuid, let images):
+            var multipartData = [MultipartFormData]()
+            multipartData.append(MultipartFormData(provider: .data(challengeUuid.data(using: .utf8)!), name: "challengeUuid"))
+            for (index, imageData) in images.enumerated() {
+                multipartData.append(MultipartFormData(provider: .data(imageData), name: "images", fileName: "image\(index).jpg", mimeType: "image/jpeg"))
+            }
+            return .uploadMultipart(multipartData)
+            
+        case .createVerifiedPost(let parameters):
+            return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         default:
             return .requestPlain
         }
     }
-
-    var headers: [String: String]? {
-        return [
-            "accept": "application/json",
-            "Content-Type": "application/json",
+    
+    var headers: [String : String]? {
+        var headers: [String: String] = [
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I"
+            "accept": "application/json",
+            "Content-Type": "application/json"
         ]
+        
+        if let accessToken = KeyChainManager.shared.readAccessToken() {
+            headers["Authorization"] = "Bearer \(accessToken)"
+        } else {
+            print("❌ accessToken 없음: 인증이 필요한 요청입니다.")
+        }
+        
+        return headers
     }
-
+    
     var sampleData: Data {
         return Data()
     }

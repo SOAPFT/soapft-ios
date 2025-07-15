@@ -105,6 +105,29 @@ final class ChallengeService {
                 }
             }
         }
+    
+    // 게시글 신고
+    func reportPost(postUuid: String, completion: @escaping (Result<String, Error>) -> Void) {
+        provider.request(.reportPost(postUuid: postUuid)) { result in
+            self.handleResponse(result, type: ReportResponse.self) {
+                completion($0.map { $0.message })
+            }
+        }
+    }
+
+    // 이미지 사전 AI 검증
+    func precheckImages(challengeUuid: String, images: [Data], completion: @escaping (Result<PrecheckResponse, Error>) -> Void) {
+        provider.request(.precheckImages(challengeUuid: challengeUuid, images: images)) { result in
+            self.handleResponse(result, type: PrecheckResponse.self, completion: completion)
+        }
+    }
+
+    // AI 검증된 이미지로 게시글 생성
+    func createVerifiedPost(parameters: [String: Any], completion: @escaping (Result<CreatePostResponse, Error>) -> Void) {
+        provider.request(.createVerifiedPost(parameters: parameters)) { result in
+            self.handleResponse(result, type: CreatePostResponse.self, completion: completion)
+        }
+    }
 
     // 공통 응답 처리
     private func handleResponse<T: Decodable>(

@@ -10,7 +10,7 @@ import Combine
 
 
 struct ChallengePostData: Decodable {
-    let posts: [ChallengePost]
+    let posts: [Post]
     let pagination: Pagination
 }
 
@@ -33,4 +33,20 @@ class PostUIState: ObservableObject {
     @Published var isLiked: Bool = false
     @Published var isSuspicious: Bool = false
     @Published var showCommentSheet: Bool = false
+
+    init(postUuid: String, likeService: LikeService) {
+        // 좋아요 상태 불러오기
+        likeService.checkLikeStatus(postId: postUuid, completion: { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self?.isLiked = response.liked
+                case .failure(let error):
+                    print("❌ 좋아요 상태 조회 실패: \(error)")
+                }
+            }
+        })
+
+        // 의심 상태 불러오기
+    }
 }
