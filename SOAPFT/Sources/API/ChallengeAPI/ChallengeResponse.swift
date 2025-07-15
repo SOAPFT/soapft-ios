@@ -211,9 +211,7 @@ struct CompletedChallengeCountResponse: Decodable {
 }
 
 // MARK: - 월별 인증 현황 응답
-struct MonthlyVerificationResponse: Decodable {
-    let data: [String: DailyVerification]
-}
+typealias MonthlyVerificationResponse = [String: DailyVerification]
 
 struct DailyVerification: Decodable {
     let count: Int
@@ -223,7 +221,73 @@ struct DailyVerification: Decodable {
 struct VerifiedUser: Decodable {
     let userUuid: String
     let nickname: String
-    let profileImage: String
+    let profileImage: String?
+}
+
+// 게시글 신고 응답
+struct ReportResponse: Decodable {
+    let message: String
+}
+
+// 이미지 AI 검증 응답
+struct PrecheckResponse: Decodable {
+    let success: Bool
+    let message: String
+    let challengeInfo: ChallengeInfo_Precheck
+    let verification: VerificationSummary
+    let images: [VerifiedImage]
+    let verificationToken: String
+    let canCreatePost: Bool
+    let recommendations: [String]
 }
 
 
+struct ChallengeInfo_Precheck: Decodable {
+    let challengeUuid: String
+    let title: String
+    let verificationGuide: String
+}
+
+struct VerificationSummary: Decodable {
+    let overallStatus: String
+    let averageConfidence: Int
+    let totalImages: Int
+    let approvedImages: Int
+    let rejectedImages: Int
+    let reviewImages: Int
+}
+
+struct VerifiedImage: Decodable, Identifiable {
+    var id: String { imageUrl } // SwiftUI ForEach 지원
+    let imageUrl: String
+    let originalName: String
+    let status: String
+    let confidence: Int
+    let reasoning: String?
+    let isRelevant: Bool
+}
+
+// 게시글 생성 응답
+struct CreatePostResponse: Decodable {
+    let success: Bool
+    let message: String
+    let post: CreatedPost
+}
+
+struct CreatedPost: Decodable {
+    let postUuid: String
+    let userUuid: String
+    let challengeUuid: String
+    let content: String
+    let imageUrl: [String]
+    let isPublic: Bool
+    let verificationStatus: String
+    let aiConfidence: Int?
+    let verifiedAt: String?
+    let createdAt: String
+    let updatedAt: String
+    let title: String?
+    let aiAnalysisResult: String?
+    let id: Int
+    let views: Int
+}

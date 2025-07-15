@@ -29,7 +29,6 @@ struct LoginView: View {
                     
                     // 테스트
                     Button(action: {
-                        // 로그인 성공 후 홈으로 이동
                         container.router.push(.mainTabbar)
                     }) {
                        Text("테스트")

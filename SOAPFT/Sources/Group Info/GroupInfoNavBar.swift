@@ -9,7 +9,8 @@ import SwiftUI
 
 struct GroupInfoNavBar: View {
     var notificationCount: Int = 3
-
+    @Environment(\.diContainer) private var container
+    
     var body: some View {
         ZStack {
             // 정중앙 타이틀
@@ -21,7 +22,7 @@ struct GroupInfoNavBar: View {
             HStack {
                 // Back button
                 Button(action: {
-                    // 뒤로가기 액션
+                    container.router.pop()
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 18, weight: .medium))

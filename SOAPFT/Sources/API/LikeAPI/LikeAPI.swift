@@ -9,9 +9,9 @@ import Foundation
 import Moya
 
 enum LikeAPI {
-    case like(postId: String, accessToken: String)
-    case unlike(postId: String, accessToken: String)
-    case checkLikeStatus(postId: String, accessToken: String)
+    case like(postId: String)
+    case unlike(postId: String)
+    case checkLikeStatus(postId: String)
 }
 
 extension LikeAPI: TargetType {
@@ -25,9 +25,9 @@ extension LikeAPI: TargetType {
 
     var path: String {
         switch self {
-        case .like(let postId, _), .unlike(let postId, _):
+        case .like(let postId), .unlike(let postId):
             return "/api/like/\(postId)"
-        case .checkLikeStatus(let postId, _):
+        case .checkLikeStatus(let postId):
             return "/api/like/check/\(postId)"
         }
     }
@@ -51,21 +51,20 @@ extension LikeAPI: TargetType {
     }
 
     var headers: [String : String]? {
-        var headers: [String: String] = [
-            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "accept": "application/json",
-        ]
+            var headers: [String: String] = [
+                "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            ]
 
-        switch self {
-        case .like(_, let accessToken),
-             .unlike(_, let accessToken),
-             .checkLikeStatus(_, let accessToken):
-            headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I"
-            headers["Content-Type"] = "application/json"
+            if let accessToken = KeyChainManager.shared.readAccessToken() {
+                headers["Authorization"] = "Bearer \(accessToken)"
+            } else {
+                print("❌ accessToken 없음: 인증이 필요한 요청입니다.")
+            }
+
+            return headers
         }
-
-        return headers
-    }
 
     var sampleData: Data {
         return Data()

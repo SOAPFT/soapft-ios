@@ -26,6 +26,7 @@ extension ChatAPI: TargetType {
         }
         return url
     }
+    
 
     var path: String {
         switch self {
@@ -119,15 +120,21 @@ extension ChatAPI: TargetType {
         }
     }
 
-    var headers: [String: String]? {
-        return [
-            "Content-Type": "application/json",
-            "accept": "application/json",
-            "Accept-Language": "ko-KR",
-            "User-Agent": "iOS-App",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I"
-        ]
-    }
+    var headers: [String : String]? {
+            var headers: [String: String] = [
+                "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            ]
+
+            if let accessToken = KeyChainManager.shared.readAccessToken() {
+                headers["Authorization"] = "Bearer \(accessToken)"
+            } else {
+                print("❌ accessToken 없음: 인증이 필요한 요청입니다.")
+            }
+
+            return headers
+        }
 
     var sampleData: Data {
         return Data()

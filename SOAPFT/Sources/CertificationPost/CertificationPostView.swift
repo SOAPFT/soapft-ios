@@ -15,13 +15,15 @@ struct CertificationPostViewWrapper: View {
     var body: some View {
         let viewModel = CertificationPostViewModel(postService: container.postService, likeServie: container.likeService, challengeId: ChallengeId)
         CertificationPostView(viewModel: viewModel)
+            .navigationBarBackButtonHidden(true)
     }
 }
 
 struct CertificationPostView: View {
     @StateObject var viewModel: CertificationPostViewModel
-    @State private var selectedPostForComment: ChallengePost?
+    @State private var selectedPostForComment: Post?
 
+    
     var body: some View {
         VStack {
             CertificationPostNavBar()
@@ -37,7 +39,8 @@ struct CertificationPostView: View {
                                 toggleComment: {
                                     selectedPostForComment = post
                                 },
-                                toggleSuspicious: { viewModel.toggleSuspicion(for: post) }
+                                toggleSuspicious: { viewModel.toggleSuspicion(for: post) },
+                                commentCount: viewModel.commentCounts[post.postUuid, default: post.commentCount]
                             )
                         }
                     }
@@ -46,7 +49,10 @@ struct CertificationPostView: View {
             }
         }
         .sheet(item: $selectedPostForComment) { post in
-            PostChatSheet(viewModel: PostChatViewModel(postUuid: post.postUuid))
+            PostchatSheetWrapper(postUuid: post.postUuid) { addedCount in
+                print("💬 댓글 추가 수: \(addedCount)")
+                viewModel.commentCounts[post.postUuid, default: post.commentCount] += addedCount
+            }
         }
         .onAppear {
             viewModel.fetchPosts()

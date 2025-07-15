@@ -8,6 +8,21 @@
 import SwiftUI
 import Kingfisher
 
+struct PostchatSheetWrapper: View{
+    @Environment(\.diContainer) private var container
+    let postUuid: String
+    var onDismiss: ((Int) -> Void)? = nil
+    
+    var body: some View {
+        let viewModel = PostChatViewModel(postUuid: postUuid, commentService: container.commentService)
+        PostChatSheet(viewModel: viewModel)
+            .onDisappear {
+                onDismiss?(viewModel.commentAddedCount)  // ✅ 사라질 때 값 넘김
+            }
+    }
+}
+
+
 struct PostChatSheet: View {
     @ObservedObject var viewModel: PostChatViewModel
     @State private var newCommentText: String = ""
@@ -24,7 +39,9 @@ struct PostChatSheet: View {
 
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(viewModel.comments) { comment in
+                    ForEach(viewModel.comments.indices, id: \.self) { index in
+                        let comment = viewModel.comments[index]
+                        
                         CommentView(
                             comment: comment,
                             isReplying: replyingToCommentId == comment.id,
@@ -42,10 +59,24 @@ struct PostChatSheet: View {
                                 replyingToCommentId = comment.id
                             }
                         )
+                        .onAppear {
+                            /// 마지막 댓글일 때만 다음 페이지 호출
+                            if index == viewModel.comments.count - 1 && viewModel.hasMore {
+                                viewModel.fetchComments()
+                            }
+                        }
+
                         Divider().padding(.vertical, 8)
                     }
                 }
             }
+            .onAppear {
+                /// 최초 진입 시 1페이지 로드
+                if viewModel.comments.isEmpty {
+                    viewModel.fetchComments()
+                }
+            }
+
 
             Divider()
 
@@ -69,7 +100,7 @@ struct PostChatSheet: View {
             .padding()
         }
         .onAppear {
-            viewModel.loadMockData()
+            viewModel.fetchComments()
         }
     }
 }
@@ -85,7 +116,7 @@ struct CommentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 8) {
-                KFImage(URL(string: comment.author.profileImage))
+                KFImage(URL(string: comment.user.profileImage ?? ""))
                     .placeholder { Circle().fill(Color.gray) }
                     .resizable()
                     .frame(width: 30, height: 30)
@@ -93,7 +124,7 @@ struct CommentView: View {
 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(comment.author.nickname)
+                        Text(comment.user.nickname)
                             .font(.subheadline).bold()
                         Text(
                             comment.updatedAt != comment.createdAt
@@ -110,14 +141,14 @@ struct CommentView: View {
                 .font(.body)
                 .padding(.horizontal, 40)
 
-            ForEach(comment.replies) { reply in
+            ForEach(comment.children ?? []) { reply in
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "arrow.turn.down.left")
                         .scaleEffect(x: -1, y: 1) // 좌우 반전
                         .font(.caption)
                         .foregroundStyle(.gray)
 
-                    KFImage(URL(string: reply.author.profileImage))
+                    KFImage(URL(string: reply.user.profileImage ?? ""))
                         .placeholder { Circle().fill(Color.gray) }
                         .resizable()
                         .frame(width: 30, height: 30)
@@ -125,7 +156,7 @@ struct CommentView: View {
 
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(reply.author.nickname)
+                            Text(reply.user.nickname)
                                 .font(.subheadline).bold()
                             Text(
                                 "· \(timeAgoString(from: reply.createdAt))"
@@ -195,5 +226,5 @@ func timeAgoString(from isoDateString: String) -> String {
 }
 
 #Preview {
-    PostChatSheet(viewModel: PostChatViewModel(postUuid: "dummy-uuid"))
+
 }

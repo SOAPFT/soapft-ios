@@ -74,7 +74,7 @@ struct GroupTabbarView: View {
                     .tag("Info")
                 ChallengeStatisticsWrapper(challenge: Challenge)
                     .tag("Status")
-                UploadCertificationView()
+                UploadCertificationViewWrapper(challengeUuid: Challenge.challengeUuid)
                     .tag("Check")
                 CertificationPostViewWrapper(ChallengeId: Challenge.challengeUuid)
                     .tag("List")
