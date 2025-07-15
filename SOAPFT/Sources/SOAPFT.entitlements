@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 푸시 알림 (APNs) -->
+    <key>aps-environment</key>
+    <string>development</string> <!-- 또는 production -->
+    
+    <!-- (이미 있다면) HealthKit 등 추가 권한도 여기에 함께 유지 -->
+    <key>com.apple.developer.healthkit</key>
+    <true/>
+</dict>
+</plist>

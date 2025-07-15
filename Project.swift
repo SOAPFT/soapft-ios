@@ -28,6 +28,15 @@ let project = Project(
                         "UIColorName": "",
                         "UIImageName": ""
                     ],
+                    // 🔑 HealthKit 권한 설명 추가
+                    "NSHealthShareUsageDescription": "이 앱은 걸음 수, 칼로리, 운동 거리 등의 건강 데이터를 표시하기 위해 HealthKit 데이터를 읽습니다.",
+                    
+                    // ✅ Push 알림 관련 백그라운드 모드
+                    "UIBackgroundModes": [
+                        "remote-notification"
+                    ],
+
+                    
                     // ✅ Secret.xcconfig에서 가져올 값들
                     "API_URL": "$(API_URL)",
                     "Kakao_AppKey": "$(Kakao_AppKey)",
@@ -50,7 +59,10 @@ let project = Project(
                 .package(product: "Lottie"),
                 .package(product: "Kingfisher"),
                 .package(product: "NidThirdPartyLogin")
-            ]
+            ],
+            settings: .settings(base: [
+                "CODE_SIGN_ENTITLEMENTS": "SOAPFT/Sources/SOAPFT.entitlements"
+            ])
         ),
         .target(
             name: "SOAPFTTests",
