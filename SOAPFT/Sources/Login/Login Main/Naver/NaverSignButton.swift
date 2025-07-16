@@ -48,7 +48,7 @@ struct NaverSignButton: View {
     private func callNaverLoginAPI(with token: String) {
         let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
         let deviceType = "IOS"
-        let pushToken = UserDefaults.standard.string(forKey: "pushToken") ?? "dummyPushToken"
+        let pushToken = UserDefaults.standard.string(forKey: "device_token") ?? "dummyPushToken"
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         
         container.authService.naverLogin(accessToken: token, deviceId: deviceId, deviceType: deviceType, pushToken: pushToken, appVersion: appVersion) { result in

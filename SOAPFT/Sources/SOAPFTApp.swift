@@ -5,7 +5,6 @@ import KakaoSDKAuth
 @main
 struct SOAPFTApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
     @StateObject private var router = AppRouter()
     // DIContainer 인스턴스 생성
     private var container: DIContainer
