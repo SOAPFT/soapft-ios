@@ -7,6 +7,22 @@
 
 import SwiftUI
 
+
+
+
+struct ChallengeSignUpWrapper: View {
+    @Environment(\.diContainer) private var container
+    let challengeUuid: String
+
+    var body: some View {
+        let viewModel = ChallengeSignUpViewModel(challengeService: container.challengeService, id: challengeUuid)
+        ChallengeSignUpView(viewModel: viewModel)
+            .navigationBarBackButtonHidden(true)
+    }
+}
+
+
+
 struct ChallengeSignUpView: View {
     @StateObject var viewModel: ChallengeSignUpViewModel
     @State private var showJoinSheet: Bool = false
@@ -69,7 +85,7 @@ struct ChallengeSignUpView: View {
                     infoRow(title: "목표", value: "주 \(viewModel.challenge.goal)회 인증")
                     infoRow(title: "인원", value: "\(viewModel.challenge.currentMembers)/\(viewModel.challenge.maxMember)명")
                     infoRow(title: "성별", value: viewModel.challenge.gender == "ALL" ? "제한 없음" : viewModel.challenge.gender)
-                    infoRow(title: "나이", value: "\(viewModel.challenge.startAge)대")
+                    infoRow(title: "나이", value: "\(viewModel.challenge.startAge ?? 0)세 ~ \(viewModel.challenge.endAge.map { "\($0)세" } ?? "제한 없음")")
                     infoRow(title: "참여 코인", value: "\(viewModel.challenge.coinAmount)개")
                 }
                 .padding()
@@ -139,5 +155,5 @@ struct ChallengeSignUpView: View {
 
 
 #Preview {
-    ChallengeSignUpView(viewModel: ChallengeSignUpViewModel(mockData: GroupInfoMockData))
+    
 }

@@ -83,8 +83,8 @@ struct ChallengeDetailResponse: Decodable {
     let startDate: String
     let endDate: String
     let goal: Int
-    let startAge: Int
-    let endAge: Int
+    let startAge: Int?
+    let endAge: Int?
     let gender: String
     let maxMember: Int
     let creatorUuid: String

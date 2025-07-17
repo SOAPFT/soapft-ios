@@ -11,12 +11,37 @@ import Combine
 
 
 final class ChallengeSignUpViewModel: ObservableObject {
-    @Published var challenge: ChallengeDetailResponse
+    @Published var challenge: ChallengeDetailResponse = .errorMock
     @Published var isJoinCompleted: Bool = false
     @Published var errorMessage: String? = nil
+    @Published var creator: Participant?
+    
+    // 챌린지 API 서비스
+    private let challengeService: ChallengeService
+    // 챌린지 ID
+    @Published var id: String
 
-    init(mockData: ChallengeDetailResponse) {
-        self.challenge = mockData
+    init(challengeService: ChallengeService, id: String) {
+        self.challengeService = challengeService
+        self.id = id
+        
+        self.challengeService.getChallengeDetail(id: id) { [weak self] (result: Result<ChallengeDetailResponse, Error>) in
+                    guard let self = self else { return }
+
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(var challenge):
+                            // creatorUuid와 일치하는 participant를 찾아서 pop
+                            if let index = challenge.participants.firstIndex(where: { $0.userUuid == challenge.creatorUuid }) {
+                                self.creator = challenge.participants.remove(at: index)
+                            }
+
+                            self.challenge = challenge
+                        case .failure(let error):
+                            print("챌린지 불러오기 실패: \(error)")
+                        }
+                    }
+                }
     }
 
     // 가입 가능한 상태인지 판단
@@ -36,4 +61,5 @@ final class ChallengeSignUpViewModel: ObservableObject {
         isJoinCompleted = true
     }
 }
+
 
