@@ -100,33 +100,19 @@ extension PostAPI: TargetType {
         }
     }
 
-    var headers: [String: String]? {
-        var baseHeaders: [String: String] = [
-            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-            "accept": "application/json"
-        ]
-        
-        // accessToken을 각 케이스에서 추출
-        let token: String? = {
-            switch self {
-            case let .createPost(_, _, _, _, _, token),
-                 let .getMyPosts(_, _, token),
-                 let .getCalendar(_, _, token),
-                 let .getUserCalendar(_, _, _, token),
-                 let .getUserPosts(_, _, _, token),
-                 let .getPostDetail(_, token),
-                 let .updatePost(_, _, _, _, _, token),
-                 let .deletePost(_, token),
-                 let .getChallengePosts(_, _, _, token):
-                return token
+    var headers: [String : String]? {
+            var headers: [String: String] = [
+                "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            ]
+
+            if let accessToken = KeyChainManager.shared.readAccessToken() {
+                headers["Authorization"] = "Bearer \(accessToken)"
+            } else {
+                print("❌ accessToken 없음: 인증이 필요한 요청입니다.")
             }
-        }()
 
-        if let token {
-            baseHeaders["Authorization"] = "Bearer \(token)"
-            baseHeaders["Content-Type"] = "application/json"
+            return headers
         }
-
-        return baseHeaders
-    }
 }

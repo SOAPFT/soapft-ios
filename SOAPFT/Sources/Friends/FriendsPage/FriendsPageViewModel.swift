@@ -155,4 +155,26 @@ final class FriendsPageViewModel: ObservableObject {
             }
         }
     }
+    
+    // 채팅방 생성
+    func createChatRoom() {
+        let chatService = ChatService()
+        let type = "DIRECT"
+        let participants = [userUUID]
+        let name = "\(nickname)님과의 대화"
+        let challengeUuid = ""
+        
+        chatService.createRoom(type: type, participantUuids: participants, name: name, challengeUuid: challengeUuid) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    print("✅ 채팅방 생성 성공")
+                    print("Room UUID: \(response.roomUuid)")
+                    print("Participants: \(response.participants)")
+                case .failure(let error):
+                    print("❌ 채팅방 생성 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
 }

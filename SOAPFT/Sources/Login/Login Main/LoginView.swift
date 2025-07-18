@@ -27,7 +27,7 @@ struct LoginView: View {
                             .font(Font.Pretend.pretendardSemiBold(size: 18))
                             .foregroundStyle(Color.white)
                     }
-                    
+                            
                     VStack(spacing: 20) {
                         Spacer()
                         // 카카오 로그인
@@ -39,18 +39,16 @@ struct LoginView: View {
                         // Apple 로그인
                         
                         // 테스트
-                        //                    Button(action: {
-                        //                        // 로그인 성공 후 홈으로 이동
-                        //                        container.router.push(.mainTabbar)
-                        //                    }) {
-                        //                       Text("테스트")
-                        //                    }
+                        Button(action: {
+                            container.router.push(.mainTabbar)
+                        }) {
+                            Text("테스트")
+                        }
                     }
-                    .padding(.bottom, 30)
                 }
             }
+            .navigationBarBackButtonHidden()
         }
-        .navigationBarBackButtonHidden()
     }
 }
 

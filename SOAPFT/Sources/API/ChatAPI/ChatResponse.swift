@@ -33,7 +33,7 @@ struct ChatRoomCreationResponse: Decodable {
     let roomUuid: String
     let type: String
     let name: String
-    let participantUuids: [String]
+    let participants: [ChatParticipant]
     let challengeUuid: String
     let lastMessage: ChatRoomLastMessage?
     let lastMessageAt: String?

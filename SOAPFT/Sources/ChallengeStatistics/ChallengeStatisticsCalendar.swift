@@ -24,8 +24,6 @@ struct CalenderView: View {
     let certifiedCount: [Date: Int]
     let certifiedMembers: [Date: [Member]]
 
-    @State private var anchorMap: [Date: Anchor<CGPoint>] = [:]
-
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("멤버의 ") + Text("인증 현황").bold() + Text("을\n확인해 보세요!")
@@ -35,9 +33,11 @@ struct CalenderView: View {
                     .overlayPreferenceValue(CellPositionPreferenceKey.self) { preferences in
                         GeometryReader { geo in
                             if let date = selectedDate,
-                               let anchor = preferences[date],
-                               let members = certifiedMembers[date] {
+                               let anchorEntry = preferences.first(where: { Calendar.current.isDate($0.key, equalTo: date, toGranularity: .day) }),
+                               let membersEntry = certifiedMembers.first(where: { Calendar.current.isDate($0.key, equalTo: date, toGranularity: .day) }) {
 
+                                let anchor = anchorEntry.value
+                                let members = membersEntry.value
                                 let center = geo[anchor]
                                 let popupWidth: CGFloat = 220
                                 let popupHeight: CGFloat = CGFloat(50 + members.count * 40)
@@ -81,7 +81,6 @@ struct CalenderView: View {
                                         .shadow(color: .black.opacity(0.2), radius: 4)
                                 )
                                 .position(x: safeX, y: safeY)
-
                             }
                         }
                     }
@@ -139,23 +138,25 @@ struct CalenderView: View {
                     if index < firstWeekday {
                         Color.clear.frame(height: 40)
                     } else {
-                        let date = getDate(for: index - firstWeekday)
-                        let day = index - firstWeekday + 1
-                        let count = certifiedCount[date] ?? 0
+                        let rawDate = getDate(for: index - firstWeekday)
+                        let count = certifiedCount.first(where: { Calendar.current.isDate($0.key, equalTo: rawDate, toGranularity: .day) })?.value ?? 0
 
-                        CellView(day: day, certified: count)
+                        CellView(day: index - firstWeekday + 1, certified: count)
                             .anchorPreference(key: CellPositionPreferenceKey.self, value: .center) {
-                                [date: $0]
+                                [rawDate: $0]
                             }
                             .onTapGesture {
-                                selectedDate = count > 0 ? date : nil
+                                if count > 0 {
+                                    selectedDate = rawDate
+                                } else {
+                                    selectedDate = nil
+                                }
                             }
                     }
                 }
             }
         }
     }
-
 
     private var legendView: some View {
         HStack(spacing: 4) {
@@ -196,6 +197,7 @@ struct CalenderView: View {
 
     static let weekdaySymbols = Calendar.current.shortStandaloneWeekdaySymbols
 }
+
 
 private struct CellView: View {
     let day: Int

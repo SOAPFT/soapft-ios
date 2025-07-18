@@ -16,7 +16,7 @@ final class ChallengeStatisticsViewModel: ObservableObject {
 
     // 챌린지
     @Published var challenge: ChallengeDetailResponse
-    @Published var monthlyVerification: MonthlyVerificationResponse = MonthlyVerificationResponse(data: [:])
+    @Published var monthlyVerification: [String: DailyVerification] = [:]
     @Published var data: ChallengeStatisticsData
     @Published var year: Int
     @Published var month: Int
@@ -84,16 +84,24 @@ final class ChallengeStatisticsViewModel: ObservableObject {
                 switch result {
                 case .success(let verification):
                     self.monthlyVerification = verification
+                    print(verification)
 
-                    for (dateString, daily) in verification.data {
-                        if let date = isoFormatter.date(from: dateString) {
-                            certifiedCount[date] = daily.count
-                            certifiedMembers[date] = daily.users.map {
-                                Member(id: $0.userUuid, name: $0.nickname, profileImage: $0.profileImage)
+                    let formatter = DateFormatter()
+                    formatter.locale = Locale(identifier: "en_US_POSIX")
+                    formatter.dateFormat = "yyyy-MM-dd"
+
+                    for (dateString, daily) in verification {
+                        if let date = formatter.date(from: dateString) {
+                            let normalizedDate = Calendar.current.startOfDay(for: date)
+                            certifiedCount[normalizedDate] = daily.count
+                            certifiedMembers[normalizedDate] = daily.users.map {
+                                Member(id: $0.userUuid, name: $0.nickname, profileImage: $0.profileImage ?? "")
                             }
+                        } else {
+                            print("날짜 파싱 실패: \(dateString)")
                         }
                     }
-
+                    
                     self.data = ChallengeStatisticsData(
                         goalCompletionRate: self.progress,
                         challengeStartDate: challenge.startDate,
@@ -103,6 +111,8 @@ final class ChallengeStatisticsViewModel: ObservableObject {
                         certifiedCount: certifiedCount,
                         certifiedMembers: certifiedMembers
                     )
+                    
+                    print(self.data)
 
                 case .failure(let error):
                     print("월별 인증 현황 로드 실패: \(error)")
@@ -120,5 +130,12 @@ final class ChallengeStatisticsViewModel: ObservableObject {
         }
 
 
+    }
+}
+
+
+extension Date {
+    var dateOnly: Date {
+        Calendar.current.startOfDay(for: self)
     }
 }

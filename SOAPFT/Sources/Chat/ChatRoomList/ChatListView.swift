@@ -13,6 +13,7 @@ struct ChatListWrapper: View {
     var body: some View {
         let viewModel = ChatListViewModel(chatService: container.chatService, userService: container.userService)
         ChatListView(viewModel: viewModel)
+            .navigationBarBackButtonHidden(true)
         
     }
 }

@@ -5,12 +5,14 @@ import KakaoSDKAuth
 @main
 struct SOAPFTApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
     @StateObject private var router = AppRouter()
     // DIContainer 인스턴스 생성
     private var container: DIContainer
     
     init() {
+        // 테스트 계정용
+        KeyChainManager.shared.save("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyNDMyOTY4LCJleHAiOjE3NTUwMjQ5Njh9.hQIIndKOAYVbvTzMqJ0fxLiaYj71-eUIsO-xkydAo2I", forKey: KeyChainKey.accessToken)
+        
         // kakao sdk 초기화
         let kakaoNativeAppKey = (Bundle.main.object(forInfoDictionaryKey: "Kakao_AppKey") as? String) ?? ""
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)

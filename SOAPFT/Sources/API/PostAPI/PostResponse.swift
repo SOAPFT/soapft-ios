@@ -14,7 +14,7 @@ struct PostResponseDTO: Decodable {
 
     struct Post: Decodable {
         let postUuid: String
-        let title: String
+        let title: String?
         let userUuid: String
         let challengeUuid: String
         let content: String
@@ -127,28 +127,13 @@ struct ChallengePostsResponseDTO: Decodable {
     let total: Int
     let page: Int
     let limit: Int
-    let posts: [ChallengePost]
-}
-
-struct ChallengePost: Decodable, Identifiable {
-    let id: Int
-    let postUuid: String
-    let title: String
-    let userUuid: String
-    let challengeUuid: String
-    let content: String
-    let imageUrl: [String]
-    let isPublic: Bool
-    let views: Int
-    let createdAt: String
-    let updatedAt: String
-    let user: User
+    let posts: [Post]
 }
 
 struct User: Decodable {
     let userUuid: String
     let nickname: String
-    let profileImage: String
+    let profileImage: String?
 }
 
 // MARK: - 공통 Post 모델
@@ -156,7 +141,7 @@ struct User: Decodable {
 struct Post: Decodable, Identifiable {
     let id: Int
     let postUuid: String
-    let title: String
+    let title: String?
     let userUuid: String?
     let challengeUuid: String?
     let content: String
@@ -165,5 +150,12 @@ struct Post: Decodable, Identifiable {
     let views: Int?
     let createdAt: String
     let updatedAt: String
+    let verificationStatus: String?
+    let aiConfidence: String?
+    let aiAnalysisResult: String?
+    let verifiedAt: String?
+    var likeCount: Int
+    let commentCount: Int
+    let user: User
 }
 

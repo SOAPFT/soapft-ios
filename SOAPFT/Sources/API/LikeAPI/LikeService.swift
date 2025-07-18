@@ -19,22 +19,22 @@ final class LikeService {
     init() {}
 
     // MARK: - Add Like
-    func like(postId: String, accessToken: String, completion: @escaping (Result<LikeAddResponseDTO, Error>) -> Void) {
-        provider.request(.like(postId: postId, accessToken: accessToken)) { result in
+    func like(postId: String, completion: @escaping (Result<LikeAddResponseDTO, Error>) -> Void) {
+        provider.request(.like(postId: postId)) { result in
             self.handleResponse(result, completion: completion)
         }
     }
 
     // MARK: - Cancel Like
-    func unlike(postId: String, accessToken: String, completion: @escaping (Result<LikeCancelResponseDTO, Error>) -> Void) {
-        provider.request(.unlike(postId: postId, accessToken: accessToken)) { result in
+    func unlike(postId: String, completion: @escaping (Result<LikeCancelResponseDTO, Error>) -> Void) {
+        provider.request(.unlike(postId: postId)) { result in
             self.handleResponse(result, completion: completion)
         }
     }
 
     // MARK: - Check Like Status
-    func checkLikeStatus(postId: String, accessToken: String, completion: @escaping (Result<LikeStatusResponseDTO, Error>) -> Void) {
-        provider.request(.checkLikeStatus(postId: postId, accessToken: accessToken)) { result in
+    func checkLikeStatus(postId: String, completion: @escaping (Result<LikeStatusResponseDTO, Error>) -> Void) {
+        provider.request(.checkLikeStatus(postId: postId)) { result in
             self.handleResponse(result, completion: completion)
         }
     }

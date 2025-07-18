@@ -52,18 +52,14 @@ struct ChallengeItemView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(challenge.title)
                     .font(.headline)
-                    .lineLimit(1)
-
-                Text("그룹 소개글")
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color.black)
                     .lineLimit(1)
 
                 HStack {
                     Image(systemName: "person.fill")
                         .font(.caption)
                         .foregroundStyle(.gray)
-                    Text("\(challenge.currentMembers)/\(challenge.maxMember)")
+                    Text("\(challenge.currentMembers ?? 0 )/\(challenge.maxMember)")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }

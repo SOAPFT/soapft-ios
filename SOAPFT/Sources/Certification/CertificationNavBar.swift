@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct CertificationNavBar: View {
+    @Environment(\.diContainer) private var container
+    
     var body: some View {
         ZStack {
             HStack {
-                Button(action: { }) {
+                Button(action: { container.router.pop() }) {
                     Image(systemName: "chevron.left")
                         .foregroundStyle(.black)
                         .font(.system(size: 18))
@@ -22,7 +24,7 @@ struct CertificationNavBar: View {
             Text("인증하기")
                 .font(Font.Pretend.pretendardBold(size: 16))
         }
-        .padding()
+        .padding(.horizontal)
     }
 }
 

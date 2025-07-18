@@ -83,6 +83,7 @@ struct HomeWrapper: View {
     var body: some View {
         let viewModel = HomeViewModel(challengeService: container.challengeService)
         Home(viewModel: viewModel)
+            .navigationBarBackButtonHidden(true)
     }
 }
 

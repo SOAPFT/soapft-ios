@@ -18,6 +18,7 @@ struct GroupInfoWrapper: View {
             challengeService: container.challengeService,
             id: challenge.challengeUuid
         ))
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -48,7 +49,6 @@ struct GroupInfoView: View {
                 }
                 .padding(.top)
             }
-            .navigationTitle("챌린지 정보")
             .navigationBarTitleDisplayMode(.inline)
 
     }
@@ -77,7 +77,7 @@ struct BasicInfoSection: View {
                 .font(.title2.bold())
 
             VStack(alignment: .leading, spacing: 4) {
-                InfoRow(title: "기간", value: "\(challenge.startDate) ~ \(challenge.endDate)")
+                InfoRow(title: "기간", value: formatDateRange(start: challenge.startDate, end: challenge.endDate))
                 InfoRow(title: "목표", value: "주 \(challenge.goal)회 활동")
                 InfoRow(title: "인원", value: "\(challenge.currentMembers)/\(challenge.maxMember)명")
                 InfoRow(title: "성별", value: genderString(challenge.gender))
@@ -93,6 +93,25 @@ struct BasicInfoSection: View {
         case "MALE": return "남성"
         case "FEMALE": return "여성"
         default: return "전체"
+        }
+    }
+    
+    // MARK: - 날짜 포맷 변경
+    func formatDateRange(start: String, end: String) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        displayFormatter.dateFormat = "yyyy년 M월 d일"
+
+        if let startDate = formatter.date(from: start),
+           let endDate = formatter.date(from: end) {
+            let startStr = displayFormatter.string(from: startDate)
+            let endStr = displayFormatter.string(from: endDate)
+            return "\(startStr) ~ \(endStr)"
+        } else {
+            return "날짜 형식 오류"
         }
     }
 }
