@@ -8,8 +8,9 @@ class AlertsViewModel: ObservableObject {
     
     private var currentPage = 1
     private let pageLimit = 20
+    private var unreadOnly: Bool = false
     
-    func fetchAlerts(unreadOnly: Bool = false) {
+    func fetchAlerts() {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
             print("❌ accessToken 없음")
             return

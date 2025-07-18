@@ -45,7 +45,7 @@ let project = Project(
                     "NidClientSecret": "$(NidClientSecret)",
                     "NidAppName": "SOAPFT",
                     "NidServiceAppUrlScheme": "naver.$(NidClientID)",
-                    "NidUrlScheme": "naver.$(NidClientID)",
+                    "NidUrlScheme": "$(NidUrlScheme)",
                     
                     
                 ]
