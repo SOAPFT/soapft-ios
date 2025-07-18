@@ -29,6 +29,8 @@ struct ChatListView: View {
 
     
     var body: some View {
+        VStack {
+            ChatListNavBar()
             Group {
                 if let currentUserUuid = viewModel.userUuid {
                     ScrollView {
@@ -44,6 +46,7 @@ struct ChatListView: View {
                     ProgressView("사용자 정보 로딩 중...")
                 }
             }
+        }
     }
 }
 

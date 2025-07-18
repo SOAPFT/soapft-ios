@@ -77,6 +77,8 @@ struct SOAPFTApp: App {
                             ChatRoomWrapper(currentUserUuid: currentUserUuid, roomId: roomId, chatRoomName: chatRoomName)
                         case .ChatListWrapper:
                             ChatListWrapper()
+                        case .challengeSignUpWrapper(let challengeId):
+                            ChallengeSignUpWrapper(challengeUuid: challengeId)
                         }
                     }
                     .onOpenURL { url in

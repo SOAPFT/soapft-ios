@@ -44,9 +44,30 @@ final class ChallengeService {
     // 챌린지 참여
     func joinChallenge(id: String, completion: @escaping (Result<ChallengeJoinResponse, Error>) -> Void) {
         provider.request(.joinChallenge(id: id)) { result in
-            self.handleResponse(result, type: ChallengeJoinResponse.self, completion: completion)
+            switch result {
+            case .success(let response):
+                if (200..<300).contains(response.statusCode) {
+                    do {
+                        let decoded = try JSONDecoder().decode(ChallengeJoinResponse.self, from: response.data)
+                        completion(.success(decoded))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                } else {
+                    let apiError = NSError(
+                        domain: "JoinChallengeAPI",
+                        code: response.statusCode,
+                        userInfo: ["data": response.data]
+                    )
+                    completion(.failure(apiError))
+                }
+
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
+
 
     // 챌린지 탈퇴
     func leaveChallenge(id: String, completion: @escaping (Result<ChallengeLeaveResponse, Error>) -> Void) {

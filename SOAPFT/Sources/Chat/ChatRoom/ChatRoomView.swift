@@ -16,6 +16,7 @@ struct ChatRoomWrapper: View {
     var body: some View {
         let viewModel = ChatRoomViewModel(roomId: roomId, currentUserUuid: currentUserUuid,chatService: container.chatService)
         ChatRoomView(viewModel: viewModel, chatRoomName: chatRoomName)
+            .navigationBarBackButtonHidden(true)
     }
 }
 

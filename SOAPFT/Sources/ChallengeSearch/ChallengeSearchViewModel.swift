@@ -22,12 +22,12 @@ final class ChallengeSearchViewModel: ObservableObject {
             .removeDuplicates()
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .sink { [weak self] keyword in
-                self?.fetchChallenges(keyword: keyword)
+                self?.fetchSearchChallenges(keyword: keyword)
             }
             .store(in: &cancellables)
     }
 
-    private func fetchChallenges(keyword: String) {
+    func fetchSearchChallenges(keyword: String) {
         let trimmed = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
             self.filteredChallenges = []

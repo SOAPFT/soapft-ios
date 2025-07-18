@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ChallengeSearchNavBar: View {
+    @Environment(\.diContainer) private var container
+    
     var body: some View {
         ZStack {
             HStack {
-                Button(action: { }) {
+                Button(action: { container.router.pop()  }) {
                     Image(systemName: "chevron.left")
                         .foregroundStyle(.black)
                         .font(.system(size: 18))
@@ -19,7 +21,7 @@ struct ChallengeSearchNavBar: View {
                 Spacer()
             }
 
-            Text("인증하기")
+            Text("챌린지 검색")
                 .font(Font.Pretend.pretendardBold(size: 16))
         }
         .padding()

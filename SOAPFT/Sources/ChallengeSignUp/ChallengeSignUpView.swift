@@ -7,10 +7,46 @@
 
 import SwiftUI
 
+
+
+
+struct ChallengeSignUpWrapper: View {
+    @Environment(\.diContainer) private var container
+    let challengeUuid: String
+
+    var body: some View {
+        let viewModel = ChallengeSignUpViewModel(challengeService: container.challengeService, navigationRouter: container.router, id: challengeUuid)
+        ChallengeSignUpView(viewModel: viewModel)
+            .navigationBarBackButtonHidden(true)
+    }
+}
+
+
+
 struct ChallengeSignUpView: View {
     @StateObject var viewModel: ChallengeSignUpViewModel
     @State private var showJoinSheet: Bool = false
+    @State private var showToast = false
+    
+    // MARK: - 날짜 포맷 변경
+    func formatDateRange(start: String, end: String) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
+        let displayFormatter = DateFormatter()
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        displayFormatter.dateFormat = "yyyy년 M월 d일"
+
+        if let startDate = formatter.date(from: start),
+           let endDate = formatter.date(from: end) {
+            let startStr = displayFormatter.string(from: startDate)
+            let endStr = displayFormatter.string(from: endDate)
+            return "\(startStr) ~ \(endStr)"
+        } else {
+            return "날짜 형식 오류"
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -65,11 +101,11 @@ struct ChallengeSignUpView: View {
 
                 // 3. 요약 정보
                 VStack(alignment: .leading, spacing: 8) {
-                    infoRow(title: "기간", value: "\(viewModel.challenge.startDate) ~ \(viewModel.challenge.endDate)")
+                    infoRow(title: "기간", value: "\(formatDateRange(start: viewModel.challenge.startDate, end: viewModel.challenge.endDate))")
                     infoRow(title: "목표", value: "주 \(viewModel.challenge.goal)회 인증")
                     infoRow(title: "인원", value: "\(viewModel.challenge.currentMembers)/\(viewModel.challenge.maxMember)명")
                     infoRow(title: "성별", value: viewModel.challenge.gender == "ALL" ? "제한 없음" : viewModel.challenge.gender)
-                    infoRow(title: "나이", value: "\(viewModel.challenge.startAge)대")
+                    infoRow(title: "나이", value: "\(viewModel.challenge.startAge ?? 0)세 ~ \(viewModel.challenge.endAge.map { "\($0)세" } ?? "제한 없음")")
                     infoRow(title: "참여 코인", value: "\(viewModel.challenge.coinAmount)개")
                 }
                 .padding()
@@ -119,8 +155,34 @@ struct ChallengeSignUpView: View {
             }
             .padding()
         }
+        .onChange(of: viewModel.toastMessage) { oldmessage, message in
+            if message != nil {
+                withAnimation {
+                    showToast = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation {
+                        showToast = false
+                        viewModel.toastMessage = nil
+                    }
+                }
+            }
+        }
+        .overlay(
+            Group {
+                if showToast, let message = viewModel.toastMessage {
+                    Text(message)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(Color.black.opacity(0.75))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .padding(.top, 60)
+                }
+            }, alignment: .top
+        )
         .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("그룹 정보")
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -139,5 +201,5 @@ struct ChallengeSignUpView: View {
 
 
 #Preview {
-    ChallengeSignUpView(viewModel: ChallengeSignUpViewModel(mockData: GroupInfoMockData))
+    
 }

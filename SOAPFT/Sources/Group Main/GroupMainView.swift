@@ -31,7 +31,7 @@ struct GroupMainView: View {
                     }
                 })
                 
-                NavigationLink(destination: ChallengeSearchWrapper()) {
+                Button(action: {container.router.push(.ChallengeSearchWrapper)}) {
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(.black)
                         .font(.system(size: 18))

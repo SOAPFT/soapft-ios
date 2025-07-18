@@ -81,7 +81,7 @@ struct BasicInfoSection: View {
                 InfoRow(title: "목표", value: "주 \(challenge.goal)회 활동")
                 InfoRow(title: "인원", value: "\(challenge.currentMembers)/\(challenge.maxMember)명")
                 InfoRow(title: "성별", value: genderString(challenge.gender))
-                InfoRow(title: "나이", value: "\(challenge.startAge)세 ~ \(challenge.endAge)세")
+                InfoRow(title: "나이", value: "\(challenge.startAge ?? 0)세 ~ \(challenge.endAge.map { "\($0)세" } ?? "제한 없음")")
             }
         }
         .padding(.horizontal)

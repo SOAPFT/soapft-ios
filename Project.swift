@@ -30,6 +30,7 @@ let project = Project(
                     ],
                     // 🔑 HealthKit 권한 설명 추가
                     "NSHealthShareUsageDescription": "이 앱은 걸음 수, 칼로리, 운동 거리 등의 건강 데이터를 표시하기 위해 HealthKit 데이터를 읽습니다.",
+                    "NSHealthUpdateUsageDescription": "이 앱은 건강 데이터를 기록하거나 수정하기 위해 HealthKit 접근이 필요합니다.",
                     
                     // ✅ Push 알림 관련 백그라운드 모드
                     "UIBackgroundModes": [
@@ -61,7 +62,8 @@ let project = Project(
                 .package(product: "NidThirdPartyLogin")
             ],
             settings: .settings(base: [
-                "CODE_SIGN_ENTITLEMENTS": "SOAPFT/Sources/SOAPFT.entitlements"
+                "CODE_SIGN_ENTITLEMENTS": "SOAPFT/Sources/SOAPFT.entitlements",
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym"
             ])
         ),
         .target(

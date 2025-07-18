@@ -228,5 +228,24 @@ private struct CellView: View {
 
 
 #Preview {
+    let sampleMembers: [Date: [Member]] = [
+        Calendar.current.date(byAdding: .day, value: -1, to: Date())!: [
+            Member(id: "1", name: "윤재명", profileImage: "https://via.placeholder.com/30"),
+            Member(id: "2", name: "한나", profileImage: "https://via.placeholder.com/30")
+        ],
+        Calendar.current.date(byAdding: .day, value: -2, to: Date())!: [
+            Member(id: "3", name: "태현", profileImage: "https://via.placeholder.com/30")
+        ]
+    ]
 
+    let sampleCounts: [Date: Int] = sampleMembers.mapValues { $0.count }
+
+    return CalenderView(
+        currentMonth: Date(),
+        startMonth: Calendar.current.date(byAdding: .month, value: -3, to: Date())!,
+        endMonth: Calendar.current.date(byAdding: .month, value: 3, to: Date())!,
+        certifiedCount: sampleCounts,
+        certifiedMembers: sampleMembers
+    )
 }
+
