@@ -16,7 +16,7 @@ final class HomeViewModel: ObservableObject {
     @Published var selectedTab: ChallengeTab = .inProgress
     @Published var challenges: [Challenge] = []
     @Published var isLoading: Bool = false
-    
+    @Published var completedChallengeCount:Int = -1
 
     init(challengeService: ChallengeService) {
         self.challengeService = challengeService
@@ -28,6 +28,19 @@ final class HomeViewModel: ObservableObject {
                 switch result {
                 case .success(let challenges):
                     self.challenges = challenges
+                case .failure(let error):
+                    print("챌린지 불러오기 실패: \(error)")
+                }
+            }
+        }
+        
+        self.challengeService.getCompletedChallengeCount() { [weak self] (result: Result<CompletedChallengeCountResponse, Error>) in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self.completedChallengeCount = data.completedChallengeCount
                 case .failure(let error):
                     print("챌린지 불러오기 실패: \(error)")
                 }

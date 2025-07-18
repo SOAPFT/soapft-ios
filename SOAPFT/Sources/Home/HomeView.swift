@@ -36,7 +36,7 @@ struct Home: View {
                         .frame(width: 120, height: 90)
                         .padding(.top, 33)
                     
-                    Text("7")
+                    Text("\(viewModel.completedChallengeCount)")
                         .font(Font.Pretend.pretendardBold(size: 60))
                     Text("Challenges You've Completed")
                         .font(Font.Pretend.pretendardSemiBold(size: 15))
