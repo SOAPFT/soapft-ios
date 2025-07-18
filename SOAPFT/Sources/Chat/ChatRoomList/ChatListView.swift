@@ -14,7 +14,9 @@ struct ChatListWrapper: View {
         let viewModel = ChatListViewModel(chatService: container.chatService, userService: container.userService)
         ChatListView(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
-        
+            .onReceive(container.challengeRefreshSubject) { _ in
+                viewModel.fetchChatRooms()
+            }
     }
 }
 

@@ -9,46 +9,54 @@ import Foundation
 import Combine
 
 final class HomeViewModel: ObservableObject {
-    // 챌린지 API 서비스
     private let challengeService: ChallengeService
 
-    
     @Published var selectedTab: ChallengeTab = .inProgress
     @Published var challenges: [Challenge] = []
     @Published var isLoading: Bool = false
-    @Published var completedChallengeCount:Int = -1
+    @Published var completedChallengeCount: Int = -1
 
     init(challengeService: ChallengeService) {
         self.challengeService = challengeService
+        fetchChallenges()
+    }
 
-        self.challengeService.getParticipatedChallenges(status: "all") { [weak self] (result: Result<[Challenge], Error>) in
-            guard let self = self else { return }
-            
+    func fetchChallenges() {
+        isLoading = true
+        
+        let group = DispatchGroup()
+        
+        group.enter()
+        challengeService.getParticipatedChallenges(status: "all") { [weak self] result in
+            defer { group.leave() }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let challenges):
-                    self.challenges = challenges
+                    self?.challenges = challenges
                 case .failure(let error):
                     print("챌린지 불러오기 실패: \(error)")
                 }
             }
         }
-        
-        self.challengeService.getCompletedChallengeCount() { [weak self] (result: Result<CompletedChallengeCountResponse, Error>) in
-            guard let self = self else { return }
-            
+
+        group.enter()
+        challengeService.getCompletedChallengeCount { [weak self] result in
+            defer { group.leave() }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                    self.completedChallengeCount = data.completedChallengeCount
+                    self?.completedChallengeCount = data.completedChallengeCount
                 case .failure(let error):
-                    print("챌린지 불러오기 실패: \(error)")
+                    print("완료된 챌린지 수 불러오기 실패: \(error)")
                 }
             }
         }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.isLoading = false
+        }
     }
 
-    
     var filteredChallenges: [Challenge] {
         switch selectedTab {
         case .inProgress:
@@ -58,3 +66,4 @@ final class HomeViewModel: ObservableObject {
         }
     }
 }
+

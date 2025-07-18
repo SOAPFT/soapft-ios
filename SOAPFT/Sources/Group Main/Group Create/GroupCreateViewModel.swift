@@ -35,7 +35,7 @@ final class GroupCreateViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     // 챌린지 생성 요청
-    func createChallenge(accessToken: String) {
+    func createChallenge(accessToken: String, onSuccess: @escaping () -> Void) {
         guard let profileData = profileImage?.jpegData(compressionQuality: 0.8),
               let bannerData = bannerImage?.jpegData(compressionQuality: 0.8) else {
             creationError = "이미지를 업로드해주세요"
@@ -74,6 +74,7 @@ final class GroupCreateViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self?.creationResponse = response
+                    onSuccess()
                     print("✅ 챌린지 생성 성공: \(response)")
                 case .failure(let error):
                     self?.creationError = error.localizedDescription

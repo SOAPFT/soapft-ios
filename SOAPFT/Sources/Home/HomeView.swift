@@ -84,7 +84,11 @@ struct HomeWrapper: View {
         let viewModel = HomeViewModel(challengeService: container.challengeService)
         Home(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
+            .onReceive(container.challengeRefreshSubject) { _ in
+                viewModel.fetchChallenges()
+            }
     }
+   
 }
 
 #Preview {
