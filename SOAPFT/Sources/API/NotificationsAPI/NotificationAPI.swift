@@ -81,7 +81,7 @@ extension NotificationAPI: TargetType {
             let params: [String: Any] = [
                 "page": page,
                 "limit": limit,
-                "unreadOnly": unreadOnly
+                "unreadOnly": unreadOnly ? "true" : "false"
             ]
             return .requestParameters(parameters: params, encoding: URLEncoding.default)
 
