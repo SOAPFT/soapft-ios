@@ -67,6 +67,7 @@ struct LoginInfoView: View {
                                 .frame(maxHeight: 400)
                                 .tint(Color.orange01)
                         }
+                        .frame(height: .infinity)
                     }
                     
                     Spacer()

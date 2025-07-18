@@ -110,6 +110,4 @@ class CertificationPostViewModel: ObservableObject {
         func toggleCommentSheet(for post: Post) {
             postUIStates[post.postUuid]?.showCommentSheet.toggle()
         }
-    
-        
 }

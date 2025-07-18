@@ -31,6 +31,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                 print("알림 권한 거부됨")
             }
         }
+        
         return true
     }
 

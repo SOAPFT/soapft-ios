@@ -116,7 +116,7 @@ struct FriendsPageView: View {
                     if viewModel.isFriend {
                         Spacer()
                         Button(action: {
-                            
+                            viewModel.createChatRoom()
                         }, label: {
                             HStack {
                                 Text("메시지 보내기")
