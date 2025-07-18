@@ -85,6 +85,7 @@ struct HomeWrapper: View {
         Home(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
             .onReceive(container.challengeRefreshSubject) { _ in
+                print("📨 chatRefreshSubject 수신됨")
                 viewModel.fetchChallenges()
             }
     }

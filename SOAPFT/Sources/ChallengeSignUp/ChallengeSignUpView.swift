@@ -32,8 +32,8 @@ struct ChallengeSignUpWrapper: View {
             .navigationBarBackButtonHidden(true)
             .onChange(of: viewModel.isJoinCompleted) { _, isCompleted in
                 if isCompleted {
-                    container.challengeRefreshSubject.send()
                     container.chatRefreshSubject.send()
+                    container.challengeRefreshSubject.send()
                     container.router.pop()
                 }
             }

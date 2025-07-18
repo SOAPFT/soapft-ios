@@ -24,7 +24,7 @@ class ChatListViewModel: ObservableObject {
         fetchUserUuidAndThenChatRooms()
     }
 
-    private func fetchUserUuidAndThenChatRooms() {
+    func fetchUserUuidAndThenChatRooms() {
         guard let token = KeyChainManager.shared.read(forKey: KeyChainKey.accessToken) else {
             print("❌ 토큰을 읽을 수 없습니다.")
             return
@@ -36,7 +36,7 @@ class ChatListViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self?.userUuid = response.userUuid
-                    self?.fetchChatRooms() // ✅ 순서 보장
+                    self?.fetchChatRooms()
                 case .failure(let error):
                     print("❌ 유저 정보 불러오기 실패: \(error)")
                 }
@@ -65,5 +65,15 @@ class ChatListViewModel: ObservableObject {
             }
         }
     }
-}
 
+    /// 새로고침 시 호출 (기존 페이징 정보 초기화)
+    func refreshChatRooms() {
+        // 🔄 기존 페이징/데이터 초기화
+        currentPage = 1
+        hasMore = true
+        chatRooms = []
+
+        // ✅ 유저 UUID 다시 불러오고 → 채팅방 다시 fetch
+        fetchUserUuidAndThenChatRooms()
+    }
+}
