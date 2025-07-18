@@ -11,13 +11,32 @@ import SwiftUI
 
 
 struct ChallengeSignUpWrapper: View {
+    private let challengeUuid: String
+    @StateObject private var viewModel: ChallengeSignUpViewModel
+
     @Environment(\.diContainer) private var container
-    let challengeUuid: String
+
+    init(challengeUuid: String, container: DIContainer) {
+        self._viewModel = StateObject(wrappedValue:
+            ChallengeSignUpViewModel(
+                challengeService: container.challengeService,
+                navigationRouter: container.router,
+                id: challengeUuid
+            )
+        )
+        self.challengeUuid = challengeUuid
+    }
 
     var body: some View {
-        let viewModel = ChallengeSignUpViewModel(challengeService: container.challengeService, navigationRouter: container.router, id: challengeUuid)
         ChallengeSignUpView(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
+            .onChange(of: viewModel.isJoinCompleted) { _, isCompleted in
+                if isCompleted {
+                    container.challengeRefreshSubject.send()
+                    container.chatRefreshSubject.send()
+                    container.router.pop()
+                }
+            }
     }
 }
 

@@ -63,7 +63,6 @@ final class ChallengeSignUpViewModel: ObservableObject {
                 case .success(let response):
                     self.isJoinCompleted = true
                     self.toastMessage = response.message
-                    self.navigationRouter.pop()
 
                 case .failure(let error):
                     print("챌린지 참가 실패: \(error)")
