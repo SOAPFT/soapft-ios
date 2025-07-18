@@ -10,13 +10,15 @@ import PhotosUI
 
 struct GroupCreateNextView: View {
     @Environment(\.diContainer) private var container
-    @StateObject private var viewModel = GroupCreateViewModel()
+    @ObservedObject var viewModel: GroupCreateViewModel
     
     @State private var selectedProfileImage: UIImage?
     @State private var selectedProfileItem: PhotosPickerItem?
     @State private var selectedBannerImage: UIImage?
     @State private var selectedBannerItem: PhotosPickerItem?
     @State private var showPopUp: Bool = false
+    
+    @Environment(\.dismiss) private var dismiss
     
     private var isFormValid: Bool {
         selectedProfileItem != nil && selectedBannerItem != nil
@@ -29,7 +31,7 @@ struct GroupCreateNextView: View {
                 ZStack {
                     HStack {
                         Button(action: {
-                            container.router.pop()
+                            dismiss()
                         }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
@@ -141,6 +143,7 @@ struct GroupCreateNextView: View {
                         Button(action: {
                             if isFormValid {
                                 print("그룹 생성하기")
+                                print("1. \(viewModel.groupName), \(viewModel.description), \(viewModel.authMethod)")
                                 withAnimation{
                                     showPopUp = true
                                 }
@@ -184,6 +187,7 @@ extension GroupCreateNextView {
     ) -> some View {
         WarningView(
             showPopUp: $showPopUp,
+            viewModel: viewModel,
             title: title,
             message: message,
             btn1: btn1,
@@ -201,6 +205,6 @@ extension GroupCreateNextView {
     }
 }
 
-#Preview {
-    GroupCreateNextView()
-}
+//#Preview {
+//    GroupCreateNextView()
+//}

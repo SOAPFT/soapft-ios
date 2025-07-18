@@ -151,3 +151,22 @@ struct MessageReadResponse: Decodable {
 struct ChatRoomLeaveResponse: Decodable {
     let message: String
 }
+
+struct SendDirectChatResponse: Decodable {
+    let roomUuid: String
+    let type: String
+    let name: String
+    let participants: [DirectChatParticipant]
+    let challengeUuid: String?
+    let lastMessage: String?
+    let lastMessageAt: String?
+    let unreadCount: Int
+    let createdAt: String
+    let isNewRoom: Bool
+}
+
+struct DirectChatParticipant: Decodable {
+    let userUuid: String
+    let nickname: String
+    let profileImage: String?
+}

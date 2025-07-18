@@ -11,6 +11,7 @@ import SwiftUI
 import Moya
 
 final class GroupCreateViewModel: ObservableObject {
+    
     // 기본 정보 (1단계)
     @Published var groupName: String = ""
     @Published var startDate: Date = Date()
@@ -45,21 +46,30 @@ final class GroupCreateViewModel: ObservableObject {
         
         let goalValue = goalStringToInt(selectedGoal)
         
+        let genderValue: String = {
+            switch selectedGender {
+            case "제한 없음": return "NONE"
+            case "남성": return "MALE"
+            case "여성": return "FEMALE"
+            default: return "NONE"
+            }
+        }()
+        
         let parameters: [String: Any] = [
             "title": groupName,
             "type": "NORMAL",
-            "startDate": iso8601String(from: startDate),
-            "endDate": iso8601String(from: endDate),
             "introduce": description,
             "verificationGuide": authMethod,
+            "start_date": iso8601String(from: startDate),
+            "end_date": iso8601String(from: endDate),
             "goal": goalValue,
-            "startAge": Int(selectedAgeRange.lowerBound),
-            "endAge": Int(selectedAgeRange.upperBound),
-            "gender": selectedGender,
-            "maxMember": maxMembers,
-            "coinAmount": coinAmount,
-            "profile": profileData,
-            "banner": bannerData
+            "start_age": Int(selectedAgeRange.lowerBound),
+            "end_age": Int(selectedAgeRange.upperBound),
+            "gender": genderValue,
+            "max_member": maxMembers,
+            "coin_amount": coinAmount,
+//            "profile": profileData,
+//            "banner": bannerData
         ]
         
         print("🚀 [챌린지 생성 요청] AccessToken: \(accessToken)")
@@ -69,7 +79,20 @@ final class GroupCreateViewModel: ObservableObject {
         }
         print("📸 이미지: profile=\(profileData.count) bytes, banner=\(bannerData.count) bytes")
         
-        challengeService.createChallenge(parameters: parameters) { [weak self] result in
+//        challengeService.createChallenge(parameters: parameters) { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let response):
+//                    self?.creationResponse = response
+//                    print("✅ 챌린지 생성 성공: \(response)")
+//                case .failure(let error):
+//                    self?.creationError = error.localizedDescription
+//                    print("❌ 챌린지 생성 실패: \(error.localizedDescription)")
+//                }
+//            }
+//        }
+        
+        challengeService.createChallengeMultipart(parameters: parameters, profileImage: profileData, bannerImage: bannerData) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):

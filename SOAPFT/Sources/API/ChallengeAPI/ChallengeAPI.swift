@@ -12,6 +12,7 @@ enum ChallengeAPI {
     case userChallenges(status: String)
     case successfulChallenges
     case createChallenge(parameters: [String: Any])
+    case createChallengeMultipart(parameters: [String: Any], profileImage: Data, bannerImage: Data)
     case fetchChallenges(page: Int, limit: Int, type: String, gender: String, status: String)
     case recentChallenges
     case popularChallenges
@@ -43,7 +44,7 @@ extension ChallengeAPI: TargetType {
             return "/api/challenge/user"
         case .successfulChallenges:
             return "/api/challenge/successful"
-        case .createChallenge:
+        case .createChallenge, .createChallengeMultipart:
             return "/api/challenge"
         case .fetchChallenges:
             return "/api/challenge"
@@ -74,7 +75,7 @@ extension ChallengeAPI: TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .createChallenge,.reportPost, .precheckImages, .createVerifiedPost:
+        case .createChallenge,.reportPost, .precheckImages, .createVerifiedPost, .createChallengeMultipart:
             return .post
         case .updateChallenge:
             return .patch
@@ -99,6 +100,27 @@ extension ChallengeAPI: TargetType {
             return .requestParameters(parameters: ["year": year, "month": month], encoding: URLEncoding.queryString)
         case .createChallenge(let parameters), .updateChallenge(_, let parameters):
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
+        case .createChallengeMultipart(let parameters, let profileImage, let bannerImage):
+            var multipartData = [MultipartFormData]()
+
+            // 파라미터를 multipartFormData로 변환
+            for (key, value) in parameters {
+                if let stringValue = value as? String,
+                   let data = stringValue.data(using: .utf8) {
+                    multipartData.append(MultipartFormData(provider: .data(data), name: key))
+                } else if let intValue = value as? Int,
+                          let data = String(intValue).data(using: .utf8) {
+                    multipartData.append(MultipartFormData(provider: .data(data), name: key))
+                }
+                // 필요한 경우 Bool 등 다른 타입도 처리
+            }
+
+            // 이미지 데이터 추가
+            multipartData.append(MultipartFormData(provider: .data(profileImage), name: "profile", fileName: "profile.jpg", mimeType: "image/jpeg"))
+            multipartData.append(MultipartFormData(provider: .data(bannerImage), name: "banner", fileName: "banner.jpg", mimeType: "image/jpeg"))
+
+            return .uploadMultipart(multipartData)
+
         case .reportPost:
             return .requestPlain
             
@@ -121,7 +143,7 @@ extension ChallengeAPI: TargetType {
         var headers: [String: String] = [
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
             "accept": "application/json",
-            "Content-Type": "application/json"
+//            "Content-Type": "application/json"
         ]
         
         if let accessToken = KeyChainManager.shared.readAccessToken() {

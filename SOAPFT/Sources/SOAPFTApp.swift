@@ -54,9 +54,9 @@ struct SOAPFTApp: App {
                         case .groupCreate:
                             GroupCreateView()
                                 .environment(\.diContainer, container)
-                        case .groupCreateNext:
-                            GroupCreateNextView()
-                                .environment(\.diContainer, container)
+//                        case .groupCreateNext:
+//                            GroupCreateNextView()
+//                                .environment(\.diContainer, container)
                         case .mypage:
                             MyPageView()
                                 .environment(\.diContainer, container)

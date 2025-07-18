@@ -16,6 +16,7 @@ enum ChatAPI {
     case getMessages(roomId: String, page: Int, limit: Int, lastMessageId: Int?, beforeMessageId: Int?)
     case markAsRead(roomId: String, lastReadMessageId: Int)
     case leaveRoom(roomId: String)
+    case sendDirectChat(userUuid: String)
 }
 
 extension ChatAPI: TargetType {
@@ -44,12 +45,14 @@ extension ChatAPI: TargetType {
             return "/api/chat/room/\(roomId)/read"
         case let .leaveRoom(roomId):
             return "/api/chat/room/\(roomId)/leave"
+        case let .sendDirectChat(userUuid):
+            return "/api/chat/direct/\(userUuid)"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .createRoom, .sendMessage:
+        case .createRoom, .sendMessage, .sendDirectChat:
             return .post
         case .getRooms, .getRoomDetail, .getMessages:
             return .get
@@ -117,6 +120,8 @@ extension ChatAPI: TargetType {
 
         case .leaveRoom:
             return .requestPlain
+        case .sendDirectChat:
+                return .requestPlain 
         }
     }
 

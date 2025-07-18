@@ -64,8 +64,8 @@ struct ChallengeListWithMetaResponse: Decodable {
 
 struct Meta: Decodable {
     let total: Int
-    let page: String
-    let limit: String
+    let page: Int
+    let limit: Int
     let totalPages: Int
     let hasNextPage: Bool
 }
