@@ -193,7 +193,13 @@ extension GroupCreateNextView {
             btn1: btn1,
             btn2: btn2,
             onConfirm: {
-                viewModel.createChallenge(accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMzExMTk5LCJleHAiOjE3NTQ5MDMxOTl9.nHAtNcnzwzbgssAysdrdH2MoBRZzmoe1K6kdiW96mts")
+                viewModel.createChallenge(accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMzExMTk5LCJleHAiOjE3NTQ5MDMxOTl9.nHAtNcnzwzbgssAysdrdH2MoBRZzmoe1K6kdiW96mts"){
+                    // 챌린지 생성 성공 시 챌린지 관련 뷰 반영 API 호출
+                    container.challengeRefreshSubject.send()
+                    container.chatRefreshSubject.send()
+                    container.router.pop()
+                    container.router.pop()
+                }
             }
         )
     }
