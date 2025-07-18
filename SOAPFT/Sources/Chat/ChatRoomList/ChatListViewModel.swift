@@ -21,24 +21,24 @@ class ChatListViewModel: ObservableObject {
     init(chatService: ChatService, userService: UserService) {
         self.chatService = chatService
         self.userService = userService
-        fetchChatRooms()
-        fetchUserUuid()
+        fetchUserUuidAndThenChatRooms()
     }
 
-    private func fetchUserUuid() {
+    private func fetchUserUuidAndThenChatRooms() {
         guard let token = KeyChainManager.shared.read(forKey: KeyChainKey.accessToken) else {
-            print("저장 후 토큰 못 읽음")
+            print("❌ 토큰을 읽을 수 없습니다.")
             return
         }
 
-        print("저장 후 읽은 토큰: \(token)")
+        print("✅ 저장 후 읽은 토큰: \(token)")
         userService.getUserInfo(accessToken: token) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
                     self?.userUuid = response.userUuid
+                    self?.fetchChatRooms() // ✅ 순서 보장
                 case .failure(let error):
-                    print("❌ token 불러오기 실패: \(error)")
+                    print("❌ 유저 정보 불러오기 실패: \(error)")
                 }
             }
         }

@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ChatRoomNavBar: View {
     let chatRoomName: String
+    @Environment(\.diContainer) private var container
     
     var body: some View {
         
         HStack {
-            Button(action: { }) {
+            Button(action: { container.router.pop() }) {
                 Image(systemName: "chevron.left")
                     .foregroundStyle(.black)
                     .font(Font.system(size: 18))

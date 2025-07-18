@@ -50,6 +50,12 @@ struct ChallengeSearchView: View {
                     .padding(.top, 10)
                 }
             }
+            .onAppear { // 가입 후 동기화
+                let keyword = viewModel.searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !keyword.isEmpty {
+                    viewModel.fetchSearchChallenges(keyword: keyword)
+                }
+            }
         }
         .navigationBarBackButtonHidden()
     }
@@ -60,34 +66,65 @@ struct ChallengeRowView: View {
     @Environment(\.diContainer) private var container
     
     var body: some View {
-        Button(action: {container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))}) {
-            HStack(alignment: .top, spacing: 12) {
-                AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
-                    if let image = phase.image {
-                        image.resizable().scaledToFill()
-                    } else {
-                        Circle().fill(Color.gray.opacity(0.2))
+        if challenge.isParticipated ?? false {
+            Button(action: {container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))}) {
+                HStack(alignment: .top, spacing: 12) {
+                    AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
+                        if let image = phase.image {
+                            image.resizable().scaledToFill()
+                        } else {
+                            Circle().fill(Color.gray.opacity(0.2))
+                        }
                     }
-                }
-                .frame(width: 32, height: 32)
-                .clipShape(Circle())
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(challenge.title)
-                        .font(.headline)
-                    Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
-                        .font(.caption)
+                    .frame(width: 32, height: 32)
+                    .clipShape(Circle())
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(challenge.title)
+                            .font(.headline)
+                        Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
+                    
+                    Spacer()
+                    Image(systemName: "chevron.right")
                         .foregroundStyle(.gray)
+                        .font(.caption)
                 }
-
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(.gray)
-                    .font(.caption)
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+            .buttonStyle(PlainButtonStyle())
+        } else {
+            Button(action: {container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))}) {
+                HStack(alignment: .top, spacing: 12) {
+                    AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
+                        if let image = phase.image {
+                            image.resizable().scaledToFill()
+                        } else {
+                            Circle().fill(Color.gray.opacity(0.2))
+                        }
+                    }
+                    .frame(width: 32, height: 32)
+                    .clipShape(Circle())
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(challenge.title)
+                            .font(.headline)
+                        Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
+                    
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(.gray)
+                        .font(.caption)
+                }
+                .padding(.horizontal)
+            }
+            .buttonStyle(PlainButtonStyle())
         }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 

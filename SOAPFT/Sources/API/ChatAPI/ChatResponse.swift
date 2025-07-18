@@ -54,7 +54,7 @@ struct ChatRoom: Decodable {
     let participants: [ChatParticipant]
     let challengeUuid: String
     let lastMessage: ChatRoomLastMessage?
-    let lastMessageAt: String
+    let lastMessageAt: String?
     let unreadCount: Int
     let createdAt: String
 }

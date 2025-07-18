@@ -30,7 +30,7 @@ struct Challenge: Decodable, Hashable {
     let coinAmount: Int?
     let isStarted: Bool
     let isFinished: Bool
-    let isParticipating: Bool?
+    let isParticipated: Bool?
     let successParticipantsUuid: [String]?
     let createdAt: String?
     let updatedAt: String?
@@ -189,6 +189,13 @@ struct ChallengeJoinResponse: Decodable {
     let message: String
     let challengeUuid: String
 }
+
+struct ChallengeJoinErrorResponse: Decodable {
+    let success: Bool
+    let errorCode: String
+    let message: String
+}
+
 // MARK: - 챌린지 탈퇴 응답
 struct ChallengeLeaveResponse: Decodable {
     let message: String
@@ -224,12 +231,12 @@ struct VerifiedUser: Decodable {
     let profileImage: String?
 }
 
-// 게시글 신고 응답
+// MARK: - 게시글 신고 응답
 struct ReportResponse: Decodable {
     let message: String
 }
 
-// 이미지 AI 검증 응답
+// MARK: - 이미지 AI 검증 응답
 struct PrecheckResponse: Decodable {
     let success: Bool
     let message: String
@@ -267,7 +274,7 @@ struct VerifiedImage: Decodable, Identifiable {
     let isRelevant: Bool
 }
 
-// 게시글 생성 응답
+// MARK: - 게시글 생성 응답
 struct CreatePostResponse: Decodable {
     let success: Bool
     let message: String

@@ -8,58 +8,80 @@
 // ChallengeDetailViewModel.swift
 import Foundation
 import Combine
+import Alamofire
 
 
 final class ChallengeSignUpViewModel: ObservableObject {
     @Published var challenge: ChallengeDetailResponse = .errorMock
     @Published var isJoinCompleted: Bool = false
     @Published var errorMessage: String? = nil
+    @Published var toastMessage: String? = nil
     @Published var creator: Participant?
-    
-    // 챌린지 API 서비스
+
+    private let navigationRouter: AppRouter
     private let challengeService: ChallengeService
-    // 챌린지 ID
     @Published var id: String
 
-    init(challengeService: ChallengeService, id: String) {
+    init(challengeService: ChallengeService, navigationRouter: AppRouter, id: String) {
         self.challengeService = challengeService
+        self.navigationRouter = navigationRouter
         self.id = id
         
         self.challengeService.getChallengeDetail(id: id) { [weak self] (result: Result<ChallengeDetailResponse, Error>) in
-                    guard let self = self else { return }
+            guard let self = self else { return }
 
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success(var challenge):
-                            // creatorUuid와 일치하는 participant를 찾아서 pop
-                            if let index = challenge.participants.firstIndex(where: { $0.userUuid == challenge.creatorUuid }) {
-                                self.creator = challenge.participants.remove(at: index)
-                            }
-
-                            self.challenge = challenge
-                        case .failure(let error):
-                            print("챌린지 불러오기 실패: \(error)")
-                        }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(var challenge):
+                    if let index = challenge.participants.firstIndex(where: { $0.userUuid == challenge.creatorUuid }) {
+                        self.creator = challenge.participants.remove(at: index)
                     }
+                    self.challenge = challenge
+                case .failure(let error):
+                    print("챌린지 불러오기 실패: \(error)")
+                    self.toastMessage = "챌린지를 불러오지 못했습니다."
                 }
+            }
+        }
     }
 
-    // 가입 가능한 상태인지 판단
     var isJoinable: Bool {
         !challenge.isParticipated && !challenge.isStarted && challenge.currentMembers < challenge.maxMember
     }
 
-    // 가입 신청 처리
     func applyToChallenge() {
         guard isJoinable else {
-            errorMessage = "신청할 수 없는 상태입니다."
+            toastMessage = "참가할 수 없는 상태입니다."
             return
         }
 
-        // 이 부분은 추후 네트워크 API 연동 시 실제 호출 로직으로 교체
-        print("✅ 챌린지 가입 신청 실행됨!")
-        isJoinCompleted = true
+        challengeService.joinChallenge(id: challenge.challengeUuid) { [weak self] result in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self.isJoinCompleted = true
+                    self.toastMessage = response.message
+                    self.navigationRouter.pop()
+
+                case .failure(let error):
+                    print("챌린지 참가 실패: \(error)")
+
+                    let nsError = error as NSError
+                    if let data = nsError.userInfo["data"] as? Data,
+                       let serverError = try? JSONDecoder().decode(ChallengeJoinErrorResponse.self, from: data) {
+                        self.toastMessage = serverError.message
+                        self.errorMessage = serverError.message
+                    } else {
+                        self.toastMessage = "참가 신청에 실패했습니다. 다시 시도해주세요."
+                        self.errorMessage = error.localizedDescription
+                    }
+                }
+            }
+        }
     }
+
+
+
 }
-
-
