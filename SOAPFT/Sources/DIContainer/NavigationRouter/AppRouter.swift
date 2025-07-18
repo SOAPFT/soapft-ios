@@ -16,7 +16,7 @@ enum Route: Hashable {
     case friendPage(userUUID: String, accessToken: String)
     case friendsRequest
     case groupCreate
-    case groupCreateNext
+//    case groupCreateNext
     case mypage
     case mypageEdit
     case mypageEditInfo

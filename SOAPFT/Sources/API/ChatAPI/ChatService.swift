@@ -79,4 +79,11 @@ final class ChatService {
             completion(.failure(error))
         }
     }
+    
+    // MARK: - 1:1 채팅방 찾기 또는 생성
+    func sendDirectChat(userUuid: String, completion: @escaping (Result<SendDirectChatResponse, Error>) -> Void) {
+        provider.request(.sendDirectChat(userUuid: userUuid)) { result in
+            self.handleResponse(result, type: SendDirectChatResponse.self, completion: completion)
+        }
+    }
 }
