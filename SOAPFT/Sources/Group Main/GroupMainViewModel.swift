@@ -93,7 +93,7 @@ final class GroupMainViewModel: ObservableObject {
     
     // MARK: - 이벤트 챌린지 (status = EVENT)
     func fetchEventChallenges() {
-        print("🚀 이벤트 챌린지 API 호출 시작 - 파라미터: page=1, limit=20, type=EVENT, gender=NONE, status=before")
+        print("🚀 이벤트 챌린지 API 호출 시작 - 파라미터: page=1, limit=10, type=EVENT, gender=NONE, status=before")
         
         challengeService.fetchChallenges(page: 1, limit: 10, type: "EVENT", gender: "NONE", status: "before") { [weak self] result in
             DispatchQueue.main.async {
