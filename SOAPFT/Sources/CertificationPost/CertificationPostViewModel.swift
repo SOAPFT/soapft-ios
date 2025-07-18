@@ -66,17 +66,17 @@ class CertificationPostViewModel: ObservableObject {
                 }
             }
         }
-        
-        func toggleLike(for post: ChallengePost) {
-            postUIStates[post.postUuid]?.isLiked.toggle()
-        }
-        
-        func toggleSuspicion(for post: ChallengePost) {
-            postUIStates[post.postUuid]?.isSuspicious.toggle()
-        }
-        
-        func toggleCommentSheet(for post: ChallengePost) {
-            postUIStates[post.postUuid]?.showCommentSheet.toggle()
-        }
+    }
+    
+    func toggleLike(for post: ChallengePost) {
+        postUIStates[post.postUuid]?.isLiked.toggle()
+    }
+    
+    func toggleSuspicion(for post: ChallengePost) {
+        postUIStates[post.postUuid]?.isSuspicious.toggle()
+    }
+    
+    func toggleCommentSheet(for post: ChallengePost) {
+        postUIStates[post.postUuid]?.showCommentSheet.toggle()
     }
 }

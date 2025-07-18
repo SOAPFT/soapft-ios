@@ -21,7 +21,9 @@ struct GroupCreateView: View {
             // 상단바
             ZStack {
                 HStack {
-                    Button(action: { }) {
+                    Button(action: {
+                        container.router.pop()
+                    }) {
                         Image(systemName: "chevron.left")
                             .foregroundColor(.black)
                             .font(.system(size: 18))

@@ -11,31 +11,43 @@ struct LoginView: View {
     @Environment(\.diContainer) var container
     
     var body: some View {
-        VStack(alignment: .leading) {
-            ZStack {
-                // 로고
-                Text("한땀한땀")
-                    .font(Font.Pretend.pretendardBold(size: 24))
-
-                VStack(spacing: 20) {
-                    Spacer()
-                    // 카카오 로그인
-                    KakoSignButton()
-                    
-                    // 네이버 로그인
-                    NaverSignButton()
-                    
-                    // Apple 로그인
-                    
-                    // 테스트
-                    Button(action: {
-                        // 로그인 성공 후 홈으로 이동
-                        container.router.push(.mainTabbar)
-                    }) {
-                       Text("테스트")
+        ZStack {
+            Color.orange02
+                .ignoresSafeArea()
+            
+            VStack(alignment: .leading) {
+                ZStack {
+                    // 로고
+                    VStack(spacing: 16) {
+                        Image("logo")
+                            .resizable()
+                            .frame(width: 84, height: 75)
+                            .foregroundStyle(Color.white)
+                        Text("좋은 습관을 위한 한걸음, 한땀한땀")
+                            .font(Font.Pretend.pretendardSemiBold(size: 18))
+                            .foregroundStyle(Color.white)
                     }
+                    
+                    VStack(spacing: 20) {
+                        Spacer()
+                        // 카카오 로그인
+                        KakoSignButton()
+                        
+                        // 네이버 로그인
+                        NaverSignButton()
+                        
+                        // Apple 로그인
+                        
+                        // 테스트
+                        //                    Button(action: {
+                        //                        // 로그인 성공 후 홈으로 이동
+                        //                        container.router.push(.mainTabbar)
+                        //                    }) {
+                        //                       Text("테스트")
+                        //                    }
+                    }
+                    .padding(.bottom, 30)
                 }
-                .padding(.bottom, 30)
             }
         }
         .navigationBarBackButtonHidden()
@@ -43,4 +55,5 @@ struct LoginView: View {
 }
 
 #Preview {
+    LoginView()
 }

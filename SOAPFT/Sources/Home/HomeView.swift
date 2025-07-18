@@ -73,6 +73,7 @@ struct Home: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

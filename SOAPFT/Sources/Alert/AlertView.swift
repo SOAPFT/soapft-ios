@@ -13,7 +13,7 @@ struct AlertView: View {
     var body: some View {
         VStack {
             AlertHeader
-            
+            Divider()
             ZStack {
                 List {
                     if viewModel.alerts.isEmpty {
@@ -73,7 +73,6 @@ struct AlertView: View {
                 }
                 Button("취소", role: .cancel) {}
             }
-            Divider()
         }
         .padding()
     }
