@@ -15,7 +15,8 @@ struct ChatListWrapper: View {
         ChatListView(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
             .onReceive(container.challengeRefreshSubject) { _ in
-                viewModel.fetchChatRooms()
+                print("📨 chatRefreshSubject 수신됨")
+                viewModel.refreshChatRooms()
             }
     }
 }

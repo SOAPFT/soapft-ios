@@ -19,7 +19,8 @@ struct ChallengeSearchWrapper: View {
 
 struct ChallengeSearchView: View {
     @StateObject var viewModel: ChallengeSearchViewModel
-
+    
+    
     var body: some View {
         VStack {
             ChallengeSearchNavBar()
@@ -65,6 +66,26 @@ struct ChallengeRowView: View {
     let challenge: Challenge
     @Environment(\.diContainer) private var container
     
+    // MARK: - 날짜 포맷 변경
+    func formatDateRange(start: String, end: String) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        let displayFormatter = DateFormatter()
+        displayFormatter.locale = Locale(identifier: "ko_KR")
+        displayFormatter.dateFormat = "yyyy년 M월 d일"
+
+        if let startDate = formatter.date(from: start),
+           let endDate = formatter.date(from: end) {
+            let startStr = displayFormatter.string(from: startDate)
+            let endStr = displayFormatter.string(from: endDate)
+            return "\(startStr) ~ \(endStr)"
+        } else {
+            return "날짜 형식 오류"
+        }
+    }
+    
+    
     var body: some View {
         if challenge.isParticipated ?? false {
             Button(action: {container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))}) {
@@ -82,7 +103,7 @@ struct ChallengeRowView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(challenge.title)
                             .font(.headline)
-                        Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
+                        Text("기간: \(formatDateRange(start: challenge.startDate, end: challenge.endDate))")
                             .font(.caption)
                             .foregroundStyle(.gray)
                     }
