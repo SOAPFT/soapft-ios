@@ -43,14 +43,14 @@ struct PostCardView: View {
 
     private var profileSection: some View {
         HStack {
-            KFImage(URL(string: post.user.profileImage ?? ""))
+            KFImage(URL(string: post.user?.profileImage ?? ""))
                 .placeholder { Circle().fill(Color.gray.opacity(0.3)) }
                 .resizable()
                 .frame(width: 32, height: 32)
                 .clipShape(Circle())
 
             VStack(alignment: .leading) {
-                Text(post.user.nickname)
+                Text(post.user?.nickname ?? "")
                     .font(.subheadline).bold()
                 Text(timeAgoString(from: createdTime))
                     .font(.caption)
