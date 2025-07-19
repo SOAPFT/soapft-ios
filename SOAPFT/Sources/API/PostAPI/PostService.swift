@@ -141,14 +141,19 @@ final class PostService {
     private func handleResponse<T: Decodable>(_ result: Result<Response, MoyaError>, completion: @escaping (Result<T, Error>) -> Void) {
         switch result {
         case .success(let response):
+            // 🔍 디버깅 로그 추가
+            print("📡 [PostService] 상태 코드: \(response.statusCode)")
+            print("📦 [PostService] Raw JSON: \(String(data: response.data, encoding: .utf8) ?? "없음")")
+
             do {
                 let decodedData = try JSONDecoder().decode(T.self, from: response.data)
                 completion(.success(decodedData))
             } catch {
+                print("❗️ 디코딩 실패: \(error)")
                 completion(.failure(error))
             }
         case .failure(let error):
             completion(.failure(error))
         }
     }
-} 
+}

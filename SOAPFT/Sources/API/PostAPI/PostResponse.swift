@@ -154,8 +154,8 @@ struct Post: Decodable, Identifiable {
     let aiConfidence: String?
     let aiAnalysisResult: String?
     let verifiedAt: String?
-    var likeCount: Int
-    let commentCount: Int
-    let user: User
+    var likeCount: Int?
+    let commentCount: Int?
+    let user: User?
 }
 

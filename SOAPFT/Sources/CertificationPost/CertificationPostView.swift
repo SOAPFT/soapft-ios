@@ -40,7 +40,7 @@ struct CertificationPostView: View {
                                     selectedPostForComment = post
                                 },
                                 toggleSuspicious: { viewModel.toggleSuspicion(for: post) },
-                                commentCount: viewModel.commentCounts[post.postUuid, default: post.commentCount]
+                                commentCount: viewModel.commentCounts[post.postUuid, default: post.commentCount!]
                             )
                         }
                     }
@@ -51,7 +51,7 @@ struct CertificationPostView: View {
         .sheet(item: $selectedPostForComment) { post in
             PostchatSheetWrapper(postUuid: post.postUuid) { addedCount in
                 print("💬 댓글 추가 수: \(addedCount)")
-                viewModel.commentCounts[post.postUuid, default: post.commentCount] += addedCount
+                viewModel.commentCounts[post.postUuid, default: post.commentCount!] += addedCount
             }
         }
         .onAppear {

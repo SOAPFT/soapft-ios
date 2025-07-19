@@ -55,22 +55,21 @@ final class GroupCreateViewModel: ObservableObject {
             }
         }()
         
-        let parameters: [String: Any] = [
+        let parameters: [String: String] = [
             "title": groupName,
             "type": "NORMAL",
             "introduce": description,
             "verificationGuide": authMethod,
             "start_date": iso8601String(from: startDate),
             "end_date": iso8601String(from: endDate),
-            "goal": goalValue,
-            "start_age": Int(selectedAgeRange.lowerBound),
-            "end_age": Int(selectedAgeRange.upperBound),
+            "goal": "\(goalValue)",
+            "start_age": "\(Int(selectedAgeRange.lowerBound))",
+            "end_age": "\(Int(selectedAgeRange.upperBound))",
             "gender": genderValue,
-            "max_member": maxMembers,
-            "coin_amount": coinAmount,
-//            "profile": profileData,
-//            "banner": bannerData
+            "max_member": "\(maxMembers)",
+            "coin_amount": "\(coinAmount)"
         ]
+
         
         print("🚀 [챌린지 생성 요청] AccessToken: \(accessToken)")
         print("📦 파라미터:")
