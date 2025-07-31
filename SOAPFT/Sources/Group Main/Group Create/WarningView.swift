@@ -10,7 +10,7 @@ import SwiftUI
 struct WarningView: View {
     @Environment(\.diContainer) private var container
     @Binding var showPopUp: Bool
-//    @StateObject var viewModel: GroupCreateViewModel
+//    @ObservedObject var viewModel: GroupCreateViewModel
     @Environment(\.dismiss) private var dismiss
     
     let viewModel: GroupCreateViewModel

@@ -3,7 +3,7 @@ import SwiftUI
 struct GroupMainView: View {
     @Environment(\.diContainer) private var container
     @StateObject private var viewModel = GroupMainViewModel()
-        
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) { // 상단 고정 부분
@@ -189,7 +189,7 @@ struct GroupMainView: View {
                 Spacer()
                 
                 Button(action: {
-                    print("더보기")
+                    container.router.push(.moreHotGroup)
                 }, label: {
                     HStack(spacing: 4) {
                         Text("더보기")
@@ -206,7 +206,15 @@ struct GroupMainView: View {
             ScrollView (.horizontal) {
                 LazyHStack (spacing: 17) {
                     ForEach(viewModel.hot, id: \.self) { challenge in
-                        ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
+                        Button(action: {
+                            if challenge.isParticipated ?? false {
+                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                            } else {
+                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))
+                            }
+                        }) {
+                            ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
+                        }
                     }
                 }
             }
@@ -265,7 +273,7 @@ struct GroupMainView: View {
                 Spacer()
                 
                 Button(action: {
-                    print("더보기")
+                    container.router.push(.moreRecentGroup)
                 }, label: {
                     HStack(spacing: 4) {
                         Text("더보기")
@@ -282,7 +290,15 @@ struct GroupMainView: View {
             ScrollView (.horizontal) {
                 LazyHStack (spacing: 17) {
                     ForEach(viewModel.recent, id: \.self) { challenge in
-                        ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
+                        Button(action: {
+                            if challenge.isParticipated ?? false {
+                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                            } else {
+                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))
+                            }
+                        }) {
+                            ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
+                        }
                     }
                 }
             }
@@ -291,6 +307,6 @@ struct GroupMainView: View {
     }
 }
 
-#Preview {
-    GroupMainView()
-}
+//#Preview {
+//    GroupMainView()
+//}

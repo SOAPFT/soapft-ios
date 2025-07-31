@@ -103,23 +103,37 @@ extension ChallengeAPI: TargetType {
         case .createChallengeMultipart(let parameters, let profileImage, let bannerImage):
             var multipartData = [MultipartFormData]()
 
-            // 파라미터를 multipartFormData로 변환
             for (key, value) in parameters {
-                if let stringValue = value as? String,
-                   let data = stringValue.data(using: .utf8) {
-                    multipartData.append(MultipartFormData(provider: .data(data), name: key))
-                } else if let intValue = value as? Int,
-                          let data = String(intValue).data(using: .utf8) {
-                    multipartData.append(MultipartFormData(provider: .data(data), name: key))
+                // Any 타입을 String으로 변환
+                let stringValue: String
+
+                if let str = value as? String {
+                    stringValue = str
+                } else if let intVal = value as? Int {
+                    stringValue = String(intVal)
+                } else if let boolVal = value as? Bool {
+                    stringValue = boolVal ? "true" : "false"
+                } else {
+                    // 그 외 타입은 일단 빈 문자열 처리하거나, 필요에 따라 적절히 변환
+                    stringValue = "\(value)"
                 }
-                // 필요한 경우 Bool 등 다른 타입도 처리
+
+                if let data = stringValue.data(using: .utf8) {
+                    multipartData.append(
+                        MultipartFormData(
+                            provider: .data(data),
+                            name: key,
+                            mimeType: "text/plain"
+                        )
+                    )
+                }
             }
 
-            // 이미지 데이터 추가
             multipartData.append(MultipartFormData(provider: .data(profileImage), name: "profile", fileName: "profile.jpg", mimeType: "image/jpeg"))
             multipartData.append(MultipartFormData(provider: .data(bannerImage), name: "banner", fileName: "banner.jpg", mimeType: "image/jpeg"))
 
             return .uploadMultipart(multipartData)
+
 
         case .reportPost:
             return .requestPlain
@@ -144,6 +158,7 @@ extension ChallengeAPI: TargetType {
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
             "accept": "application/json",
 //            "Content-Type": "application/json"
+//            "Content-Type": "multipart/form-data"
         ]
         
         if let accessToken = KeyChainManager.shared.readAccessToken() {

@@ -85,11 +85,16 @@ struct GroupCreateNextView: View {
                         }
                         .onChange(of: selectedProfileItem) { oldItem, newItem in
                             Task {
-                                if let data = try? await
-                                    newItem?.loadTransferable(type: Data.self),
-                                   let uiImage = UIImage(data: data) {
-                                    selectedProfileImage = uiImage
-                                    viewModel.profileImage = uiImage
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    print("✅ 선택한 프로필 이미지 크기: \(data.count) bytes")
+                                    if let uiImage = UIImage(data: data) {
+                                        selectedProfileImage = uiImage
+                                        viewModel.profileImage = uiImage
+                                    } else {
+                                        print("❌ UIImage 변환 실패")
+                                    }
+                                } else {
+                                    print("❌ 이미지 data 로딩 실패")
                                 }
                             }
                         }
@@ -130,11 +135,16 @@ struct GroupCreateNextView: View {
                         }
                         .onChange(of: selectedBannerItem) { oldItem, newItem in
                             Task {
-                                if let data = try? await
-                                    newItem?.loadTransferable(type: Data.self),
-                                   let uiImage = UIImage(data: data) {
-                                    selectedBannerImage = uiImage
-                                    viewModel.bannerImage = uiImage
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    print("✅ 선택한 배너 이미지 크기: \(data.count) bytes")
+                                    if let uiImage = UIImage(data: data) {
+                                        selectedBannerImage = uiImage
+                                        viewModel.bannerImage = uiImage
+                                    } else {
+                                        print("❌ UIImage 변환 실패")
+                                    }
+                                } else {
+                                    print("❌ 배너 이미지 data 로딩 실패")
                                 }
                             }
                         }
@@ -193,12 +203,19 @@ extension GroupCreateNextView {
             btn1: btn1,
             btn2: btn2,
             onConfirm: {
-                viewModel.createChallenge(accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVXVpZCI6IjAxSllLVk4xOE1DVzVCOUZaMVBQN1QxNFhTIiwiaWF0IjoxNzUyMzExMTk5LCJleHAiOjE3NTQ5MDMxOTl9.nHAtNcnzwzbgssAysdrdH2MoBRZzmoe1K6kdiW96mts"){
-                    // 챌린지 생성 성공 시 챌린지 관련 뷰 반영 API 호출
-                    container.challengeRefreshSubject.send()
-                    container.chatRefreshSubject.send()
-                    container.router.pop()
-                    container.router.pop()
+                
+                guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
+                    print("❌ accessToken 없음")
+                    return
+                }
+                viewModel.uploadImages {
+                    viewModel.createChallenge(accessToken: accessToken){
+                        // 챌린지 생성 성공 시 챌린지 관련 뷰 반영 API 호출
+                        container.challengeRefreshSubject.send()
+                        container.chatRefreshSubject.send()
+                        container.router.pop()
+                        container.router.pop()
+                    }
                 }
             }
         )
