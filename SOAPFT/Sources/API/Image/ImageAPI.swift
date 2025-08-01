@@ -24,9 +24,9 @@ extension ImageAPI: TargetType {
     var path: String {
         switch self {
         case .uploadImage:
-            return "/upload/image"
+            return "/api/upload/image"
         case .deleteImage(let imageURL):
-            return "/upload/image/\(imageURL)"
+            return "/api/upload/image/\(imageURL)"
         }
     }
 
@@ -44,20 +44,21 @@ extension ImageAPI: TargetType {
     }
 
     var task: Task {
-            switch self {
-            case let .uploadImage(imageData):
-                let formData = MultipartFormData(
-                    provider: .data(imageData),
-                    name: "file",
-                    fileName: "upload.jpeg",
-                    mimeType: "image/jpeg"
-                )
-                return .uploadMultipart([formData])
+        switch self {
+        case let .uploadImage(imageData):
+            let formData = MultipartFormData(
+                provider: .data(imageData),
+                name: "image", 
+                fileName: "upload.jpeg",
+                mimeType: "image/jpeg"
+            )
+            return .uploadMultipart([formData])
 
-            case .deleteImage:
-                return .requestPlain
-            }
+        case .deleteImage:
+            return .requestPlain
         }
+    }
+
 
     var headers: [String : String]? {
         var headers: [String: String] = [

@@ -10,6 +10,7 @@ import SwiftUI
 struct MoreGroupView: View {
     @StateObject private var viewModel = GroupMainViewModel()
     let viewType: GroupMainViewModel.ChallengeViewType
+    @Environment(\.diContainer) private var container
     
     // 2열 그리드
     private let columns = [
@@ -22,7 +23,7 @@ struct MoreGroupView: View {
             // 상단바
             HStack {
                 Button(action: {
-                    print("뒤로가기")
+                    container.router.pop()
                 }, label: {
                     Image(systemName: "chevron.backward")
                         .foregroundColor(Color.black)
@@ -44,8 +45,16 @@ struct MoreGroupView: View {
             // 스크롤뷰
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(viewModel.getChallenges(for: viewType), id: \.id) { challenge in
-                        ChallengeGridCard(challenge: challenge)
+                    ForEach(viewModel.getChallenges(for: viewType), id: \.self) { challenge in
+                        Button(action: {
+                            if challenge.isParticipated ?? false {
+                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                            } else {
+                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))
+                            }
+                        }) {
+                            ChallengeGridCard(Name: challenge.banner ?? "", Title: challenge.title)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -55,6 +64,50 @@ struct MoreGroupView: View {
         .navigationBarBackButtonHidden()
         .onAppear() {
             loadChallenges(for: viewType)
+        }
+    }
+    
+    private func ChallengeGridCard(Name: String, Title: String) -> some View {
+        VStack {
+            if let url = URL(string: Name), !Name.isEmpty {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    Color.gray.opacity(0.3)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundColor(.white)
+                        )
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 120)
+                .clipped()
+                .cornerRadius(12)
+            } else {
+                // fallback 이미지 또는 기본 색상
+                ZStack {
+                    Color.gray.opacity(0.3)
+                    Image(systemName: "photo")
+                        .foregroundColor(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 120)
+                .cornerRadius(8)
+            }
+
+            HStack {
+                Text(Title)
+                    .font(Font.Pretend.pretendardLight(size: 12))
+                    .foregroundStyle(Color.black)
+                    .frame(width: 100, height: 30, alignment: .leading)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                Spacer()
+            }
         }
     }
     

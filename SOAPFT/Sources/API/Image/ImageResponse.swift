@@ -8,9 +8,9 @@
 struct ImageUploadResponse: Decodable {
     let imageUrl: String
     let message: String
-    let fileName: String
-    let fileSize: Int
-    let uploadedAt: String
+//    let fileName: String
+//    let fileSize: Int
+//    let uploadedAt: String
 }
 struct ImageDeleteResponse: Decodable {
     let message: String

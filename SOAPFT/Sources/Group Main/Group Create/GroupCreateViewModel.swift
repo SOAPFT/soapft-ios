@@ -35,6 +35,12 @@ final class GroupCreateViewModel: ObservableObject {
     private let challengeService = ChallengeService()
     private var cancellables = Set<AnyCancellable>()
     
+    private let imageService = ImageService()
+    
+    @Published var uploadedProfileImageURL: String?
+    @Published var uploadedBannerImageURL: String?
+    @Published var imageUploadError: String?
+    
     // 챌린지 생성 요청
     func createChallenge(accessToken: String, onSuccess: @escaping () -> Void) {
         guard let profileData = profileImage?.jpegData(compressionQuality: 0.8),
@@ -55,52 +61,84 @@ final class GroupCreateViewModel: ObservableObject {
             }
         }()
         
-        let parameters: [String: String] = [
+        // 이미지를 먼저 업로드한 후 이 함수 호출
+        let parameters: [String: Any] = [
             "title": groupName,
             "type": "NORMAL",
             "introduce": description,
             "verificationGuide": authMethod,
             "start_date": iso8601String(from: startDate),
             "end_date": iso8601String(from: endDate),
-            "goal": "\(goalValue)",
-            "start_age": "\(Int(selectedAgeRange.lowerBound))",
-            "end_age": "\(Int(selectedAgeRange.upperBound))",
+            "goal": goalValue,
+            "start_age": Int(selectedAgeRange.lowerBound),
+            "end_age": Int(selectedAgeRange.upperBound),
             "gender": genderValue,
-            "max_member": "\(maxMembers)",
-            "coin_amount": "\(coinAmount)"
+            "max_member": maxMembers,
+            "coin_amount": coinAmount,
+            "profile": uploadedProfileImageURL ?? "",
+            "banner": uploadedBannerImageURL ?? ""
         ]
-
         
         print("🚀 [챌린지 생성 요청] AccessToken: \(accessToken)")
         print("📦 파라미터:")
         for (key, value) in parameters {
-            print("    \(key): \(value)")
+            if let str = value as? String {
+                print("[\(key)] (\(type(of: value))) : \(str) (\(str.count) chars)")
+            } else {
+                print("[\(key)] (\(type(of: value))) : \(value)")
+            }
         }
+
+
         print("📸 이미지: profile=\(profileData.count) bytes, banner=\(bannerData.count) bytes")
         
-//        challengeService.createChallenge(parameters: parameters) { [weak self] result in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let response):
-//                    self?.creationResponse = response
-//                    print("✅ 챌린지 생성 성공: \(response)")
-//                case .failure(let error):
-//                    self?.creationError = error.localizedDescription
-//                    print("❌ 챌린지 생성 실패: \(error.localizedDescription)")
-//                }
-//            }
-//        }
-        
-        challengeService.createChallengeMultipart(parameters: parameters, profileImage: profileData, bannerImage: bannerData) { [weak self] result in
+        challengeService.createChallenge(parameters: parameters) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
                     self?.creationResponse = response
-                    onSuccess()
                     print("✅ 챌린지 생성 성공: \(response)")
                 case .failure(let error):
                     self?.creationError = error.localizedDescription
                     print("❌ 챌린지 생성 실패: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // 이미지 업로드 함수
+    func uploadImages(completion: @escaping () -> Void) {
+        guard let profile = profileImage, let banner = bannerImage else {
+            imageUploadError = "이미지를 모두 선택해주세요."
+            return
+        }
+
+        // 프로필 이미지 업로드
+        imageService.uploadImage(image: profile) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    self?.uploadedProfileImageURL = response.imageUrl
+                    print("✅ 프로필 이미지 업로드 성공: \(response.imageUrl)")
+
+                    // 배너 이미지 업로드
+                    self?.imageService.uploadImage(image: banner) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let bannerResponse):
+                                self?.uploadedBannerImageURL = bannerResponse.imageUrl
+                                print("✅ 배너 이미지 업로드 성공: \(bannerResponse.imageUrl)")
+                                completion()
+                            case .failure(let error):
+                                self?.imageUploadError = "배너 이미지 업로드 실패: \(error.localizedDescription)"
+                                print("❌ 배너 이미지 업로드 실패: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+
+                case .failure(let error):
+                    self?.imageUploadError = "프로필 이미지 업로드 실패: \(error.localizedDescription)"
+                    print("❌ 프로필 이미지 업로드 실패: \(error.localizedDescription)")
                 }
             }
         }

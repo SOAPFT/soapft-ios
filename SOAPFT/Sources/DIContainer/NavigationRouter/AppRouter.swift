@@ -17,6 +17,8 @@ enum Route: Hashable {
     case friendsRequest
     case groupCreate
 //    case groupCreateNext
+    case moreRecentGroup
+    case moreHotGroup
     case mypage
     case mypageEdit
     case mypageEditInfo
