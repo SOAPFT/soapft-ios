@@ -90,14 +90,14 @@ final class GroupCreateViewModel: ObservableObject {
         }
 
 
-        print("📸 이미지: profile=\(profileData.count) bytes, banner=\(bannerData.count) bytes")
-        
         challengeService.createChallenge(parameters: parameters) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
                     self?.creationResponse = response
                     print("✅ 챌린지 생성 성공: \(response)")
+                    onSuccess() // ✅ ✅ ✅ 이거 빠졌기 때문에 라우팅 안 됨
+                    
                 case .failure(let error):
                     self?.creationError = error.localizedDescription
                     print("❌ 챌린지 생성 실패: \(error.localizedDescription)")

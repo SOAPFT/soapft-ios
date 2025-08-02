@@ -39,6 +39,7 @@ struct SOAPFTApp: App {
                         case .mainTabbar:
                             MainTabbarView()
                                 .environment(\.diContainer, container)
+                                .environmentObject(container)
                         case .groupEdit:
                             GroupEditView()
                                 .environment(\.diContainer, container)
