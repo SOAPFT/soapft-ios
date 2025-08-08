@@ -29,6 +29,8 @@ final class DIContainer: ObservableObject {
     let commentService: CommentService
     let evenetService: EventService
 
+    @Published var selectedTab: String = "Main"
+    
     init(router: AppRouter) {
         self.router = router
 

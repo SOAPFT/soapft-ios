@@ -9,11 +9,10 @@ import SwiftUI
 
 struct MainTabbarView: View {
     @EnvironmentObject var container: DIContainer
-    @State private var selectedTab: String = "Main"
 
     var body: some View{
         VStack(spacing: 0) {
-            TabView (selection: $selectedTab){
+            TabView (selection: $container.selectedTab){
                 HomeWrapper()
                     .tag("Main")
                 FriendsView()
@@ -42,16 +41,16 @@ struct MainTabbarView: View {
     @ViewBuilder
     private func tabButton(title: String, selectedImage: String) -> some View {
         Button {
-            selectedTab = title
+            container.selectedTab = title
         } label: {
             VStack(spacing: 4) {
                 Image(systemName: selectedImage)
-                    .foregroundStyle(selectedTab == title ? Color.orange01 : .gray)
+                    .foregroundStyle(container.selectedTab == title ? Color.orange01 : .gray)
                     .frame(width: 24, height: 24)
                 
                 Text(title)
                     .font(.caption)
-                    .foregroundStyle(selectedTab == title ? Color.orange01 : .gray)
+                    .foregroundStyle(container.selectedTab == title ? Color.orange01 : .gray)
                     .frame(maxWidth: .infinity)
             }
             

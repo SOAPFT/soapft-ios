@@ -31,7 +31,7 @@ struct GroupCreateNextView: View {
                 ZStack {
                     HStack {
                         Button(action: {
-                            dismiss()
+                            container.router.pop()
                         }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
@@ -203,18 +203,22 @@ extension GroupCreateNextView {
             btn1: btn1,
             btn2: btn2,
             onConfirm: {
-                
                 guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
                     print("❌ accessToken 없음")
                     return
                 }
+                
                 viewModel.uploadImages {
                     viewModel.createChallenge(accessToken: accessToken){
                         // 챌린지 생성 성공 시 챌린지 관련 뷰 반영 API 호출
                         container.challengeRefreshSubject.send()
                         container.chatRefreshSubject.send()
-                        container.router.pop()
-                        container.router.pop()
+                        
+                        print("✅ 챌린지 생성 완료 후 라우팅 실행")
+                        
+                        container.selectedTab = "More"
+                        container.router.reset()
+                        container.router.push(.mainTabbar)
                     }
                 }
             }
