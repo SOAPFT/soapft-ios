@@ -16,7 +16,7 @@ struct GroupInfoWrapper: View {
     var body: some View {
         GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
             challengeService: container.challengeService,
-            id: challenge.challengeUuid
+            id: challenge.challengeUuid ?? ""
         ))
         .navigationBarBackButtonHidden(true)
     }

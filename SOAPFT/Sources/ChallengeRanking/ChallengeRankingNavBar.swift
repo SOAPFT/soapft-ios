@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct ChallengeRankingNavBar: View {
+    @Environment(\.diContainer) private var container
     let ChallengeName: String
     
     var body: some View {
         
         HStack {
-            Button(action: { }) {
+            Button(action: { container.router.pop() }) {
                 Image(systemName: "chevron.left")
                     .foregroundStyle(.black)
                     .font(Font.system(size: 18))

@@ -55,7 +55,7 @@ final class ChallengeSignUpViewModel: ObservableObject {
             return
         }
 
-        challengeService.joinChallenge(id: challenge.challengeUuid) { [weak self] result in
+        challengeService.joinChallenge(id: challenge.challengeUuid ?? "") { [weak self] result in
             guard let self = self else { return }
 
             DispatchQueue.main.async {

@@ -48,9 +48,9 @@ struct MoreGroupView: View {
                     ForEach(viewModel.getChallenges(for: viewType), id: \.self) { challenge in
                         Button(action: {
                             if challenge.isParticipated ?? false {
-                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid ?? ""))
                             } else {
-                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))
+                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid ?? ""))
                             }
                         }) {
                             ChallengeGridCard(Name: challenge.banner ?? "", Title: challenge.title)

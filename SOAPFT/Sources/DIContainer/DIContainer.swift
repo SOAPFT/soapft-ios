@@ -27,6 +27,7 @@ final class DIContainer: ObservableObject {
     let chatService: ChatService
     let friendService: FriendService
     let commentService: CommentService
+    let evenetService: EventService
 
     init(router: AppRouter) {
         self.router = router
@@ -41,6 +42,7 @@ final class DIContainer: ObservableObject {
         self.chatService = ChatService()
         self.friendService = FriendService()
         self.commentService = CommentService()
+        self.evenetService = EventService()
     }
 }
 

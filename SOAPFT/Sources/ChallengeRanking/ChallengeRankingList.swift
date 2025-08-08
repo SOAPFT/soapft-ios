@@ -9,9 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct ChallengeRankingListView: View {
-    let others: [RankUser] = (4...50).map {
-        RankUser(rank: $0, name: "챌린저 이름", image: "https://i.pravatar.cc/100?img=\($0+3)", score: "1000")
-    }
+    let others: [RankUser]
 
     var body: some View {
             LazyVStack(spacing: 0) {
@@ -35,7 +33,7 @@ struct ChallengeRankingListView: View {
                         
                         Spacer()
                         
-                        Text(user.score)
+                        Text("\(user.score)")
                             .font(Font.Pretend.pretendardRegular(size: 14))
                     }
                     .padding(.horizontal)
@@ -51,6 +49,4 @@ struct ChallengeRankingListView: View {
 }
 
 
-#Preview {
-    ChallengeRankingListView()
-}
+

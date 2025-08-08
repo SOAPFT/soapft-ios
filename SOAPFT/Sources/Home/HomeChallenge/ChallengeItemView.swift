@@ -6,24 +6,24 @@
 //
 
 import SwiftUI
-
+import Kingfisher
 
 struct ChallengeItemView: View {
     let challenge: Challenge
 
     // 상태에 따른 뱃지 색상과 텍스트
     var badgeText: String {
-        switch challenge.type {
+        switch challenge.challengeType {
         case "EVENT": return "전체"
-        case "NORMAL": return "일반"
+        case "GROUP": return "일반"
         default: return "알 수 없음"
         }
     }
 
     var badgeColor: Color {
-        switch challenge.type {
+        switch challenge.challengeType {
         case "EVENT": return Color.red
-        case "NORMAL": return Color.yellow
+        case "GROUP": return Color.yellow
         default: return Color.gray
         }
     }
@@ -32,9 +32,27 @@ struct ChallengeItemView: View {
         VStack(alignment: .leading, spacing: 8) {
             ZStack(alignment: .topLeading) {
                 GeometryReader { geometry in
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.2))
+                    KFImage(URL(string: challenge.banner ?? ""))
+                        .placeholder {
+                            // 로딩 중 표시
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.3))
+                                .overlay(
+                                    ProgressView()
+                                        .scaleEffect(0.8)
+                                )
+                        }
+                        .retry(maxCount: 3)
+                        .onSuccess { result in
+                            print("✅ 이미지 로드 성공: \(result.source.url?.absoluteString ?? "")")
+                        }
+                        .onFailure { error in
+                            print("❌ 이미지 로드 실패: \(error.localizedDescription)")
+                        }
+                        .resizable()
+                        .scaledToFill()
                         .frame(width: geometry.size.width, height: geometry.size.width)
+                        .clipped()
                         .cornerRadius(12)
                     
                     Text(badgeText)
@@ -59,7 +77,7 @@ struct ChallengeItemView: View {
                     Image(systemName: "person.fill")
                         .font(.caption)
                         .foregroundStyle(.gray)
-                    Text("\(challenge.currentMembers ?? 0 )/\(challenge.maxMember)")
+                    Text("\(challenge.currentMembers ?? 0)/\(challenge.maxMember ?? 0)")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
@@ -76,8 +94,5 @@ struct ChallengeItemView: View {
     }
 }
 
-
-
 #Preview {
-
 }

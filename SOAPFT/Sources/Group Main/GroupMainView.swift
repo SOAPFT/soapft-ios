@@ -208,9 +208,9 @@ struct GroupMainView: View {
                     ForEach(viewModel.hot, id: \.self) { challenge in
                         Button(action: {
                             if challenge.isParticipated ?? false {
-                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid ?? ""))
                             } else {
-                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))
+                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid ?? ""))
                             }
                         }) {
                             ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
@@ -292,9 +292,9 @@ struct GroupMainView: View {
                     ForEach(viewModel.recent, id: \.self) { challenge in
                         Button(action: {
                             if challenge.isParticipated ?? false {
-                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
+                                container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid ?? ""))
                             } else {
-                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))
+                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid ?? ""))
                             }
                         }) {
                             ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)

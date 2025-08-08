@@ -10,7 +10,6 @@ import Lottie
 
 struct Home: View {
     @StateObject private var viewModel: HomeViewModel
-    //DIContainer
     @Environment(\.diContainer) private var container
     
     init(viewModel: HomeViewModel) {
@@ -24,14 +23,12 @@ struct Home: View {
     
     var body: some View {
         VStack {
-            //Nav 영역
             homeNavBar()
             
             Divider()
             
             ScrollView {
                 LazyVStack {
-                    // Lottie
                     LottieView(filename: "Fire")
                         .frame(width: 120, height: 90)
                         .padding(.top, 33)
@@ -61,9 +58,7 @@ struct Home: View {
                     } else {
                         LazyVGrid(columns: columns, spacing: 16) {
                             ForEach(viewModel.filteredChallenges, id: \.id) { challenge in
-                                Button(action: {
-                                    container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))
-                                }){
+                                Button(action: { handleChallengeTap(challenge) }) {
                                     ChallengeItemView(challenge: challenge)
                                 }
                             }
@@ -75,6 +70,27 @@ struct Home: View {
         }
         .navigationBarBackButtonHidden()
     }
+    
+    // MARK: - 챌린지 목록 탭 시
+    private func handleChallengeTap(_ challenge: Challenge) {
+        switch challenge.challengeType {
+        case "EVENT":
+            // 이벤트 → missionId 사용
+            container.router.push(.challengeRankingWrapper(missionId: challenge.id))
+            
+        case "GROUP":
+            // 일반 챌린지 → challengeUuid 사용
+            if let uuid = challenge.challengeUuid {
+                container.router.push(.GroupTabbar(ChallengeID: uuid))
+            } else {
+                print("❌ challengeUuid가 없음")
+            }
+            
+        default:
+            print("❌ 지원하지 않는 챌린지 타입: \(challenge.challengeType ?? "")")
+        }
+    }
+
 }
 
 struct HomeWrapper: View {

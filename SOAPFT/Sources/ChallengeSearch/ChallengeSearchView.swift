@@ -87,8 +87,9 @@ struct ChallengeRowView: View {
     
     
     var body: some View {
-        if challenge.isParticipated ?? false {
-            Button(action: {container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid))}) {
+            Button(action: {
+                handleChallengeTap(challenge)
+            }) {
                 HStack(alignment: .top, spacing: 12) {
                     AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
                         if let image = phase.image {
@@ -116,37 +117,48 @@ struct ChallengeRowView: View {
                 .padding(.horizontal)
             }
             .buttonStyle(PlainButtonStyle())
-        } else {
-            Button(action: {container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid))}) {
-                HStack(alignment: .top, spacing: 12) {
-                    AsyncImage(url: URL(string: challenge.profile ?? "")) { phase in
-                        if let image = phase.image {
-                            image.resizable().scaledToFill()
-                        } else {
-                            Circle().fill(Color.gray.opacity(0.2))
-                        }
-                    }
-                    .frame(width: 32, height: 32)
-                    .clipShape(Circle())
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(challenge.title)
-                            .font(.headline)
-                        Text("챌린지 시작일: \(challenge.startDate) ~ 종료일: \(challenge.endDate)")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                    }
-                    
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundStyle(.gray)
-                        .font(.caption)
+    }
+    
+    // MARK: - 챌린지 목록 탭 시
+    private func handleChallengeTap(_ challenge: Challenge) {
+        if challenge.isParticipated == false {
+            switch challenge.challengeType {
+            case "EVENT":
+                // 이벤트 → missionId 사용
+                container.router.push(.challengeRankingWrapper(missionId: challenge.id))
+                
+            case "GROUP":
+                // 일반 챌린지 → challengeUuid 사용
+                if let uuid = challenge.challengeUuid {
+                    container.router.push(.challengeSignUpWrapper(ChallengeID: uuid))
+                } else {
+                    print("❌ challengeUuid가 없음")
                 }
-                .padding(.horizontal)
+                
+            default:
+                print("❌ 지원하지 않는 챌린지 타입: \(challenge.challengeType ?? "")")
             }
-            .buttonStyle(PlainButtonStyle())
+        }
+        else {
+            switch challenge.challengeType {
+            case "EVENT":
+                // 이벤트 → missionId 사용
+                container.router.push(.challengeRankingWrapper(missionId: challenge.id))
+                
+            case "GROUP":
+                // 일반 챌린지 → challengeUuid 사용
+                if let uuid = challenge.challengeUuid {
+                    container.router.push(.GroupTabbar(ChallengeID: uuid))
+                } else {
+                    print("❌ challengeUuid가 없음")
+                }
+                
+            default:
+                print("❌ 지원하지 않는 챌린지 타입: \(challenge.challengeType ?? "")")
+            }
         }
     }
+        
 }
 
 
