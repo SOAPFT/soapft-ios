@@ -1,5 +1,5 @@
 //
-//  TodayMeasurementView.swift
+//  MeasurementView.swift
 //  SOAPFT
 //
 //  Created by 바견규 on 7/16/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TodayMeasurementView: View {
+struct MeasurementView: View {
     @StateObject private var manager = HealthKitManager.shared
 
     var body: some View {

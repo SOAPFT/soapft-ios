@@ -10,20 +10,20 @@ import Foundation
 // MARK: -  공통 챌린지 모델
 struct Challenge: Decodable, Hashable {
     let id: Int
-    let challengeUuid: String
+    let challengeUuid: String?
     let title: String
-    let type: String?
+    let challengeType: String?
     let profile: String?
     let banner: String?
     let introduce: String?
     let verificationGuide: String?
     let startDate: String
     let endDate: String
-    let goal: Int
+    let goal: Int?
     let startAge: Int?
     let endAge: Int?
-    let gender: String
-    let maxMember: Int
+    let gender: String?
+    let maxMember: Int?
     let currentMember: Int?
     let creatorUuid: String?
     let participantUuid: [String]?
@@ -73,7 +73,7 @@ struct Meta: Decodable {
 // MARK: - 챌린지 상세 응답
 struct ChallengeDetailResponse: Decodable {
     let id: Int
-    let challengeUuid: String
+    let challengeUuid: String?
     let title: String
     let type: String
     let profile: String?

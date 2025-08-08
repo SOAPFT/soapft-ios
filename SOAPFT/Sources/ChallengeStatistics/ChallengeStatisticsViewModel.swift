@@ -63,7 +63,7 @@ final class ChallengeStatisticsViewModel: ObservableObject {
         )
         
         //사용자 챌린지 진행률 조회
-        self.challengeService.getProgress(id: challenge.challengeUuid) { [weak self] (result: Result<ChallengeProgressResponse, Error>) in
+        self.challengeService.getProgress(id: challenge.challengeUuid ?? "" ) { [weak self] (result: Result<ChallengeProgressResponse, Error>) in
             guard let self = self else { return }
 
             DispatchQueue.main.async {
@@ -77,7 +77,7 @@ final class ChallengeStatisticsViewModel: ObservableObject {
         }
 
         // 월별 인증 현황 요청
-        challengeService.getMonthlyVerifications(id: challenge.challengeUuid, year: year, month: month) { [weak self] result in
+        challengeService.getMonthlyVerifications(id: challenge.challengeUuid ?? "", year: year, month: month) { [weak self] result in
             guard let self = self else { return }
 
             DispatchQueue.main.async {

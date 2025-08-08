@@ -8,9 +8,10 @@
 import UIKit
 import UserNotifications
 import NidThirdPartyLogin
+import WatchConnectivity
 
 /// 푸시 알림 및 네이버 로그인 처리를 담당하는 AppDelegate
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, WCSessionDelegate {
     
     func application(
         _ application: UIApplication,
@@ -32,36 +33,81 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         
+        // 워치 연결 세션 초기화
+        if WCSession.isSupported() {
+            let session = WCSession.default
+            session.delegate = self
+            session.activate()
+        }
+        
         return true
     }
+    
+    // MARK: - WCSessionDelegate
+    
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        print("📲 iPhone WCSession 활성화 완료. 상태: \(activationState)")
+    }
+    
+    // 📥 워치에서 메시지 수신
+    // AppDelegate.swift에 추가 (없다면)
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        print("📦 UserInfo 수신: \(userInfo)")
+        
+        if let action = userInfo["action"] as? String, action == "endChallenge",
+           let eventId = userInfo["eventId"] as? Int,
+           let result = userInfo["resultData"] as? Int {
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: .watchChallengeCompleted,
+                    object: nil,
+                    userInfo: [
+                        "eventId": eventId,
+                        "resultData": result
+                    ]
+                )
+            }
+            print("✅ NotificationCenter로 전송 완료")
+        }
+    }
+    func sessionDidBecomeInactive(_ session: WCSession) {}
+    func sessionDidDeactivate(_ session: WCSession) {}
 
-    /// 네이버 로그인 URL 처리
+    
+    // MARK: - 네이버 로그인 처리
+    
     func application(_ app: UIApplication,
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         return NidOAuth.shared.handleURL(url)
     }
 
-    /// 디바이스 토큰 등록 성공
+    // MARK: - 푸시 토큰 처리
+
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
         print("Device Token: \(token)")
-
-        // UserDefaults에 저장 (전송은 따로)
         UserDefaults.standard.set(token, forKey: "device_token")
     }
 
-    /// 디바이스 토큰 등록 실패
     func application(_ application: UIApplication,
                      didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("푸시 등록 실패: \(error.localizedDescription)")
     }
 
-    /// 앱이 포그라운드 상태일 때 알림 수신 처리
+    // MARK: - 푸시 알림 처리
+
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                  willPresent notification: UNNotification,
                                  withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound, .badge])
     }
+}
+
+
+// MARK: - 알림 센터 (앱 내부에 알림)
+extension Notification.Name {
+    static let watchChallengeCompleted = Notification.Name("watchChallengeCompleted")
 }

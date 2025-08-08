@@ -6,18 +6,15 @@
 //
 
 // ChallengeRankingView.swift
+
 import SwiftUI
+import Kingfisher
 
 struct ChallengeTop3PodiumView: View {
-    let top3: [RankUser] = [
-        RankUser(rank: 2, name: "챌린저이름", image: "https://i.pravatar.cc/100?img=11", score: "30000"),
-        RankUser(rank: 1, name: "챌린저이름", image: "https://i.pravatar.cc/100?img=13", score: "25000"),
-        RankUser(rank: 3, name: "챌린저이름", image: "https://i.pravatar.cc/100?img=17", score: "20000")
-    ]
-    
+    let top3: [RankUser]
+
     var body: some View {
         ZStack {
-            // 상단 그라데이션 배경
             LinearGradient(
                 gradient: Gradient(colors: [.orange.opacity(0.3), .white]),
                 startPoint: .top,
@@ -26,16 +23,15 @@ struct ChallengeTop3PodiumView: View {
             .ignoresSafeArea()
 
             VStack(spacing: 16) {
-                // 타이틀 & 별 아이콘
                 VStack(spacing: 4) {
                     Text("CHALLENGE")
                         .font(Font.Pretend.pretendardRegular(size: 20))
                         .foregroundStyle(Color.orange01)
-                
+
                     Text("RANKING")
                         .font(Font.Pretend.pretendardMedium(size: 40))
                         .foregroundStyle(Color.orange01)
-                    
+
                     Image(systemName: "crown.fill")
                         .font(.system(size: 40))
                         .foregroundStyle(Color.orange01)
@@ -44,42 +40,126 @@ struct ChallengeTop3PodiumView: View {
                 .padding(.top, 32)
                 .padding(.bottom, 60)
 
-                // 시상대 podium
-                HStack(alignment: .bottom, spacing: 12) {
-                    ForEach(0..<3) { i in
-                        let user = top3[i]
-                        let isCenter = i == 1
-                        let height: CGFloat = isCenter ? 250 : (i == 0 ? 175 : 125)
-                        
-                        VStack(spacing: 8) {
-                            AsyncImage(url: URL(string: user.image)) { image in
-                                image.resizable()
-                            } placeholder: {
-                                Circle().fill(Color.gray.opacity(0.2))
-                            }
-                            .frame(width: 64, height: 64)
-                            .clipShape(Circle())
-                            Text(user.name)
-                                .font(Font.Pretend.pretendardBold(size: 14))
-                                .multilineTextAlignment(.center)
-                            Text(user.score)
-                                .font(Font.Pretend.pretendardBold(size: 14))
-                                .multilineTextAlignment(.center)
-                        }
-                        .padding(.top, 16)
-                        .frame(width: 100, height: height)
-                        .offset(y: offsetY(for: i))
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(color(for:i))
-                        )
-                    }
+                if top3.isEmpty {
+                    emptyStateView
+                } else {
+                    podiumView
                 }
+
                 Spacer()
             }
         }
     }
+
+    // MARK: - Empty State
+    private var emptyStateView: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "person.3")
+                .font(.system(size: 50))
+                .foregroundColor(.gray.opacity(0.5))
+
+            Text("아직 참여자가 없습니다")
+                .font(Font.Pretend.pretendardMedium(size: 16))
+                .foregroundColor(.gray)
+
+            Text("첫 번째 참여자가 되어보세요!")
+                .font(Font.Pretend.pretendardRegular(size: 14))
+                .foregroundColor(.gray.opacity(0.7))
+        }
+        .padding(.vertical, 50)
+    }
+
+    // MARK: - Podium View
+    private var podiumView: some View {
+        HStack(alignment: .bottom, spacing: 12) {
+            if top3.count > 1 {
+                podiumUserView(user: top3[1], height: 175, offset: -30, color: .gray.opacity(0.2)) // 2등
+            } else {
+                placeholderView(height: 175, offset: -30)
+            }
+
+            podiumUserView(user: top3[0], height: 250, offset: -70, color: .yellow.opacity(0.5)) // 1등
+
+            if top3.count > 2 {
+                podiumUserView(user: top3[2], height: 125, offset: -10, color: .gray.opacity(0.2)) // 3등
+            } else {
+                placeholderView(height: 125, offset: -10)
+            }
+        }
+    }
+
+    private func podiumUserView(user: RankUser, height: CGFloat, offset: CGFloat, color: Color) -> some View {
+        VStack(spacing: 8) {
+            KFImage(URL(string: user.image))
+                .placeholder {
+                    Circle()
+                        .fill(Color.gray.opacity(0.3))
+                        .overlay(
+                            Image(systemName: "person.fill")
+                                .foregroundColor(.white)
+                                .font(.system(size: 30))
+                        )
+                }
+                .resizable()
+                .scaledToFill()
+                .frame(width: 64, height: 64)
+                .clipShape(Circle())
+
+            Text(user.name)
+                .font(Font.Pretend.pretendardBold(size: 14))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+
+            Text("\(user.score)")
+                .font(Font.Pretend.pretendardBold(size: 14))
+                .multilineTextAlignment(.center)
+        }
+        .padding(.top, 16)
+        .frame(width: 100, height: height)
+        .offset(y: offset)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(color)
+        )
+    }
+
+    private func placeholderView(height: CGFloat, offset: CGFloat) -> some View {
+        VStack(spacing: 8) {
+            Circle()
+                .fill(Color.clear)
+                .frame(width: 64, height: 64)
+                .overlay(
+                    Circle()
+                        .stroke(Color.gray.opacity(0.3), style: StrokeStyle(lineWidth: 2, dash: [5]))
+                        .overlay(
+                            Image(systemName: "person.badge.plus")
+                                .foregroundColor(.gray.opacity(0.5))
+                                .font(.system(size: 25))
+                        )
+                )
+
+            Text("대기 중")
+                .font(Font.Pretend.pretendardMedium(size: 12))
+                .foregroundColor(.gray.opacity(0.7))
+
+            Text("0점")
+                .font(Font.Pretend.pretendardMedium(size: 12))
+                .foregroundColor(.gray.opacity(0.7))
+        }
+        .padding(.top, 16)
+        .frame(width: 100, height: height)
+        .offset(y: offset)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.clear)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.2), style: StrokeStyle(lineWidth: 1, dash: [5]))
+                )
+        )
+    }
 }
+
 
 // 시상대 podium (높이 조정 offset)
 func offsetY(for index: Int) -> CGFloat {
@@ -90,6 +170,7 @@ func offsetY(for index: Int) -> CGFloat {
     default: return 0
     }
 }
+
 // 시상대 podium (색상 분기)
 func color(for index: Int) -> Color {
     switch index {
@@ -100,16 +181,4 @@ func color(for index: Int) -> Color {
     }
 }
 
-// 모델
-struct RankUser: Identifiable {
-    let id = UUID()
-    let rank: Int
-    let name: String
-    let image: String
-    let score: String
-}
-
-#Preview {
-    ChallengeTop3PodiumView()
-}
 
