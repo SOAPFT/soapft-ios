@@ -5,8 +5,6 @@
 //  Created by 바견규 on 8/9/25.
 //
 
-
-
 import Foundation
 import Combine
 
@@ -26,6 +24,7 @@ final class ChatWebSocket: NSObject, ObservableObject {
     // 재연결 관리
     private var retryCount = 0
     private let maxRetries = 5
+    private var shouldReconnect = true  // 재접속 여부 플래그
 
     // typing 타이머
     private var typingTimers: [String: Timer] = [:]
@@ -87,6 +86,7 @@ final class ChatWebSocket: NSObject, ObservableObject {
         socketIOConnected = false
         sessionId = nil
         didSendOpen = false
+        shouldReconnect = true  // 새로운 연결 시에는 재접속 허용
 
         guard state == .idle || state == .closed else {
             log("⏭️ connect 무시 (state=\(state))")
@@ -97,6 +97,8 @@ final class ChatWebSocket: NSObject, ObservableObject {
     }
 
     func disconnect() {
+        shouldReconnect = false  // 의도적 종료이므로 재접속 비활성화
+        
         guard state == .connecting || state == .open else {
             log("⏭️ disconnect 무시 (state=\(state))")
             return
@@ -119,7 +121,7 @@ final class ChatWebSocket: NSObject, ObservableObject {
             self.currentUserUuid = nil
         }
         state = .closed
-        log("📤 채팅 WebSocket 연결 종료")
+        log("📤 채팅 WebSocket 연결 종료 (의도적)")
     }
 
     func sendMessage(roomUuid: String, type: String, content: String, imageUrl: String? = nil) {
@@ -194,6 +196,7 @@ final class ChatWebSocket: NSObject, ObservableObject {
         log("🔍 세션 ID: \(sessionId ?? "없음")")
         log("🔍 JWT 토큰: \(jwtToken != nil ? "있음" : "없음")")
         log("🔍 재시도 횟수: \(retryCount)")
+        log("🔍 재접속 허용: \(shouldReconnect)")
         log("🔍 ========================")
     }
 
@@ -244,10 +247,17 @@ final class ChatWebSocket: NSObject, ObservableObject {
     }
 
     private func reconnect() {
+        // 의도적 종료인 경우 재접속하지 않음
+        guard shouldReconnect else {
+            log("⏭️ 재연결 생략 (의도적 종료)")
+            return
+        }
+        
         guard state != .closing else {
             log("⏭️ 재연결 생략 (closing)")
             return
         }
+        
         retryCount += 1
         socketIOConnected = false
         sessionId = nil
@@ -258,6 +268,11 @@ final class ChatWebSocket: NSObject, ObservableObject {
         log("🔄 재연결 시도 (\(retryCount)/\(maxRetries)) - \(delay)초 후")
         DispatchQueue.global().asyncAfter(deadline: .now() + delay) { [weak self] in
             guard let self else { return }
+            // 재연결 시도 전에 다시 한 번 확인
+            guard self.shouldReconnect else {
+                self.log("⏭️ 재연결 시도 중단 (의도적 종료)")
+                return
+            }
             self.state = .connecting
             self.internalConnect()
         }
@@ -277,7 +292,10 @@ final class ChatWebSocket: NSObject, ObservableObject {
                     self.isConnected = false
                     self.socketIOConnected = false
                 }
-                self.reconnect()
+                // 의도적 종료가 아닌 경우에만 재연결
+                if self.shouldReconnect {
+                    self.reconnect()
+                }
             }
         }
     }
@@ -659,7 +677,7 @@ final class ChatWebSocket: NSObject, ObservableObject {
     }
 }
 
-    // MARK: - URLSessionWebSocketDelegate
+// MARK: - URLSessionWebSocketDelegate
 extension ChatWebSocket: URLSessionWebSocketDelegate {
     func urlSession(_ session: URLSession,
                     webSocketTask: URLSessionWebSocketTask,
@@ -676,8 +694,19 @@ extension ChatWebSocket: URLSessionWebSocketDelegate {
             self.isConnected = false
             self.socketIOConnected = false
         }
-        if self.state != .closing { self.state = .closed }
-        if self.retryCount < self.maxRetries { self.reconnect() }
+        
+        if self.state != .closing {
+            self.state = .closed
+        }
+        
+        // 의도적 종료가 아니고 재시도 가능한 경우에만 재연결
+        if self.shouldReconnect && self.retryCount < self.maxRetries {
+            self.reconnect()
+        } else if !self.shouldReconnect {
+            self.log("⏭️ 재연결 생략 (의도적 종료)")
+        } else {
+            self.log("⏭️ 재연결 생략 (최대 재시도 초과)")
+        }
     }
 
     func urlSession(_ session: URLSession,

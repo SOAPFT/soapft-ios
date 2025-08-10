@@ -24,10 +24,25 @@ struct NaverSignButton: View {
                 Image("naverButton")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: UIScreen.main.bounds.width * 0.9)
+                    .frame(maxWidth: buttonMaxWidth)
+                    .frame(height: 50)
             }
         }
     }
+    
+    // 디바이스별 버튼 최대 너비 계산
+        private var buttonMaxWidth: CGFloat {
+            let screenWidth = UIScreen.main.bounds.width
+            
+            // iPad 감지
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                // iPad의 경우 최대 400pt로 제한
+                return min(400, screenWidth * 0.6)
+            } else {
+                // iPhone의 경우 기존 로직 유지
+                return screenWidth * 0.9
+            }
+        }
     
     func loginWithNaver() {
         NidOAuth.shared.requestLogin { result in

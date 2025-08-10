@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-
-
-
+import Kingfisher
 
 struct ChallengeSignUpWrapper: View {
     private let challengeUuid: String
@@ -28,6 +26,8 @@ struct ChallengeSignUpWrapper: View {
     }
 
     var body: some View {
+
+        ChallengeSignUpNavBar(challengeName: viewModel.challenge.title)
         ChallengeSignUpView(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
             .onChange(of: viewModel.isJoinCompleted) { _, isCompleted in
@@ -39,8 +39,6 @@ struct ChallengeSignUpWrapper: View {
             }
     }
 }
-
-
 
 struct ChallengeSignUpView: View {
     @StateObject var viewModel: ChallengeSignUpViewModel
@@ -70,20 +68,28 @@ struct ChallengeSignUpView: View {
         ScrollView {
             VStack(spacing: 20) {
                 
-                //0.네비게이션 바
-                ChallengeSignUpNavBar(challengeName: viewModel.challenge.title)
-                
-                // 1. 커버 이미지 (배경)
+                // 1. 커버 이미지 (배경) - Kingfisher 적용
                 ZStack(alignment: .bottom) {
-                    AsyncImage(url: URL(string: viewModel.challenge.banner ?? "")) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } placeholder: {
-                        Color.gray.opacity(0.3)
-                    }
-                    .frame(height: 180)
-                    .clipped()
+                    KFImage(URL(string: viewModel.challenge.banner ?? ""))
+                        .placeholder {
+                            Color.gray.opacity(0.3)
+                                .overlay(
+                                    Image(systemName: "photo")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 24))
+                                )
+                        }
+                        .onFailure { error in
+                            print("배너 이미지 로드 실패: \(error)")
+                        }
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 180)
+                        .clipped()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 0)
+                                .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+                        )
                 }
                 
                 // 2. 흰색 박스 위에 겹치는 프로필 이미지 + 그룹명 박스
@@ -95,17 +101,34 @@ struct ChallengeSignUpView: View {
                         .frame(height: 120)
                     
                     VStack(spacing: 8) {
-                        // 겹쳐진 원형 프로필
-                        AsyncImage(url: URL(string: viewModel.challenge.profile ?? "")) { image in
-                            image
-                                .resizable()
-                                .clipShape(Circle())
-                        } placeholder: {
-                            Circle().fill(Color.gray.opacity(0.3))
-                        }
-                        .frame(width: 80, height: 80)
-                        .overlay(Circle().stroke(Color.white, lineWidth: 3))
-                        .offset(y: -40) // 흰 박스 위로 겹치기
+                        // 겹쳐진 원형 프로필 - Kingfisher 적용
+                        KFImage(URL(string: viewModel.challenge.profile ?? ""))
+                            .placeholder {
+                                Circle()
+                                    .fill(Color.gray.opacity(0.3))
+                                    .overlay(
+                                        Image(systemName: "person")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 24))
+                                    )
+                            }
+                            .onFailure { error in
+                                print("프로필 이미지 로드 실패: \(error)")
+                            }
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 80, height: 80)
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(Color.white, lineWidth: 3)
+                            )
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+                                    .padding(3)
+                            )
+                            .offset(y: -40) // 흰 박스 위로 겹치기
                         
                         // 그룹명
                         Text(viewModel.challenge.title)
@@ -116,7 +139,6 @@ struct ChallengeSignUpView: View {
                 }
                 .padding(.horizontal)
                 .padding(.top, -40) // 배너 아래에 자연스럽게 겹침
-
 
                 // 3. 요약 정보
                 VStack(alignment: .leading, spacing: 8) {
@@ -137,7 +159,6 @@ struct ChallengeSignUpView: View {
                     .background(RoundedRectangle(cornerRadius: 10).fill(Color.white).shadow(radius: 2))
                 
                 Spacer()
-                
                 
                 // 결과 안내 메시지
                 if let error = viewModel.errorMessage {
@@ -217,7 +238,6 @@ struct ChallengeSignUpView: View {
         }
     }
 }
-
 
 #Preview {
     

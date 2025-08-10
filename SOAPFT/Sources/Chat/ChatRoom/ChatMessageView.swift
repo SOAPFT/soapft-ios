@@ -45,8 +45,6 @@ struct MessageText: View {
     }
 }
 
-
-
 // MARK: - 채팅 메시지 뷰
 struct ChatMessageView: View {
     let message: ChatMessage
@@ -73,7 +71,7 @@ struct ChatMessageView: View {
                             }
                             */
                             
-                            Text(formatTime(message.createdAt))
+                            Text(formatTimeToKST(message.createdAt))
                                 .font(.caption2)
                                 .foregroundColor(.gray)
                         }
@@ -104,7 +102,7 @@ struct ChatMessageView: View {
                                 .cornerRadius(16, corners: [.topLeft, .topRight, .bottomRight])
                                 .textSelection(.enabled)
                             
-                            Text(formatTime(message.createdAt))
+                            Text(formatTimeToKST(message.createdAt))
                                 .font(.caption2)
                                 .foregroundColor(.gray)
                         }
@@ -118,7 +116,7 @@ struct ChatMessageView: View {
         }
     }
     
-    private func formatTime(_ dateString: String) -> String {
+    private func formatTimeToKST(_ dateString: String) -> String {
         let formatter = ISO8601DateFormatter()
         var date: Date?
         
@@ -138,6 +136,7 @@ struct ChatMessageView: View {
             
             for format in possibleFormats {
                 fallbackFormatter.dateFormat = format
+                fallbackFormatter.timeZone = TimeZone(abbreviation: "UTC") // UTC로 파싱
                 if let parsedDate = fallbackFormatter.date(from: dateString) {
                     date = parsedDate
                     break
@@ -150,37 +149,44 @@ struct ChatMessageView: View {
             return dateString
         }
         
+        // 한국 시간대로 변환
+        let kstTimeZone = TimeZone(identifier: "Asia/Seoul")!
         let calendar = Calendar.current
+        var kstCalendar = Calendar.current
+        kstCalendar.timeZone = kstTimeZone
+        
         let now = Date()
+        let kstNow = Date() // 현재 시간도 KST 기준으로 비교
         
-        // 오늘인지 확인
-        if calendar.isDate(finalDate, inSameDayAs: now) {
-            let timeFormatter = DateFormatter()
-            timeFormatter.dateFormat = "HH:mm"
-            return timeFormatter.string(from: finalDate)
+        // 한국 시간 기준으로 날짜 포맷터 설정
+        let kstFormatter = DateFormatter()
+        kstFormatter.timeZone = kstTimeZone
+        
+        // 오늘인지 확인 (KST 기준)
+        if kstCalendar.isDate(finalDate, inSameDayAs: kstNow) {
+            kstFormatter.dateFormat = "HH:mm"
+            return kstFormatter.string(from: finalDate)
         }
         
-        // 어제인지 확인
-        if let yesterday = calendar.date(byAdding: .day, value: -1, to: now),
-           calendar.isDate(finalDate, inSameDayAs: yesterday) {
-            let timeFormatter = DateFormatter()
-            timeFormatter.dateFormat = "HH:mm"
-            return "어제 \(timeFormatter.string(from: finalDate))"
+        // 어제인지 확인 (KST 기준)
+        if let yesterday = kstCalendar.date(byAdding: .day, value: -1, to: kstNow),
+           kstCalendar.isDate(finalDate, inSameDayAs: yesterday) {
+            kstFormatter.dateFormat = "HH:mm"
+            return "어제 \(kstFormatter.string(from: finalDate))"
         }
         
-        // 올해인지 확인
-        if calendar.component(.year, from: finalDate) == calendar.component(.year, from: now) {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "M/d HH:mm"
-            return dateFormatter.string(from: finalDate)
+        // 올해인지 확인 (KST 기준)
+        if kstCalendar.component(.year, from: finalDate) == kstCalendar.component(.year, from: kstNow) {
+            kstFormatter.dateFormat = "M/d HH:mm"
+            return kstFormatter.string(from: finalDate)
         }
         
-        // 다른 해
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/M/d HH:mm"
-        return dateFormatter.string(from: finalDate)
+        // 다른 해 (KST 기준)
+        kstFormatter.dateFormat = "yyyy/M/d HH:mm"
+        return kstFormatter.string(from: finalDate)
     }
 }
+
 // MARK: - 시스템 메시지 뷰
 struct SystemMessageView: View {
     let message: ChatMessage
@@ -194,7 +200,7 @@ struct SystemMessageView: View {
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
                 
-                Text(formatTime(message.createdAt))
+                Text(formatTimeToKST(message.createdAt))
                     .font(.caption2)
                     .foregroundColor(.gray.opacity(0.7))
             }
@@ -208,13 +214,15 @@ struct SystemMessageView: View {
         .padding(.vertical, 4)
     }
     
-    private func formatTime(_ dateString: String) -> String {
+    private func formatTimeToKST(_ dateString: String) -> String {
         let formatter = ISO8601DateFormatter()
         guard let date = formatter.date(from: dateString) else { return dateString }
         
-        let timeFormatter = DateFormatter()
-        timeFormatter.dateFormat = "HH:mm"
-        return timeFormatter.string(from: date)
+        // 한국 시간대로 변환
+        let kstFormatter = DateFormatter()
+        kstFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        kstFormatter.dateFormat = "HH:mm"
+        return kstFormatter.string(from: date)
     }
 }
 

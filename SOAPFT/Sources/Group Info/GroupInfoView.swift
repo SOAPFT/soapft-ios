@@ -14,11 +14,14 @@ struct GroupInfoWrapper: View {
     let challenge: ChallengeDetailResponse
 
     var body: some View {
-        GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
-            challengeService: container.challengeService,
-            id: challenge.challengeUuid ?? ""
-        ))
-        .navigationBarBackButtonHidden(true)
+        VStack {
+            GroupInfoNavBar()
+                .navigationBarBackButtonHidden(true)
+            GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
+                challengeService: container.challengeService,
+                id: challenge.challengeUuid ?? ""
+            ))
+        }
     }
 }
 
@@ -38,7 +41,6 @@ struct GroupInfoView: View {
     var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    GroupInfoNavBar()
 
                     BannerSection(bannerURL: viewModel.challenge.banner)
                     BasicInfoSection(challenge: viewModel.challenge)
@@ -58,13 +60,26 @@ struct BannerSection: View {
     let bannerURL: String?
 
     var body: some View {
-        AsyncImage(url: URL(string: bannerURL ?? "")) { image in
-            image.resizable().scaledToFill()
-        } placeholder: {
-            Color.gray.opacity(0.2)
-        }
-        .frame(height: 200)
-        .clipped()
+        KFImage(URL(string: bannerURL ?? ""))
+            .placeholder {
+                Color.gray.opacity(0.2)
+                    .overlay(
+                        Image(systemName: "photo")
+                            .foregroundColor(.white)
+                            .font(.system(size: 24))
+                    )
+            }
+            .onFailure { error in
+                print("배너 이미지 로드 실패: \(error)")
+            }
+            .resizable()
+            .scaledToFill()
+            .frame(height: 200)
+            .clipped()
+            .overlay(
+                RoundedRectangle(cornerRadius: 0)
+                    .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+            )
     }
 }
 

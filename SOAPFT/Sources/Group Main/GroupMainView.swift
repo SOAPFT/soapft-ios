@@ -97,8 +97,11 @@ struct GroupMainView: View {
     private var ChallengeBannerView: some View {
         Group {
             HStack {
-                Text("이벤트 챌린지 🎉")
+                Text("이벤트 챌린지")
                     .font(Font.Pretend.pretendardRegular(size: 16))
+                Image(systemName: "party.popper")
+                    .foregroundColor(.orange)
+                    .font(.system(size: 16))
                 Spacer()
             }
             if viewModel.event.isEmpty {
@@ -130,7 +133,7 @@ struct GroupMainView: View {
              
             Text(challenge.title)
             
-            // Kingfisher로 이미지 로드
+            // Kingfisher로 이미지 로드 (테두리 추가)
             KFImage(URL(string: challenge.banner ?? ""))
                 .placeholder {
                     // 플레이스홀더
@@ -148,6 +151,10 @@ struct GroupMainView: View {
                 .frame(width: 100, height: 100)
                 .clipped()
                 .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+                )
             
             Button(action: {
                 print("지금 참여하기 \(index)")
@@ -166,7 +173,7 @@ struct GroupMainView: View {
         .aspectRatio(4/3, contentMode: .fit)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color.black, lineWidth: 0.8)
+                .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
                 .background(Color.clear)
         )
     }
@@ -174,8 +181,11 @@ struct GroupMainView: View {
     private var HotChallenge: some View {
         VStack {
             HStack {
-                Text("지금 인기 있는 챌린지 🔥")
+                Text("지금 인기 있는 챌린지")
                     .font(Font.Pretend.pretendardMedium(size: 16))
+                Image(systemName: "flame")
+                    .foregroundColor(.red)
+                    .font(.system(size: 16))
                 
                 Spacer()
                 
@@ -215,7 +225,7 @@ struct GroupMainView: View {
     
     private func ChallengeCard(Name: String, Title: String) -> some View {
         VStack {
-            // Kingfisher로 이미지 로드
+            // Kingfisher로 이미지 로드 (테두리 추가)
             KFImage(URL(string: Name))
                 .placeholder {
                     // 플레이스홀더
@@ -233,6 +243,10 @@ struct GroupMainView: View {
                 .frame(width: 100, height: 100)
                 .clipped()
                 .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+                )
 
             HStack {
                 Text(Title)
@@ -251,8 +265,11 @@ struct GroupMainView: View {
     private var RecentChallenge: some View {
         VStack {
             HStack {
-                Text("최근 개설된 챌린지 🌱")
+                Text("최근 개설된 챌린지")
                     .font(Font.Pretend.pretendardMedium(size: 16))
+                Image(systemName: "leaf")
+                    .foregroundColor(.green)
+                    .font(.system(size: 16))
                 
                 Spacer()
                 

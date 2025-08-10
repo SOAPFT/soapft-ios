@@ -242,6 +242,7 @@ struct ChatInputView: View {
             
             HStack(spacing: 12) {
                 // 이미지 첨부 버튼
+                /*
                 Button(action: {
                     // TODO: 이미지 선택 구현
                 }) {
@@ -250,6 +251,7 @@ struct ChatInputView: View {
                         .font(.system(size: 20))
                 }
                 .disabled(!isConnected)
+                */
                 
                 // 텍스트 입력
                 TextField("메시지를 입력하세요", text: $messageText, axis: .vertical)

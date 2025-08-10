@@ -90,6 +90,8 @@ struct GifticonShopView: View {
                 Image(systemName: "xmark")
                     .foregroundColor(.black)
                     .font(.system(size: 18))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
             
             Spacer()
@@ -100,8 +102,11 @@ struct GifticonShopView: View {
             
             Spacer()
             
+            // 오른쪽 공간 균형을 위한 투명한 뷰
+            Color.clear
+                .frame(width: 44, height: 44)
         }
-        .padding()
+        .padding(.horizontal)
         .background(Color(.systemBackground))
         .overlay(
             Divider()
@@ -149,6 +154,7 @@ struct GifticonShopView: View {
                                     .fill(selectedCategory == category ? Color.orange02 : Color.gray.opacity(0.2))
                             )
                     }
+                    .contentShape(Rectangle())
                 }
             }
             .padding(.horizontal)
@@ -192,38 +198,37 @@ struct GifticonProductCard: View {
                 ZStack(alignment: .topTrailing) {
                     Image(product.imageUrl)
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFit()  // fill -> fit으로 변경하여 이미지 잘림 방지
+                        .frame(height: 120)
+                        .frame(maxWidth: .infinity)  // 최대 너비 설정
+                        .clipped()
+                        .cornerRadius(12)
                         .padding(10)
-                    .frame(height: 120)
-                    .clipped()
-                    .cornerRadius(12)
                     
-                    // 할인 뱃지
-                    if let discountText = product.discountText {
-                        Text(discountText)
-                            .font(Font.Pretend.pretendardBold(size: 10))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 3)
-                            .background(Color.red)
-                            .cornerRadius(6)
-                            .padding(8)
-                    }
-                    
-                    // 인기 뱃지
-                    if product.isPopular {
-                        HStack {
+                    VStack(spacing: 4) {
+                        // 할인 뱃지
+                        if let discountText = product.discountText {
+                            Text(discountText)
+                                .font(Font.Pretend.pretendardBold(size: 10))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(Color.red)
+                                .cornerRadius(6)
+                        }
+                        
+                        // 인기 뱃지
+                        if product.isPopular {
                             Text("인기")
                                 .font(Font.Pretend.pretendardBold(size: 8))
                                 .foregroundColor(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(Color.orange02)
+                                .cornerRadius(6)
                         }
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 3)
-                        .background(Color.orange02)
-                        .cornerRadius(6)
-                        .padding(8)
-                        .offset(y: product.discountText != nil ? 25 : 0)
                     }
+                    .padding(8)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -268,6 +273,7 @@ struct GifticonProductCard: View {
                 .padding(.bottom, 12)
             }
         }
+        .contentShape(Rectangle())  // 전체 카드 영역을 터치 가능하게
         .background(Color(.systemBackground))
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -289,12 +295,14 @@ struct GifticonDetailView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // 상품 이미지
+                    // 상품 이미지 - 아이패드 최적화
                     Image(product.imageUrl)
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFit()  // fill -> fit으로 변경
+                        .frame(maxHeight: 300)  // 최대 높이 제한
+                        .frame(maxWidth: .infinity)
+                        .cornerRadius(16)
                         .padding(10)
-                    .cornerRadius(16)
                     
                     VStack(alignment: .leading, spacing: 16) {
                         // 브랜드 & 상품명
@@ -408,6 +416,7 @@ struct GifticonDetailView: View {
                         .cornerRadius(16)
                 }
                 .disabled(userCoins < product.coinPrice)
+                .contentShape(Rectangle())
                 .padding()
                 .background(Color(.systemBackground))
             }
@@ -559,7 +568,7 @@ final class GifticonShopViewModel: ObservableObject {
             // 상품권
             GifticonProduct(
                 id: "8",
-                name: "네이버페이 포인트 10000원",
+                name: "네이버페이 포인트",
                 brand: "네이버페이",
                 price: 10000,
                 coinPrice: 100,
@@ -572,7 +581,7 @@ final class GifticonShopViewModel: ObservableObject {
             ),
             GifticonProduct(
                 id: "9",
-                name: "컬쳐랜드 문화상품권 5000원",
+                name: "컬쳐랜드 문화상품권",
                 brand: "컬쳐랜드",
                 price: 5000,
                 coinPrice: 50,

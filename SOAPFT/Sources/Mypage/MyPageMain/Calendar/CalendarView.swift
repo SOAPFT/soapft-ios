@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import Kingfisher
 
 struct CalendarView: View {
     @Environment(\.diContainer) private var container
@@ -125,36 +126,35 @@ private struct CellView: View {
     var cellDate: Date
     var myModel: String?
     
-//    init(day: Int, clicked: Bool, cellDate: Date, myModel: CalendarModel?) {
-//        self.day = day
-//        self.clicked = clicked
-//        self.cellDate = cellDate
-//        self.myModel = myModel
-//    }
-    
     var body: some View {
         ZStack {
-            /// CalendarModel에 데이터가 있을 경우 표시될 뷰
+            /// CalendarModel에 데이터가 있을 경우 표시될 뷰 - Kingfisher 적용
             if let imageUrlString = myModel, let imageUrl = URL(string: imageUrlString) {
-                AsyncImage(url: imageUrl) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 40,height: 50)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    case .failure:
+                KFImage(imageUrl)
+                    .placeholder {
+                        // 로딩 중 플레이스홀더
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.gray.opacity(0.4))
-                            .frame(width: 40,height: 50)
-                    @unknown default:
-                        EmptyView()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 40, height: 50)
+                            .overlay(
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                                    .scaleEffect(0.6)
+                            )
                     }
-                }
+                    .onFailure { error in
+                        print("캘린더 이미지 로드 실패: \(error)")
+                    }
+                    .fade(duration: 0.2)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 40, height: 50)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .strokeBorder(Color.gray.opacity(0.3), lineWidth: 0.5)
+                    )
             }
             
             /// Date( )는 현재 시간의 Date를 반환함.
@@ -167,16 +167,15 @@ private struct CellView: View {
             
             RoundedRectangle(cornerRadius: 5)
                 .opacity(0)
-                .overlay(Text(String(day)))
+                .overlay(
+                    Text(String(day))
+                        .font(Font.Pretend.pretendardMedium(size: 16))
+                )
                 .foregroundStyle(
                     cellDate.isSameDate(date: Date()) ? Color.white :
                             cellDate.isAfterToday(date: Date()) ? Color.gray :
                             Color.black
                 )
-            
-//            if clicked {
-//                Text("Click")
-//            }
         }
         .scaledToFit()
     }
@@ -208,27 +207,10 @@ private extension CalendarView {
         return Calendar.current.component(.weekday, from: firstDayOfMonth)
     }
     
-    /// myModels 에서 otherDate 와 동일한 날인 데이터 하나 찾아서 반환. 없으면 nil 반환
-//    func myModelByDate(otherDate: Date) -> String? {
-////        return myModels.first { myModel in
-////            startOfDay(date: myModel.date) == startOfDay(date: otherDate)
-////        }
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd"
-//        let dateString = formatter.string(from: otherDate)
-//        
-//        guard let datePost = viewModel.calendarData.first(where: { $0.date == dateString}),
-//              let imageUrl = datePost.posts.first?.imageUrl.first else {
-//            return nil
-//        }
-//        return imageUrl
-//    }
-
     /// Date 를 해당 날짜의 자정으로 바꿔줌 (시 분 초기화)
     func startOfDay(date: Date) -> Date {
         Calendar.current.startOfDay(for: date)
     }
-
 }
 
 // MARK: - Static 프로퍼티
