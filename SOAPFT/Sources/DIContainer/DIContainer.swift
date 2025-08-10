@@ -28,7 +28,8 @@ final class DIContainer: ObservableObject {
     let friendService: FriendService
     let commentService: CommentService
     let evenetService: EventService
-
+    let paymentService: PaymentService
+    
     init(router: AppRouter) {
         self.router = router
 
@@ -43,6 +44,7 @@ final class DIContainer: ObservableObject {
         self.friendService = FriendService()
         self.commentService = CommentService()
         self.evenetService = EventService()
+        self.paymentService = PaymentService()
     }
 }
 

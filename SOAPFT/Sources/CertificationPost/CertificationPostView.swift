@@ -22,30 +22,42 @@ struct CertificationPostViewWrapper: View {
 struct CertificationPostView: View {
     @StateObject var viewModel: CertificationPostViewModel
     @State private var selectedPostForComment: Post?
-
     
     var body: some View {
         VStack {
             CertificationPostNavBar()
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(viewModel.posts) { post in
-                        if let state = viewModel.postUIStates[post.postUuid] {
-                            PostCardView(
-                                post: post,
-                                createdTime: post.createdAt,
-                                state: state,
-                                toggleLike: { viewModel.toggleLike(for: post) },
-                                toggleComment: {
-                                    selectedPostForComment = post
-                                },
-                                toggleSuspicious: { viewModel.toggleSuspicion(for: post) },
-                                commentCount: viewModel.commentCounts[post.postUuid, default: post.commentCount!]
-                            )
+            
+            if viewModel.isLoading {
+                // 로딩 상태
+                Spacer()
+                ProgressView("인증글을 불러오는 중...")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                Spacer()
+            } else if viewModel.posts.isEmpty {
+                // 빈 상태 - 인증글이 없을 때
+                EmptyPostsView()
+            } else {
+                // 인증글이 있을 때
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.posts) { post in
+                            if let state = viewModel.postUIStates[post.postUuid] {
+                                PostCardView(
+                                    post: post,
+                                    createdTime: post.createdAt,
+                                    state: state,
+                                    toggleLike: { viewModel.toggleLike(for: post) },
+                                    toggleComment: {
+                                        selectedPostForComment = post
+                                    },
+                                    toggleSuspicious: { viewModel.toggleSuspicion(for: post) },
+                                    commentCount: viewModel.commentCounts[post.postUuid, default: post.commentCount!]
+                                )
+                            }
                         }
                     }
+                    .padding()
                 }
-                .padding()
             }
         }
         .sheet(item: $selectedPostForComment) { post in
@@ -60,7 +72,35 @@ struct CertificationPostView: View {
     }
 }
 
+// MARK: - 빈 상태 뷰
+struct EmptyPostsView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            
+            // 이미지
+            Image("NoneParticipateChallenge")
+                .padding()
+            
+            // 메시지
+            VStack(spacing: 8) {
+                Text("인증글이 없어요")
+                    .font(Font.Pretend.pretendardSemiBold(size: 18))
+                    .foregroundStyle(.gray)
+                
+                Text("첫 번째 인증글을 작성해보세요!")
+                    .font(Font.Pretend.pretendardLight(size: 15))
+                    .foregroundStyle(.gray)
+                    .padding(1)
+            }
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.white)
+    }
+}
 
 #Preview {
-   
+    CertificationPostView(viewModel: CertificationPostViewModel(postService: PostService(), likeServie: LikeService(), challengeId: "test"))
 }
