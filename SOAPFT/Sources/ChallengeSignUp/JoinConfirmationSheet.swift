@@ -16,12 +16,6 @@ struct JoinConfirmationSheet: View {
                 .font(.headline)
                 .padding(.top)
 
-            // 캐릭터 이미지 (예: 로컬 또는 URL)
-            Image("swing_a_whip") // Assets에 있는 파일 이름 (확장자 없이)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 180, height: 180)
-
             Button(action: {
                 onConfirm()
             }) {

@@ -77,7 +77,7 @@ struct ChallengeItemView: View {
                     Image(systemName: "person.fill")
                         .font(.caption)
                         .foregroundStyle(.gray)
-                    Text("\(challenge.currentMembers ?? 0)/\(challenge.maxMember ?? 0)")
+                    Text("\(challenge.currentMember ?? 0)/\(challenge.maxMember ?? 0)")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }

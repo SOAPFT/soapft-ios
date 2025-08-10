@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 struct GroupMainView: View {
     @Environment(\.diContainer) private var container
@@ -126,37 +127,27 @@ struct GroupMainView: View {
         
         return VStack(spacing: 16) {
             Spacer()
-            
+             
             Text(challenge.title)
             
-            if let bannerUrlString = challenge.banner,
-               let url = URL(string: bannerUrlString),
-               !bannerUrlString.isEmpty {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
+            // Kingfisher로 이미지 로드
+            KFImage(URL(string: challenge.banner ?? ""))
+                .placeholder {
+                    // 플레이스홀더
                     Color.gray.opacity(0.3)
                         .overlay(
                             Image(systemName: "photo")
                                 .foregroundColor(.white)
                         )
                 }
+                .onFailure { error in
+                    print("이미지 로드 실패: \(error)")
+                }
+                .resizable()
+                .scaledToFill()
                 .frame(width: 100, height: 100)
                 .clipped()
                 .cornerRadius(8)
-            } else {
-                // fallback 이미지 또는 기본 색상
-                ZStack {
-                    Color.gray.opacity(0.3)
-                    Image(systemName: "photo")
-                        .foregroundColor(.white)
-                }
-                .frame(width: 100, height: 100)
-                .cornerRadius(8)
-            }
-            
             
             Button(action: {
                 print("지금 참여하기 \(index)")
@@ -210,7 +201,7 @@ struct GroupMainView: View {
                             if challenge.isParticipated ?? false {
                                 container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid ?? ""))
                             } else {
-                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid ?? ""))
+                                container.router.push(.challengeSignUpWrapper(ChallengeID: challenge.challengeUuid ?? ""))
                             }
                         }) {
                             ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
@@ -224,31 +215,24 @@ struct GroupMainView: View {
     
     private func ChallengeCard(Name: String, Title: String) -> some View {
         VStack {
-            if let url = URL(string: Name), !Name.isEmpty {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
+            // Kingfisher로 이미지 로드
+            KFImage(URL(string: Name))
+                .placeholder {
+                    // 플레이스홀더
                     Color.gray.opacity(0.3)
                         .overlay(
                             Image(systemName: "photo")
                                 .foregroundColor(.white)
                         )
                 }
+                .onFailure { error in
+                    print("챌린지 카드 이미지 로드 실패: \(error)")
+                }
+                .resizable()
+                .scaledToFill()
                 .frame(width: 100, height: 100)
                 .clipped()
                 .cornerRadius(8)
-            } else {
-                // fallback 이미지 또는 기본 색상
-                ZStack {
-                    Color.gray.opacity(0.3)
-                    Image(systemName: "photo")
-                        .foregroundColor(.white)
-                }
-                .frame(width: 100, height: 100)
-                .cornerRadius(8)
-            }
 
             HStack {
                 Text(Title)
@@ -294,7 +278,7 @@ struct GroupMainView: View {
                             if challenge.isParticipated ?? false {
                                 container.router.push(.GroupTabbar(ChallengeID: challenge.challengeUuid ?? ""))
                             } else {
-                                container.router.push(.challengeSignUpWrapper   (ChallengeID: challenge.challengeUuid ?? ""))
+                                container.router.push(.challengeSignUpWrapper(ChallengeID: challenge.challengeUuid ?? ""))
                             }
                         }) {
                             ChallengeCard(Name: challenge.banner ?? "", Title: challenge.title)
@@ -307,6 +291,41 @@ struct GroupMainView: View {
     }
 }
 
-//#Preview {
-//    GroupMainView()
-//}
+// MARK: - Kingfisher 확장 옵션들
+
+extension KFImage {
+    /// 캐시와 애니메이션이 포함된 커스텀 설정
+    func customImageSetup() -> some View {
+        self
+            .cacheMemoryOnly() // 메모리 캐시만 사용
+            .fade(duration: 0.25) // 페이드 애니메이션
+            .onProgress { receivedSize, totalSize in
+                // 다운로드 진행상황 (필요시 사용)
+                let progress = (Float(receivedSize) / Float(totalSize)) * 100
+                print("다운로드 진행률: \(progress)%")
+            }
+            .onSuccess { result in
+                print("이미지 로드 성공: \(result.source.url?.absoluteString ?? "")")
+            }
+    }
+}
+
+// MARK: - 사용 예시 (더 고급 옵션들)
+
+/*
+// 더 많은 Kingfisher 옵션들:
+
+KFImage(URL(string: imageURL))
+    .placeholder {
+        ProgressView()
+            .frame(width: 100, height: 100)
+    }
+    .retry(maxCount: 3, interval: .seconds(0.5)) // 재시도
+    .cacheOriginalImage() // 원본 이미지 캐시
+    .fade(duration: 0.25) // 페이드 애니메이션
+    .roundCorner(radius: 8) // 둥근 모서리
+    .resizable()
+    .scaledToFill()
+    .frame(width: 100, height: 100)
+    .clipped()
+*/

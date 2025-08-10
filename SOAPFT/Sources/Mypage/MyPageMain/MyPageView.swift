@@ -10,6 +10,8 @@ import SwiftUI
 struct MyPageView: View {
     @Environment(\.diContainer) private var container
     @StateObject private var viewModel: MyPageViewModel
+    @State private var showingPayment = false
+    @State private var showingGifticon = false
     
     init() {
         _viewModel = StateObject(wrappedValue: MyPageViewModel(container: DIContainer(router: AppRouter())))
@@ -37,6 +39,19 @@ struct MyPageView: View {
             viewModel.fetchUserProfile()
             viewModel.fetchNotificationCount()
         }
+        .fullScreenCover(isPresented: $showingPayment) {
+            CoinInputView { purchasedCoins in
+                // 코인 구매 완료 후 처리
+                viewModel.fetchUserProfile()
+                // 또는 viewModel.fetchUserProfile() 호출하여 최신 코인 정보 업데이트
+            }
+        }
+        .fullScreenCover(isPresented: $showingGifticon, onDismiss: {
+            // 기프티콘 쇼핑 화면이 닫힐 때마다 사용자 정보 새로고침
+            viewModel.fetchUserProfile()
+        }) {
+            GifticonShopView(userCoins: viewModel.coins)
+        }
     }
     
     // MARK: - 상단바 (고정)
@@ -53,7 +68,7 @@ struct MyPageView: View {
                             Image(systemName: "bell")
                                 .foregroundStyle(Color.black)
                                 .font(.system(size: 18))
-
+                            
                             if viewModel.notificationCount > 0 {
                                 Text("\(viewModel.notificationCount)")
                                     .font(.caption2)
@@ -89,6 +104,7 @@ struct MyPageView: View {
             
             HStack {
                 Spacer()
+                
                 Image("coin")
                     .resizable()
                     .frame(width: 24, height: 24)
@@ -99,6 +115,64 @@ struct MyPageView: View {
                 Spacer().frame(width: 16)
             }
             
+            /*
+            HStack{
+                Spacer()
+                // 결제 버튼
+                Button(action: {
+                    showingPayment = true
+                }) {
+                    HStack(spacing: 8) {
+                        
+                        Text("코인 충전")
+                            .font(Font.Pretend.pretendardMedium(size: 16))
+                    }
+                    .foregroundColor(.white)
+                    .padding(5)
+                    .background(
+                        LinearGradient(
+                            colors: [Color.orange02, Color.orange02.opacity(0.8)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(12)
+                    .shadow(color: Color.blue.opacity(0.3), radius: 4, x: 0, y: 2)
+                }
+                .padding(.horizontal)
+                .buttonStyle(PaymentButtonStyle())
+                 
+            }
+            */
+            
+            HStack{
+                Spacer()
+                // 결제 버튼
+                Button(action: {
+                    showingGifticon = true
+                }) {
+                    HStack(spacing: 8) {
+                        
+                        Text("코인 교환")
+                            .font(Font.Pretend.pretendardMedium(size: 12))
+                    }
+                    .foregroundColor(.white)
+                    .padding(5)
+                    .background(
+                        LinearGradient(
+                            colors: [Color.orange02, Color.orange02.opacity(0.8)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(8)
+                    .shadow(color: Color.blue.opacity(0.3), radius: 4, x: 0, y: 2)
+                }
+                .padding(.horizontal)
+                .buttonStyle(PaymentButtonStyle())
+                 
+            }
+            
             Spacer().frame(height: 8)
             
             VStack(spacing: 18) {
@@ -106,7 +180,7 @@ struct MyPageView: View {
                     AsyncImage(url: URL(string: userImage)) { image in
                         image.resizable()
                     } placeholder: {
-//                        Circle().foregroundStyle(Color.gray.opacity(0.3))
+                        //                        Circle().foregroundStyle(Color.gray.opacity(0.3))
                         Image(systemName: "person.circle.fill")
                             .resizable()
                             .frame(width: 150, height: 150)
@@ -171,6 +245,18 @@ struct MyPageView: View {
         }
     }
 }
+
+// MARK: - 커스텀 버튼 스타일
+struct PaymentButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .opacity(configuration.isPressed ? 0.8 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
+
 
 #Preview {
     MyPageView()
