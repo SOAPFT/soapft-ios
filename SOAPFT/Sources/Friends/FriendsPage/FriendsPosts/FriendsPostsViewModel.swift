@@ -32,7 +32,7 @@ class FriendsPostViewModel: ObservableObject {
         guard !isLoading else { return }
         isLoading = true
          
-        container.postService.getMyPosts(page: page, limit: limit, accessToken: accessToken) { [weak self] result in
+        container.postService.getUserPosts(userId: userUUID, page: page, limit: limit, accessToken: accessToken) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.isLoading = false

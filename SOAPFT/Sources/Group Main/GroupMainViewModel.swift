@@ -4,10 +4,11 @@ import SwiftUI
 final class GroupMainViewModel: ObservableObject {
     private let challengeService = ChallengeService()
     private let notificationsService = NotificationService()
+    private let eventService = EventService() // EventService 추가
     
     @Published var hot: [Challenge] = []
     @Published var recent: [Challenge] = []
-    @Published var event: [Challenge] = []
+    @Published var event: [Mission] = [] // Mission 타입으로 변경
     
     @Published var notificationCount: Int = 0
     
@@ -55,7 +56,7 @@ final class GroupMainViewModel: ObservableObject {
         case .recent:
             return recent
         case .event:
-            return event
+            return [] // 이벤트는 Mission 타입이므로 빈 배열 반환
         }
     }
 
@@ -91,18 +92,27 @@ final class GroupMainViewModel: ObservableObject {
         }
     }
     
-    // MARK: - 이벤트 챌린지 (status = EVENT)
+    // MARK: - 이벤트 챌린지 (Mission 직접 사용)
     func fetchEventChallenges() {
-        print("🚀 이벤트 챌린지 API 호출 시작 - 파라미터: page=1, limit=10, type=EVENT, gender=NONE, status=before")
+        print("🚀 이벤트 챌린지 API 호출 시작 - EventService.getEventList() 사용")
         
-        challengeService.fetchChallenges(page: 1, limit: 10, type: "EVENT", gender: "NONE", status: "before") { [weak self] result in
+        eventService.getEventList { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let challenges):
-                    print("✅ 이벤트 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
-                    self?.event = challenges
+                case .success(let missions):
+                    print("✅ 이벤트 챌린지 API 호출 성공 - 미션 개수: \(missions.count)")
+                    
+                    // Mission을 그대로 저장
+                    self?.event = missions
+                    
+                    missions.forEach { mission in
+                        print("🎉 이벤트 미션: \(mission.title) - 타입: \(mission.type.displayName) - ID: \(mission.id)")
+                    }
+                    
                 case .failure(let error):
                     print("🎯 이벤트 챌린지 실패: \(error.localizedDescription)")
+                    // 실패 시 빈 배열로 설정
+                    self?.event = []
                 }
             }
         }

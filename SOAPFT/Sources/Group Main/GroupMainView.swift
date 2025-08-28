@@ -49,11 +49,11 @@ struct GroupMainView: View {
                 
                 NewChallenge // 새로운 챌린지 만들기 버튼
                 
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 10)
                 
                 ChallengeBannerView
                 
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 20)
                 
                 HotChallenge // 지금 인기 있는 챌린지
                 
@@ -71,6 +71,181 @@ struct GroupMainView: View {
         }
         .navigationBarBackButtonHidden()
     }
+    
+    
+    private var ChallengeBannerView: some View {
+        VStack(spacing: 0) { // 기존 default spacing을 8로 설정
+            HStack {
+                Text("이벤트 챌린지")
+                    .font(Font.Pretend.pretendardMedium(size: 16))
+                Image(systemName: "party.popper")
+                    .foregroundColor(.orange)
+                    .font(.system(size: 16))
+                Spacer()
+            }
+            
+            if viewModel.event.isEmpty {
+                Text("현재 참여 가능한 이벤트가 없습니다.")
+                    .foregroundColor(.gray)
+                    .frame(height: 260)
+            } else {
+                VStack(spacing: 0) {
+                    TabView {
+                        ForEach(viewModel.event.indices, id: \.self) { index in
+                            BannerCard(index: index)
+                        }
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                    .frame(height: 240)
+                    .onAppear {
+                        // transform 제거하여 크래시 방지
+                        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemOrange
+                        UIPageControl.appearance().pageIndicatorTintColor = UIColor.systemGray5
+                    }
+                }
+            }
+        }
+    }
+
+    private func BannerCard(index: Int) -> some View {
+        let mission = viewModel.event[index]
+        
+        return ZStack {
+            // 배경 그라데이션
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.95, green: 0.4, blue: 0.3),
+                            Color(red: 0.85, green: 0.35, blue: 0.4),
+                            Color(red: 0.75, green: 0.3, blue: 0.5)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay(
+                    // 장식용 원들
+                    ZStack {
+                        Circle()
+                            .fill(Color.white.opacity(0.15))
+                            .frame(width: 100, height: 100)
+                            .offset(x: 70, y: -50)
+                        
+                        Circle()
+                            .fill(Color.white.opacity(0.1))
+                            .frame(width: 60, height: 60)
+                            .offset(x: -60, y: 40)
+                        
+                        Circle()
+                            .fill(Color.yellow.opacity(0.3))
+                            .frame(width: 30, height: 30)
+                            .offset(x: 50, y: 35)
+                    }
+                )
+            
+            VStack(spacing: 16) {
+                // 상단 영역
+                HStack {
+                    VStack(alignment: .leading, spacing: 8) {
+                        // 타입 뱃지
+                        HStack(spacing: 6) {
+                            Image(systemName: missionTypeIcon(for: mission.type))
+                                .foregroundColor(.white)
+                                .font(.system(size: 11, weight: .semibold))
+                            Text(mission.type.displayName)
+                                .font(Font.Pretend.pretendardSemiBold(size: 11))
+                                .foregroundColor(.white)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(Color.white.opacity(0.25))
+                        )
+                        
+                        // 메인 타이틀
+                        Text(mission.title)
+                            .font(Font.Pretend.pretendardBold(size: 18))
+                            .foregroundColor(.white)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                    }
+                    
+                    Spacer()
+                    
+                    // 보상 정보
+                    VStack(spacing: 4) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.yellow.opacity(0.9))
+                                .frame(width: 45, height: 45)
+                            
+                            VStack(spacing: 1) {
+                                Image("coin")
+                                    .resizable()
+                                    .frame(width: 14, height: 14)
+                                Text("\(mission.reward)")
+                                    .font(Font.Pretend.pretendardBold(size: 9))
+                                    .foregroundColor(.white)
+                            }
+                        }
+                        .shadow(color: Color.yellow.opacity(0.4), radius: 6, x: 0, y: 3)
+                        
+                        Text("보상")
+                            .font(Font.Pretend.pretendardMedium(size: 9))
+                            .foregroundColor(.white.opacity(0.8))
+                    }
+                }
+                
+                Spacer()
+                
+                // 설명
+                Text(mission.description)
+                    .font(Font.Pretend.pretendardRegular(size: 13))
+                    .foregroundColor(.white.opacity(0.9))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .padding(.horizontal, 8)
+                
+                // 참여 버튼
+                Button(action: {
+                    print("이벤트 미션 참여하기 탭됨 - ID: \(mission.id), 제목: \(mission.title)")
+                    container.router.push(.challengeRankingWrapper(missionId: mission.id))
+                }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "play.circle.fill")
+                            .foregroundColor(.white)
+                            .font(.system(size: 14))
+                        
+                        Text("도전하기")
+                            .font(Font.Pretend.pretendardSemiBold(size: 14))
+                            .foregroundColor(.white)
+                        
+                        Image(systemName: "arrow.right")
+                            .foregroundColor(.white)
+                            .font(.system(size: 10, weight: .semibold))
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(Color.white.opacity(0.2))
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                            )
+                    )
+                }
+                .contentShape(Rectangle())
+            }
+            .padding(18)
+        }
+        .frame(height: 200)
+        .padding(.horizontal, 8)
+        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 4)
+    }
+    
     
     private var NewChallenge: some View {
         VStack {
@@ -93,89 +268,53 @@ struct GroupMainView: View {
             Divider()
         }
     }
-    
-    private var ChallengeBannerView: some View {
-        Group {
-            HStack {
-                Text("이벤트 챌린지")
-                    .font(Font.Pretend.pretendardRegular(size: 16))
-                Image(systemName: "party.popper")
-                    .foregroundColor(.orange)
-                    .font(.system(size: 16))
-                Spacer()
-            }
-            if viewModel.event.isEmpty {
-                Text("현재 참여 가능한 이벤트가 없습니다.")
-                    .foregroundColor(.gray)
-                    .frame(height: 260)
-            } else {
-                TabView {
-                    ForEach(viewModel.event.indices, id: \.self) { index in
-                        BannerCard(index: index)
-                            .padding(.horizontal, 8)
-                    }
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-                .frame(height: 260)
-                .onAppear {
-                    UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.systemGray
-                    UIPageControl.appearance().pageIndicatorTintColor = UIColor.systemGray6
-                }
-            }
+
+    private func missionTypeIcon(for type: MissionType) -> String {
+        switch type {
+        case .distance:
+            return "figure.run"
+        case .steps:
+            return "figure.walk"
+        case .calories:
+            return "flame"
         }
     }
 
-    private func BannerCard(index: Int) -> some View {
-        let challenge = viewModel.event[index]
+
+    // MARK: - 이벤트 아이콘 뷰
+    private struct EventIconView: View {
+        let challengeType: String?
         
-        return VStack(spacing: 16) {
-            Spacer()
-             
-            Text(challenge.title)
-            
-            // Kingfisher로 이미지 로드 (테두리 추가)
-            KFImage(URL(string: challenge.banner ?? ""))
-                .placeholder {
-                    // 플레이스홀더
-                    Color.gray.opacity(0.3)
-                        .overlay(
-                            Image(systemName: "photo")
-                                .foregroundColor(.white)
+        var body: some View {
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.orange02.opacity(0.2), Color.orange02.opacity(0.1)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
                         )
-                }
-                .onFailure { error in
-                    print("이미지 로드 실패: \(error)")
-                }
-                .resizable()
-                .scaledToFill()
-                .frame(width: 100, height: 100)
-                .clipped()
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
-                )
-            
-            Button(action: {
-                print("지금 참여하기 \(index)")
-            }, label: {
-                Text("지금 참여하기")
-                    .font(Font.Pretend.pretendardSemiBold(size: 12))
-                    .foregroundStyle(Color.white)
-                    .frame(width: 100, height: 25)
-                    .background(Color.orange01)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            })
-            Spacer()
+                    )
+                    .frame(width: 80, height: 80)
+                
+                Image(systemName: iconName)
+                    .font(.system(size: 32))
+                    .foregroundColor(.orange02)
+            }
+            .frame(width: 100, height: 100)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+            )
         }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .aspectRatio(4/3, contentMode: .fit)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
-                .background(Color.clear)
-        )
+        
+        private var iconName: String {
+            if challengeType == "EVENT" {
+                return "party.popper"
+            } else {
+                return "star.circle"
+            }
+        }
     }
     
     private var HotChallenge: some View {

@@ -13,7 +13,7 @@ enum PostAPI {
     case getMyPosts(page: Int, limit: Int, accessToken: String)
     case getCalendar(year: Int, month: Int, accessToken: String)
     case getUserCalendar(userUuid: String, year: Int, month: Int, accessToken: String)
-    case getUserPosts(userId: Int, page: Int, limit: Int, accessToken: String)
+    case getUserPosts(userId: String, page: Int, limit: Int, accessToken: String)
     case getPostDetail(postId: Int, accessToken: String)
     case updatePost(postUuid: String, title: String, content: String, imageUrls: [String], isPublic: Bool, accessToken: String)
     case deletePost(postId: Int, accessToken: String)

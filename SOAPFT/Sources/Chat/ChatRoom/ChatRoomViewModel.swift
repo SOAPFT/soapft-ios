@@ -5,7 +5,6 @@
 //  Created by 바견규 on 6/29/25.
 //
 
-
 import SwiftUI
 import Combine
 
@@ -380,16 +379,17 @@ final class ChatRoomViewModel: ObservableObject {
         let content = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
         messageText = ""
         
-        // 임시 메시지 생성 및 추가 (발신자에게는 newMessage 이벤트가 오지 않으므로)
+        // 내가 보낸 메시지는 임시로 추가 (optimistic update)
         let tempMessage = createTempMessage(content: content, type: type)
         messages.append(tempMessage)
         lastMessageIdToScroll = tempMessage.id
         
-        // WebSocket으로만 전송 (API 전송 제거)
+        // WebSocket으로 전송
         chatWebSocket.sendMessage(roomUuid: roomId, type: type, content: content)
         print("📤 WebSocket으로 메시지 전송: \(content)")
     }
     
+    // MARK: - 임시 메시지 생성 (내 메시지용)
     private func createTempMessage(content: String, type: String) -> ChatMessage {
         return ChatMessage(
             id: Int.random(in: 100000...999999),
@@ -398,30 +398,63 @@ final class ChatRoomViewModel: ObservableObject {
             content: content,
             imageUrl: nil,
             sender: Sender(
-                userUuid: currentUserUuid,
+                userUuid: currentUserUuid,  // 내 메시지이므로 currentUserUuid 맞음
                 nickname: "나",
                 profileImage: nil
             ),
             isRead: false,
             readByUuids: [currentUserUuid],
-            isMyMessage: true,
+            isMyMessage: true,  // 내 메시지이므로 true 맞음
             createdAt: ISO8601DateFormatter().string(from: Date())
         )
     }
     
-    // MARK: - WebSocket Event Handlers
+    // MARK: - WebSocket Event Handlers (핵심 수정)
     private func handleNewWebSocketMessage(_ message: ChatMessage) {
         // 현재 채팅방의 메시지인지 확인
         if message.roomUuid == roomId {
-            // 중복 메시지 방지
+            print("🔍 === 새 메시지 상세 분석 ===")
+            print("🔍 메시지 ID: \(message.id)")
+            print("🔍 발신자 UUID: \(message.sender?.userUuid ?? "nil")")
+            print("🔍 발신자 닉네임: \(message.sender?.nickname ?? "nil")")
+            print("🔍 현재 사용자 UUID: \(currentUserUuid)")
+            print("🔍 원본 isMyMessage: \(message.isMyMessage)")
+            print("🔍 내용: \(message.content)")
+            print("🔍 ===========================")
+            
+            // 중복 메시지 방지 (임시 메시지와 실제 메시지)
             if !messages.contains(where: { $0.id == message.id }) {
-                messages.append(message)
-                lastMessageIdToScroll = message.id
                 
-                print("✅ 실시간 메시지 UI에 추가됨")
+                // 🔥 핵심 수정: 내가 보낸 메시지인지 정확히 판단
+                var processedMessage = message
+                if let sender = message.sender {
+                    processedMessage.isMyMessage = (sender.userUuid == currentUserUuid)
+                    print("🔍 메시지 소유자 판단: \(sender.userUuid) == \(currentUserUuid) → \(processedMessage.isMyMessage)")
+                } else {
+                    processedMessage.isMyMessage = false
+                    print("🔍 발신자 정보 없음 → 상대방 메시지로 처리")
+                }
+                
+                // 내가 보낸 메시지라면 임시 메시지를 제거하고 실제 메시지로 교체
+                if processedMessage.isMyMessage {
+                    // 임시 메시지 제거 (내용이 같은 가장 최근 메시지)
+                    if let tempIndex = messages.lastIndex(where: {
+                        $0.content == processedMessage.content &&
+                        $0.sender?.userUuid == currentUserUuid &&
+                        $0.id >= 100000 // 임시 메시지 ID 범위
+                    }) {
+                        print("🔄 임시 메시지 제거하고 실제 메시지로 교체")
+                        messages.remove(at: tempIndex)
+                    }
+                }
+                
+                messages.append(processedMessage)
+                lastMessageIdToScroll = processedMessage.id
+                
+                print("✅ 실시간 메시지 UI에 추가됨 (isMyMessage: \(processedMessage.isMyMessage))")
                 
                 // 다른 사용자의 메시지면 자동 읽음 처리
-                if let sender = message.sender, sender.userUuid != currentUserUuid {
+                if !processedMessage.isMyMessage {
                     print("👁️ 다른 사용자 메시지 - 자동 읽음 처리")
                     markAsReadWebSocket()
                 }

@@ -17,7 +17,7 @@ struct homeNavBar: View {
             
             Spacer()
             
-            Button(action: { /* 메뉴 열기 */ }) {
+            Button(action: { container.router.push(.alert ) }) {
                 Image(systemName: "bell")
                     .foregroundStyle(.black)
             }

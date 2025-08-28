@@ -14,7 +14,7 @@ struct GroupInfoWrapper: View {
     let challenge: ChallengeDetailResponse
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             GroupInfoNavBar()
                 .navigationBarBackButtonHidden(true)
             GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
