@@ -117,7 +117,7 @@ struct MyRankingBottomView: View {
 
             // 내 기록만 표시
             if let my = viewModel.myRank {
-                MyRankInfoView(myRank: my)
+                MyRankInfoView(myRank: my, viewModel: viewModel)
             }
         }
         .padding()
@@ -164,13 +164,28 @@ struct ActionButtonView: View {
 // MARK: - My Rank Info View
 struct MyRankInfoView: View {
     let myRank: RankUser
+    @ObservedObject var viewModel: ChallengeRankingViewModel
     
     var body: some View {
         HStack(spacing: 4) {
             Text("\(myRank.rank)")
             Text(myRank.name)
             Spacer()
-            Text("\(myRank.score) 보")
+            
+            if viewModel.missionType.rawValue == "steps" {
+                Text("\(myRank.score) 걸음")
+            } else if viewModel.missionType.rawValue == "calories" {
+                Text("\(myRank.score) kcal")
+            } else if viewModel.missionType.rawValue == "distance" {
+                let distanceInMeters = Double(myRank.score)
+                if distanceInMeters >= 1000 {
+                    Text(String(format: "%.1f km", distanceInMeters / 1000.0))
+                } else {
+                    Text(String(format: "%.0f m", distanceInMeters))
+                }
+            } else {
+                Text("\(myRank.score) 보")
+            }
         }
         .font(Font.Pretend.pretendardSemiBold(size: 16))
     }

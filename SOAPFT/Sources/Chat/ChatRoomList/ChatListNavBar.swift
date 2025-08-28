@@ -17,6 +17,7 @@ struct ChatListNavBar: View {
                 
                 Spacer()
                 
+                /*
                 Button(action: { /* 메뉴 열기 */ }) {
                     Image(systemName: "ellipsis")
                         .rotationEffect(.degrees(90))
@@ -24,6 +25,7 @@ struct ChatListNavBar: View {
                         .frame(width: 18, height: 24) // 아이콘 크기 조정
                         .contentShape(Rectangle())    // 터치 영역 확장
                 }
+                */
                 
             }.padding()
         }

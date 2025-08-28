@@ -20,6 +20,7 @@ struct GroupInfoNavBar: View {
 
             // 좌우 버튼 정렬
             HStack {
+                
                 // Back button
                 Button(action: {
                     container.router.pop()
@@ -30,12 +31,16 @@ struct GroupInfoNavBar: View {
                 }
 
                 Spacer()
-
+                
+                /*
+                
                 // Group Members Icon
                 Button(action: {}) {
                     Image(systemName: "message")
                         .foregroundStyle(.black)
                 }
+                
+                
 
                 // Notification with badge
                 ZStack(alignment: .topTrailing) {
@@ -63,10 +68,10 @@ struct GroupInfoNavBar: View {
                         .frame(width: 18, height: 24)
                         .contentShape(Rectangle())
                 }
+                 */
             }
-            .padding(.horizontal)
+            .padding()
         }
-        .frame(height: 44)
         .background(Color.white)
     }
 }

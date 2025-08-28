@@ -124,7 +124,7 @@ struct ChatMessage: Decodable {
     let sender: Sender?
     var isRead: Bool
     var readByUuids: [String]
-    let isMyMessage: Bool
+    var isMyMessage: Bool
     let createdAt: String // 또는 Date (추가 설명 아래 참고)
 }
 

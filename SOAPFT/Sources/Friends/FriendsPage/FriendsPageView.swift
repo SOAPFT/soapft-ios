@@ -99,22 +99,27 @@ struct FriendsPageView: View {
                     .font(Font.Pretend.pretendardMedium(size: 24))
                 
                 HStack {
-                    Button(action: {
-                        handleFriendButtonTap()
-                    }, label: {
-                        HStack {
-                            Text(friendButonText)
-                                .font(Font.Pretend.pretendardSemiBold(size: 14))
-                                .foregroundStyle((viewModel.isFriend || viewModel.isSentFriendRequest) ? Color.gray.opacity(0.8) : Color.white)
-                        }
-                        .frame(width: 110)
-                        .padding(.vertical, 10)
-                        .background((viewModel.isFriend || viewModel.isSentFriendRequest) ? Color.gray.opacity(0.2) : Color.orange01.opacity(0.9))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                    })
+                    if viewModel.isFriend {
+                        
+                    }else{
+                        Button(action: {
+                            handleFriendButtonTap()
+                        }, label: {
+                            HStack {
+                                Text(friendButonText)
+                                    .font(Font.Pretend.pretendardSemiBold(size: 14))
+                                    .foregroundStyle((viewModel.isFriend || viewModel.isSentFriendRequest) ? Color.gray.opacity(0.8) : Color.white)
+                            }
+                            .frame(width: 110)
+                            .padding(.vertical, 10)
+                            .background((viewModel.isFriend || viewModel.isSentFriendRequest) ? Color.gray.opacity(0.2) : Color.orange01.opacity(0.9))
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        })
+                    }
                     
                     if viewModel.isFriend {
                         Spacer()
+                        /*
                         Button(action: {
                             viewModel.createChatRoom()
                         }, label: {
@@ -128,6 +133,7 @@ struct FriendsPageView: View {
                             .background(Color.gray.opacity(0.2))
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                         })
+                         */
                     }
                 }
                 .padding(.horizontal, 50)
