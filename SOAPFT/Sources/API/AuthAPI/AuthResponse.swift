@@ -30,6 +30,14 @@ struct NaverResponseDTO: Decodable {
     let message: String
 }
 
+// 애플 로그인 응답 DTO
+struct AppleResponseDTO: Decodable {
+    let accessToken: String
+    let refreshToken: String
+    let isNewUser: Bool
+    let message: String
+}
+
 // 토큰 갱신 응답 DTO
 struct TokenResponseDTO: Decodable {
     let accessToken: String

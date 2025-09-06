@@ -52,20 +52,6 @@ struct KakoSignButton: View {
         let pushToken = "dummy_push_token"
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         
-//        provider.request(.sendToken(accessToken: accessToken, deviceId: deviceId, deviceType: deviceType, pushToken: pushToken, appVersion: appVersion)) { result in
-//            switch result {
-//            case .success(let response):
-//                do {
-//                    let decoded = try JSONDecoder().decode(KakaoLoginResponse.self, from: response.data)
-//                    print("서버 로그인 성공: \(decoded)")
-//                } catch {
-//                    print("응답 디코딩 실패: \(error.localizedDescription)")
-//                }
-//            case .failure(let error):
-//                print("서버 요청 실패: \(error.localizedDescription)")
-//            }
-//        }
-        
         // AuthService
         AuthService.shared.kakaoLogin(
             accessToken: token,

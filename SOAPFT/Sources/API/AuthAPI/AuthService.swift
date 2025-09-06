@@ -31,6 +31,12 @@ final class AuthService {
             self.handleResponse(result, completion: completion)
         }
     }
+    
+    func appleLogin(accessToken: String, deviceId: String, deviceType: String, pushToken: String, appVersion: String, completion: @escaping (Result<AppleResponseDTO, Error>) -> Void) {
+        provider.request(.appleLogin(accessToken: accessToken, deviceId: deviceId, deviceType: deviceType, pushToken: pushToken, appVersion: appVersion)) { result in
+            self.handleResponse(result, completion: completion)
+        }
+    }
 
     // MARK: - Refresh Token
     func refreshToken(refreshToken: String, completion: @escaping (Result<TokenResponseDTO, Error>) -> Void) {

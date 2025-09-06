@@ -73,6 +73,9 @@ struct SOAPFTApp: App {
                         case .mypageEditInfo:
                             MyInfoEditView()
                                 .environment(\.diContainer, container)
+                        case .postDetail(let postUuid):
+                            PostDetailView(postUuid: postUuid)
+                                .environment(\.diContainer, container)
                         case .alert:
                             AlertView()
                                 .environment(\.diContainer, container)

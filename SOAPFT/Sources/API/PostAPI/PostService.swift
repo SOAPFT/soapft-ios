@@ -103,15 +103,15 @@ final class PostService {
 
 
     // MARK: - Get User Posts
-    func getUserPosts(userId: Int, page: Int, limit: Int, accessToken: String, completion: @escaping (Result<UserPostsResponseDTO, Error>) -> Void) {
+    func getUserPosts(userId: String, page: Int, limit: Int, accessToken: String, completion: @escaping (Result<UserPostsResponseDTO, Error>) -> Void) {
         provider.request(.getUserPosts(userId: userId, page: page, limit: limit, accessToken: accessToken)) { result in
             self.handleResponse(result, completion: completion)
         }
     }
 
     // MARK: - Get Post Detail
-    func getPostDetail(postId: Int, accessToken: String, completion: @escaping (Result<PostDetailResponseDTO, Error>) -> Void) {
-        provider.request(.getPostDetail(postId: postId, accessToken: accessToken)) { result in
+    func getPostDetail(postUuid: String, accessToken: String, completion: @escaping (Result<PostDetailResponseDTO, Error>) -> Void) {
+        provider.request(.getPostDetail(postUuid: postUuid, accessToken: accessToken)) { result in
             self.handleResponse(result, completion: completion)
         }
     }

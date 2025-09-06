@@ -22,6 +22,7 @@ enum Route: Hashable {
     case mypage
     case mypageEdit
     case mypageEditInfo
+    case postDetail(postUuid: String)
     case alert
     case GroupTabbar(ChallengeID: String)
     case ChallengeSearchWrapper
