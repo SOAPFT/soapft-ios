@@ -63,7 +63,7 @@ final class AppleSignInCoordinator: NSObject,
         
         let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
         let deviceType = "iOS"
-        let pushToken = KeyChainManager.shared.read(forKey: "pushToken") ?? "unknown" // ✅ 실제 토큰 사용
+        let pushToken = UserDefaults.standard.string(forKey: "device_token") ?? "dummy_push_token"
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         
         AuthService.shared.appleLogin(
