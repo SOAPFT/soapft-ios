@@ -453,6 +453,7 @@ struct GroupMainView: View {
 
 #Preview {
     GroupMainView()
+}
 
 // MARK: - Kingfisher 확장 옵션들
 
