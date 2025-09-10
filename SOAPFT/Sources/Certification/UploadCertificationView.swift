@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 struct UploadCertificationViewWrapper: View {
     @Environment(\.diContainer) private var container
@@ -19,13 +18,13 @@ struct UploadCertificationViewWrapper: View {
     }
 }
 
+
 struct UploadCertificationView: View {
-    @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [UIImage] = []
     @State private var descriptionText: String = ""
-    @State private var isVerifying: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var isShowingCamera: Bool = false
 
     @FocusState private var isFocused: Bool
     @StateObject private var viewModel: UploadCertificationViewModel
@@ -42,73 +41,100 @@ struct UploadCertificationView: View {
             VStack(spacing: 16) {
                 CertificationNavBar()
                 Divider()
+                
+                // Display images that have been taken
+                if !selectedImages.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(Array(selectedImages.enumerated()), id: \.element) { index, image in
+                                ZStack(alignment: .topTrailing) {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 120, height: 120)
+                                        .clipped()
+                                        .cornerRadius(8)
 
-                // 이미지 선택
-                PhotosPicker(selection: $selectedItems, maxSelectionCount: 5, matching: .images) {
-                    ZStack {
-                        if !selectedImages.isEmpty {
-                            ScrollView(.horizontal) {
-                                HStack {
-                                    ForEach(selectedImages, id: \.self) { image in
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 120, height: 120)
-                                            .clipped()
-                                            .cornerRadius(8)
+                                    Button(action: {
+                                        selectedImages.remove(at: index)
+                                        viewModel.resetVerification()
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.white)
+                                            .background(Color.black.opacity(0.6))
+                                            .clipShape(Circle())
                                     }
-                                }.padding(.horizontal)
-                            }.frame(height: 140)
-                        } else {
-                            Rectangle()
-                                .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [5]))
-                                .foregroundStyle(.gray)
-                                .frame(height: 300)
-                            VStack {
-                                Image(systemName: "camera")
-                                    .font(.system(size: 30))
-                                    .foregroundStyle(.gray)
-                                Text("사진을 업로드하세요")
-                                    .foregroundStyle(.gray)
+                                    .offset(x: -5, y: 5)
+                                }
                             }
-                        }
-                    }
-                    .padding()
-                }
-                .onChange(of: selectedItems) { _, newItems in
-                    selectedImages = []
-                    Task {
-                        for item in newItems {
-                            if let data = try? await item.loadTransferable(type: Data.self),
-                               let image = UIImage(data: data) {
-                                selectedImages.append(image)
-                            }
-                        }
-                        if !selectedImages.isEmpty {
-                            isVerifying = true
-                            viewModel.verifyImages(challengeUuid: challengeUuid, images: selectedImages)
-                            isVerifying = false
-                        }
-                    }
+                        }.padding(.horizontal)
+                    }.frame(height: 140)
                 }
 
+                // Button to open the camera and take a photo
+                if selectedImages.count < 5 {
+                    Button(action: {
+                        isShowingCamera = true
+                    }) {
+                        if selectedImages.isEmpty {
+                            ZStack {
+                                Rectangle()
+                                    .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [5]))
+                                    .foregroundStyle(.gray)
+                                    .frame(height: 300)
+                                VStack(spacing: 8) {
+                                    Image(systemName: "camera.fill")
+                                        .font(.system(size: 30))
+                                        .foregroundStyle(.gray)
+                                    Text("카메라로 촬영하여 인증하세요")
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            .padding()
+                        } else {
+                            Label("사진 추가 촬영 (\(selectedImages.count)/5)", systemImage: "camera")
+                                .font(Font.Pretend.pretendardBold(size: 16))
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                                .padding(.horizontal)
+                        }
+                    }
+                } else {
+                    Text("최대 5장의 사진을 모두 등록했습니다.")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+
+
+                if !selectedImages.isEmpty {
+                    Button(action: {
+                        Task {
+                            await viewModel.verifyImages(challengeUuid: challengeUuid, images: selectedImages)
+                        }
+                    }) {
+                        Label(viewModel.verificationResult == nil ? "AI 검증하기" : "재검증하기", systemImage: "sparkles")
+                            .font(Font.Pretend.pretendardBold(size: 16))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                            .padding(.horizontal)
+                    }
+                    .disabled(viewModel.isUploading || viewModel.isPolling) // 검증 중 비활성화
+                }
+                
                 // 검증 결과 뷰
                 if let result = viewModel.verificationResult {
                     VStack(alignment: .leading, spacing: 16) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "checkmark.seal.fill")
-                                .foregroundColor(.green)
-                            Text("챌린지: \(result.challengeInfo.title)")
-                                .font(.title3)
-                                .bold()
-                        }
+
 
                         HStack(spacing: 8) {
                             Image(systemName: "quote.bubble.fill")
                                 .foregroundColor(.blue)
-                            Text(result.challengeInfo.verificationGuide)
-                                .font(.callout)
-                                .foregroundColor(.gray)
                         }
 
                         Divider()
@@ -116,8 +142,8 @@ struct UploadCertificationView: View {
                         Label {
                             Text("검증 결과: ")
                                 + Text(result.verification.overallStatus == "approved" ? "성공" : "검토 필요")
-                                    .bold()
-                                    .foregroundColor(result.verification.overallStatus == "approved" ? .green : .orange)
+                                .bold()
+                                .foregroundColor(result.verification.overallStatus == "approved" ? .green : .orange)
                         } icon: {
                             Image(systemName: "checkmark.shield.fill")
                                 .foregroundColor(result.verification.overallStatus == "approved" ? .green : .orange)
@@ -171,6 +197,8 @@ struct UploadCertificationView: View {
                                         .font(.footnote)
                                         .foregroundColor(.gray)
                                 }
+                                
+                                
                             }
                             .padding(10)
                             .background(Color(.systemGray6))
@@ -192,7 +220,6 @@ struct UploadCertificationView: View {
                     .padding(.horizontal)
                 }
 
-
                 // 텍스트 입력
                 ZStack(alignment: .topLeading) {
                     TextEditor(text: $descriptionText)
@@ -203,7 +230,7 @@ struct UploadCertificationView: View {
                         .padding(.horizontal)
 
                     if descriptionText.isEmpty && !isFocused {
-                        Text("텍스트를 입력하세요")
+                        Text("인증과 관련된 내용을 작성해주세요.")
                             .foregroundStyle(.gray)
                             .padding(10)
                             .padding(.leading, 20)
@@ -217,15 +244,13 @@ struct UploadCertificationView: View {
                         alertMessage = success ? "게시글 업로드 완료!" : "업로드 실패. 다시 시도해주세요."
                         showAlert = true
                         if success{
-                            //상태 초기화
-                            selectedItems = []
                             selectedImages = []
                             descriptionText = ""
                             viewModel.verificationResult = nil
                         }
                     }
                 }) {
-                    Text(isVerifying ? "AI 검증중..." : "업로드")
+                    Text(viewModel.isUploading ? "업로드 중..." : "업로드")
                         .font(Font.Pretend.pretendardBold(size: 18))
                         .foregroundStyle(.white)
                         .padding(10)
@@ -233,19 +258,26 @@ struct UploadCertificationView: View {
                         .background(viewModel.canCreatePost ? Color.orange01 : Color.gray)
                         .cornerRadius(20)
                 }
-                .disabled(!viewModel.canCreatePost)
+                .disabled(!viewModel.canCreatePost || viewModel.isUploading || viewModel.isPolling)
                 .padding()
             }
         }
         .padding(.top)
+        .sheet(isPresented: $isShowingCamera) {
+            CameraView(onImagePicked: { newImage in
+                guard selectedImages.count < 5 else { return }
+                selectedImages.append(newImage)
+                viewModel.resetVerification()
+            })
+        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text(alertMessage))
         }
         .overlay {
-            if isVerifying || viewModel.isUploading {
+            if viewModel.isUploading || viewModel.isPolling {
                 ZStack {
                     Color.black.opacity(0.3).ignoresSafeArea()
-                    ProgressView("AI 검증 중입니다...\n잠시만 기다려주세요.")
+                    ProgressView(viewModel.isPolling ? "AI 검증 결과 업데이트 중..." : "AI 검증 중입니다...\n잠시만 기다려주세요.")
                         .padding()
                         .multilineTextAlignment(.center)
                         .background(Color.white)

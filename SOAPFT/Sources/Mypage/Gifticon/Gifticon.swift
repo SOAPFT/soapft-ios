@@ -629,15 +629,6 @@ final class GifticonShopViewModel: ObservableObject {
     }
 }
 
-// MARK: - MyPageView에 추가할 코드
-/*
-MyPageView.swift의 body 끝부분 .onAppear() 뒤에 다음 modifier를 추가하세요:
-
-.fullScreenCover(isPresented: $showingGifticon) {
-    GifticonShopView()
-}
-*/
-
 #Preview {
     GifticonShopView(userCoins: 250)
 }

@@ -12,18 +12,43 @@ struct ChatRoomWrapper: View {
     let currentUserUuid: String
     let roomId: String
     let chatRoomName: String
+    // 토스트 상태 관리를 최상위에서
+    
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    @State private var isToastSuccess = true
     
     var body: some View {
         let host = Bundle.main.object(forInfoDictionaryKey: "ChatWebSocket_URL") as? String ?? "localhost"
-        
-        ChatRoomView(
-            roomId: roomId,
-            currentUserUuid: currentUserUuid,
-            chatRoomName: chatRoomName,
-            chatService: container.chatService,
-            webSocketHost: host
+        VStack(spacing: 0) {
+            // 네비게이션 바
+            ChatRoomNavBar(showToast: showToastMessage, chatRoomName: chatRoomName, chatRoomId: roomId)
+                .background(Color.white)
+                .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
+            ChatRoomView(
+                roomId: roomId,
+                currentUserUuid: currentUserUuid,
+                chatRoomName: chatRoomName,
+                chatService: container.chatService,
+                webSocketHost: host
+            )
+        }
+        .toast(
+            message: toastMessage,
+            isSuccess: isToastSuccess,
+            isVisible: $showToast
         )
         .navigationBarBackButtonHidden(true)
+    }
+    
+    // 토스트 표시 함수
+    private func showToastMessage(_ message: String, isSuccess: Bool) {
+        toastMessage = message
+        isToastSuccess = isSuccess
+        withAnimation {
+            showToast = true
+        }
+        print("토스트 표시 - 메시지: \(message), 성공: \(isSuccess)")
     }
 }
 
@@ -51,10 +76,6 @@ struct ChatRoomView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // 네비게이션 바
-            ChatRoomNavBar(chatRoomName: chatRoomName)
-                .background(Color.white)
-                .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
             
             // 연결 상태 표시
             ConnectionStatusView(
@@ -241,17 +262,6 @@ struct ChatInputView: View {
             Divider()
             
             HStack(spacing: 12) {
-                // 이미지 첨부 버튼
-                /*
-                Button(action: {
-                    // TODO: 이미지 선택 구현
-                }) {
-                    Image(systemName: "photo")
-                        .foregroundColor(isConnected ? .gray : .gray.opacity(0.5))
-                        .font(.system(size: 20))
-                }
-                .disabled(!isConnected)
-                */
                 
                 // 텍스트 입력
                 TextField("메시지를 입력하세요", text: $messageText, axis: .vertical)

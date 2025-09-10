@@ -10,11 +10,13 @@ import SwiftUI
 struct ChatListWrapper: View {
     @Environment(\.diContainer) private var container
     
+    
+    
     var body: some View {
         let viewModel = ChatListViewModel(chatService: container.chatService, userService: container.userService)
         ChatListView(viewModel: viewModel)
             .navigationBarBackButtonHidden(true)
-            .onReceive(container.challengeRefreshSubject) { _ in
+            .onReceive(container.chatRefreshSubject) { _ in
                 print("📨 chatRefreshSubject 수신됨")
                 viewModel.refreshChatRooms()
             }

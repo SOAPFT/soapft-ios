@@ -465,23 +465,3 @@ extension KFImage {
             }
     }
 }
-
-// MARK: - 사용 예시 (더 고급 옵션들)
-
-/*
-// 더 많은 Kingfisher 옵션들:
-
-KFImage(URL(string: imageURL))
-    .placeholder {
-        ProgressView()
-            .frame(width: 100, height: 100)
-    }
-    .retry(maxCount: 3, interval: .seconds(0.5)) // 재시도
-    .cacheOriginalImage() // 원본 이미지 캐시
-    .fade(duration: 0.25) // 페이드 애니메이션
-    .roundCorner(radius: 8) // 둥근 모서리
-    .resizable()
-    .scaledToFill()
-    .frame(width: 100, height: 100)
-    .clipped()
-*/

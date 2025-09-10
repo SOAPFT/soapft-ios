@@ -52,7 +52,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     // 📥 워치에서 메시지 수신
     // AppDelegate.swift에 추가 (없다면)
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
-        print("📦 UserInfo 수신: \(userInfo)")
+        print("UserInfo 수신: \(userInfo)")
         
         if let action = userInfo["action"] as? String, action == "endChallenge",
            let eventId = userInfo["eventId"] as? Int,
@@ -68,7 +68,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                     ]
                 )
             }
-            print("✅ NotificationCenter로 전송 완료")
+            print("NotificationCenter로 전송 완료")
         }
     }
     func sessionDidBecomeInactive(_ session: WCSession) {}

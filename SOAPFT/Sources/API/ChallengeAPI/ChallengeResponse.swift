@@ -198,7 +198,12 @@ struct ChallengeJoinErrorResponse: Decodable {
 
 // MARK: - 챌린지 탈퇴 응답
 struct ChallengeLeaveResponse: Decodable {
+    let success: Bool
+    let errorCode: String?
     let message: String
+    let timestamp: String?
+    let path: String?
+    let method: String?
 }
 // MARK: - 챌린지 진행률 응답
 struct ChallengeProgressResponse: Decodable {
@@ -240,19 +245,12 @@ struct ReportResponse: Decodable {
 struct PrecheckResponse: Decodable {
     let success: Bool
     let message: String
-    let challengeInfo: ChallengeInfo_Precheck
+    let postUuid: String?
     let verification: VerificationSummary
     let images: [VerifiedImage]
     let verificationToken: String
     let canCreatePost: Bool
     let recommendations: [String]
-}
-
-
-struct ChallengeInfo_Precheck: Decodable {
-    let challengeUuid: String
-    let title: String
-    let verificationGuide: String
 }
 
 struct VerificationSummary: Decodable {
@@ -262,6 +260,7 @@ struct VerificationSummary: Decodable {
     let approvedImages: Int
     let rejectedImages: Int
     let reviewImages: Int
+    let pendingImages: Int
 }
 
 struct VerifiedImage: Decodable, Identifiable {
@@ -274,6 +273,51 @@ struct VerifiedImage: Decodable, Identifiable {
     let isRelevant: Bool
 }
 
+
+// MARK: - 이미지 AI 검증 상태 응답
+struct VerificationStatusImage: Decodable {
+    let imageUrl: String
+    let status: String
+    let confidence: String?
+    let reasoning: String?
+    let isRelevant: Bool
+
+    private enum CodingKeys: String, CodingKey {
+        case imageUrl, status, confidence, reasoning, isRelevant
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        imageUrl = try container.decode(String.self, forKey: .imageUrl)
+        status = try container.decode(String.self, forKey: .status)
+        reasoning = try container.decodeIfPresent(String.self, forKey: .reasoning)
+        isRelevant = try container.decode(Bool.self, forKey: .isRelevant)
+
+        // Int, Double, String 어떤 타입이 와도 대응
+        if let intValue = try? container.decode(Int.self, forKey: .confidence) {
+            confidence = String(intValue)
+        } else if let doubleValue = try? container.decode(Double.self, forKey: .confidence) {
+            confidence = String(doubleValue)
+        } else {
+            confidence = try? container.decodeIfPresent(String.self, forKey: .confidence)
+        }
+    }
+}
+
+
+// VerificationStatusResponse 구조체는 변경할 필요가 없습니다.
+struct VerificationStatusResponse: Decodable {
+    let success: Bool
+    let postUuid: String
+    let overallStatus: String
+    let canCreatePost: Bool
+    let totalImages, pendingImages, approvedImages, rejectedImages, reviewImages: Int
+    let averageConfidence: Double?
+    let images: [VerificationStatusImage] // 내부 타입이 위에서 수정되었습니다.
+    let recommendedAction: String?
+    let message: String?
+    let verificationToken: String?
+}
 // MARK: - 게시글 생성 응답
 struct CreatePostResponse: Decodable {
     let success: Bool
