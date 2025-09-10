@@ -11,8 +11,11 @@ struct FriendsPageView: View {
     @Environment(\.diContainer) private var container
     @StateObject private var viewModel: FriendsPageViewModel
         
-    init(userUUID: String, accessToken: String) {
+    private let currentUserUuid: String
+    
+    init(userUUID: String, accessToken: String, currentUserUuid: String) {
         _viewModel = StateObject(wrappedValue: FriendsPageViewModel(userUUID: userUUID, accessToken: accessToken))
+        self.currentUserUuid = currentUserUuid
     }
     
     var body: some View {
@@ -43,6 +46,21 @@ struct FriendsPageView: View {
         }
         .onAppear() {
             viewModel.fetchOtherUserInfo()
+        }
+        .onChange(of: viewModel.createdRoom?.roomUuid) { oldValue, newValue in
+            guard
+                let roomId = newValue,
+                let room = viewModel.createdRoom
+            else { return }
+
+            container.router.push(
+                .ChatRoomWrapper(
+                    currentUserUuid: currentUserUuid,
+                    roomId: roomId,
+                    chatRoomName: room.name
+                )
+            )
+            container.chatRefreshSubject.send()
         }
         .navigationBarBackButtonHidden()
     }
@@ -117,6 +135,8 @@ struct FriendsPageView: View {
                         Spacer()
                         Button(action: {
                             viewModel.createChatRoom()
+//                            container.chatRefreshSubject.send()
+//                            container.router.push(.ChatRoomWrapper(currentUserUuid: , roomId: , chatRoomName: "\(viewModel.userUUID)와의 채팅"))
                         }, label: {
                             HStack {
                                 Text("메시지 보내기")

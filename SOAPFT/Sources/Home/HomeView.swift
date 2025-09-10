@@ -22,10 +22,10 @@ struct Home: View {
     ]
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             homeNavBar()
             
-            Divider()
+//            Divider()
             
             ScrollView {
                 LazyVStack {

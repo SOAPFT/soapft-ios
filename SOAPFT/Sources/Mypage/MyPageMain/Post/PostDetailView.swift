@@ -58,6 +58,7 @@ struct PostDetailView: View {
             viewModel.container = container
             if viewModel.post == nil { viewModel.fetchDetail() }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

@@ -28,7 +28,7 @@ struct LoginView: View {
                             .foregroundStyle(Color.white)
                     }
                             
-                    VStack(spacing: 20) {
+                    VStack(spacing: 10) {
                         Spacer()
                         // Apple 로그인
                         AppleSignButton()

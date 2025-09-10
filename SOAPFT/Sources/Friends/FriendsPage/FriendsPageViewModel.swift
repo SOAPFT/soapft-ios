@@ -28,6 +28,8 @@ final class FriendsPageViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     
+    @Published var createdRoom: ChatRoomCreationResponse?
+    
     var userUUID: String
     private var accessToken: String
     private var receivedRequestId: String? = nil
@@ -157,21 +159,27 @@ final class FriendsPageViewModel: ObservableObject {
     }
     
     // 채팅방 생성
+    // 채팅방 생성
     func createChatRoom() {
         let chatService = ChatService()
         let type = "DIRECT"
         let participants = [userUUID]
         let name = "\(nickname)님과의 대화"
         let challengeUuid = ""
-        
-        chatService.createRoom(type: type, participantUuids: participants, name: name, challengeUuid: challengeUuid) { result in
+
+        chatService.createRoom(
+            type: type,
+            participantUuids: participants,
+            name: name,
+            challengeUuid: challengeUuid
+        ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let response):
-                    print("✅ 채팅방 생성 성공")
-                    print("Room UUID: \(response.roomUuid)")
-                    print("Participants: \(response.participants)")
+                case .success(let room):
+                    self?.createdRoom = room   // ✅ View로 전달
+                    print("✅ 채팅방 생성 성공: \(room.roomUuid)")
                 case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
                     print("❌ 채팅방 생성 실패: \(error.localizedDescription)")
                 }
             }

@@ -14,6 +14,7 @@ struct GroupMainView: View {
                     HStack {
                         Image(systemName: "plus")
                             .foregroundStyle(Color.black)
+                            .font(.system(size: 18))
                     }
                 })
                 
@@ -45,7 +46,8 @@ struct GroupMainView: View {
                         .font(.system(size: 18))
                 }
             }
-            .padding()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
             
             Divider()
             

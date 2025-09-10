@@ -46,8 +46,11 @@ struct SOAPFTApp: App {
                         case .home:
                             GroupMainView()
                                 .environment(\.diContainer, container)
-                        case .friendPage(let userUUID, let accessToken):
-                            FriendsPageView(userUUID: userUUID, accessToken: accessToken)
+                        case .friend:
+                            FriendsView()
+                                .environment(\.diContainer, container)
+                        case .friendPage(let userUUID, let accessToken, let currentUserUuid):
+                            FriendsPageView(userUUID: userUUID, accessToken: accessToken, currentUserUuid: currentUserUuid)
                                 .environment(\.diContainer, container)
                         case .friendsRequest:
                             FriendsRequestView()

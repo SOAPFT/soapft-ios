@@ -16,6 +16,13 @@ struct FriendsView: View {
             // 상단바
             ZStack {
                 HStack {
+                    Button(action: {
+                        container.router.pop()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                            .font(.system(size: 18))
+                    }
                     Spacer()
                     Button(action: {
                         container.router.push(.friendsRequest)
@@ -29,7 +36,7 @@ struct FriendsView: View {
                 Text("친구 목록")
                     .font(Font.Pretend.pretendardBold(size: 16))
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 16)
             .padding(.vertical, 8)
             
             Divider()
@@ -107,7 +114,7 @@ struct FriendsView: View {
     private func userRow(user: SearchedFriend) -> some View {
         Button(action: {
             let token = KeyChainManager.shared.read(forKey: "accessToken") ?? ""
-            container.router.push(.friendPage(userUUID: user.userUuid, accessToken: token))
+            container.router.push(.friendPage(userUUID: user.userUuid, accessToken: token, currentUserUuid: user.userUuid))
         }) {
             HStack(spacing: 12) {
                 AsyncImage(url: URL(string: user.profileImage)) { phase in

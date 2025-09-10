@@ -13,7 +13,8 @@ enum Route: Hashable {
     case mainTabbar
     case groupEdit
     case home
-    case friendPage(userUUID: String, accessToken: String)
+    case friend
+    case friendPage(userUUID: String, accessToken: String, currentUserUuid: String)
     case friendsRequest
     case groupCreate
 //    case groupCreateNext

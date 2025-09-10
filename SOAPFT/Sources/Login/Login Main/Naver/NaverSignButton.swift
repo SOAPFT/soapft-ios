@@ -22,9 +22,14 @@ struct NaverSignButton: View {
                 loginWithNaver()
             }) {
                 Image("naverButton")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: UIScreen.main.bounds.width * 0.9)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: UIScreen.main.bounds.width * 0.9)
+                    .scaledToFit()
+                    .frame(height: 56)
+                    .cornerRadius(12)
+                    .padding(.horizontal, 16)
             }
         }
     }
