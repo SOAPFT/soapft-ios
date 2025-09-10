@@ -22,10 +22,10 @@ struct homeNavBar: View {
                 
                 Spacer()
                 
-                Button(action: { /* 메뉴 열기 */ }) {
-                    Image(systemName: "bell")
-                        .foregroundStyle(.black)
-                        .font(.system(size: 18))
+                Button(action: { container.router.push(.alert ) }) {
+                  Image(systemName: "bell")
+                      .foregroundStyle(.black)
+                      .font(.system(size: 18))
                 }
                 
                 Button(action: {container.router.push(.ChallengeSearchWrapper)}) {

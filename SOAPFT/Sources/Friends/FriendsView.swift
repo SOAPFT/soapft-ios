@@ -27,7 +27,7 @@ struct FriendsView: View {
                     Button(action: {
                         container.router.push(.friendsRequest)
                     }) {
-                        Image(systemName: "person.2.badge.plus.fill")
+                        Image(systemName: "person.2.badge.plus")
                             .foregroundColor(.black)
                             .font(.system(size: 18))
                     }

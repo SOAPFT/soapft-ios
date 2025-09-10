@@ -9,29 +9,24 @@ import SwiftUI
 
 struct CertificationPostNavBar: View {
     var notificationCount: Int = 3
+    @Environment(\.diContainer) private var container
     
     var body: some View {
             // 좌우 버튼 정렬
             HStack {
-
+                Button(action: { container.router.pop() }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundStyle(.black)
+                        .font(Font.system(size: 18))
+                }
+                
                 Spacer()
-
+                
                 // Notification with badge
-                ZStack(alignment: .topTrailing) {
-                    Button(action: {}) {
-                        Image(systemName: "bell")
-                            .foregroundStyle(.black)
-                    }
-
-                    if notificationCount > 0 {
-                        Text("\(notificationCount)")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .padding(4)
-                            .background(Color.red)
-                            .clipShape(Circle())
-                            .offset(x: 8, y: -8)
-                    }
+                Button(action: { container.router.push(.alert) }) {
+                    Image(systemName: "bell")
+                        .foregroundStyle(.black)
+                    
                 }
 
 
@@ -45,8 +40,9 @@ struct CertificationPostNavBar: View {
                 }
                 .padding(.horizontal, 10)
                 
+                
             }
-            .padding(.top, 10)
+            .padding()
     }
 }
 

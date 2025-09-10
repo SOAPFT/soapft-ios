@@ -32,28 +32,37 @@ struct ChallengeItemView: View {
         VStack(alignment: .leading, spacing: 8) {
             ZStack(alignment: .topLeading) {
                 GeometryReader { geometry in
-                    KFImage(URL(string: challenge.banner ?? ""))
-                        .placeholder {
-                            // 로딩 중 표시
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.3))
-                                .overlay(
-                                    ProgressView()
-                                        .scaleEffect(0.8)
-                                )
-                        }
-                        .retry(maxCount: 3)
-                        .onSuccess { result in
-                            print("✅ 이미지 로드 성공: \(result.source.url?.absoluteString ?? "")")
-                        }
-                        .onFailure { error in
-                            print("❌ 이미지 로드 실패: \(error.localizedDescription)")
-                        }
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geometry.size.width, height: geometry.size.width)
-                        .clipped()
-                        .cornerRadius(12)
+                    if challenge.challengeType == "EVENT" {
+                        Image("allBanner")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                            .clipped()
+                            .cornerRadius(12)
+                    } else {
+                        KFImage(URL(string: challenge.banner ?? ""))
+                            .placeholder {
+                                Rectangle()
+                                    .fill(Color.gray.opacity(0.3))
+                                    .overlay(
+                                        ProgressView()
+                                            .scaleEffect(0.8)
+                                    )
+                            }
+                            .retry(maxCount: 3)
+                            .onSuccess { result in
+                                print("✅ 이미지 로드 성공: \(result.source.url?.absoluteString ?? "")")
+                            }
+                            .onFailure { error in
+                                print("❌ 이미지 로드 실패: \(error.localizedDescription)")
+                            }
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                            .clipped()
+                            .cornerRadius(12)
+                    }
+
                     
                     Text(badgeText)
                         .font(.system(size: 12, weight: .bold))
@@ -73,11 +82,18 @@ struct ChallengeItemView: View {
                     .foregroundStyle(Color.black)
                     .lineLimit(1)
 
-                HStack {
-                    Image(systemName: "person.fill")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
-                    Text("\(challenge.currentMembers ?? 0)/\(challenge.maxMember ?? 0)")
+                if challenge.challengeType == "GROUP" {
+                    HStack {
+                        Image(systemName: "person.fill")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                        
+                        Text("\(challenge.currentMember ?? 0)/\(challenge.maxMember ?? 0)")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
+                }else {
+                    Text("전체 유저 챌린지")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }

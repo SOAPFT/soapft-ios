@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct GroupInfoNavBar: View {
-    var notificationCount: Int = 3
-    @Environment(\.diContainer) private var container
+    let ChallengeId: String
+    let showToast: (String, Bool) -> Void // 토스트 표시 콜백
     
+    @Environment(\.diContainer) private var container
+    @State private var showLeaveModal = false
+
     var body: some View {
         ZStack {
-            // 정중앙 타이틀
             Text("그룹 정보")
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.black)
 
-            // 좌우 버튼 정렬
             HStack {
-                // Back button
                 Button(action: {
                     container.router.pop()
                 }) {
@@ -31,32 +31,12 @@ struct GroupInfoNavBar: View {
 
                 Spacer()
 
-                // Group Members Icon
-                Button(action: {}) {
-                    Image(systemName: "message")
+                Button(action: { container.router.push(.alert) }) {
+                    Image(systemName: "bell")
                         .foregroundStyle(.black)
                 }
 
-                // Notification with badge
-                ZStack(alignment: .topTrailing) {
-                    Button(action: {}) {
-                        Image(systemName: "bell")
-                            .foregroundStyle(.black)
-                    }
-
-                    if notificationCount > 0 {
-                        Text("\(notificationCount)")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .padding(4)
-                            .background(Color.red)
-                            .clipShape(Circle())
-                            .offset(x: 8, y: -8)
-                    }
-                }
-
-                // More icon
-                Button(action: { /* 메뉴 열기 */ }) {
+                Button(action: { showLeaveModal = true }) {
                     Image(systemName: "ellipsis")
                         .rotationEffect(.degrees(90))
                         .foregroundStyle(.black)
@@ -64,15 +44,38 @@ struct GroupInfoNavBar: View {
                         .contentShape(Rectangle())
                 }
             }
-            .padding(.horizontal)
+            .padding()
         }
-        .frame(height: 44)
         .background(Color.white)
+        .sheet(isPresented: $showLeaveModal) {
+            LeaveActionSheet(
+                onLeave: {
+                    showLeaveModal = false
+                    container.challengeService.leaveChallenge(id: ChallengeId) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let response):
+                                print("성공 응답: \(response.message)")
+                                showToast(response.message, true)
+                                container.challengeRefreshSubject.send()
+                                container.chatRefreshSubject.send()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                    container.router.pop()
+                                }
+                            case .failure(let error):
+                                let errorMessage = (error as? APIError)?.message ?? "오류가 발생했습니다."
+                                print("실패 응답: \(errorMessage)")
+                                showToast(errorMessage, false)
+                            }
+                        }
+                    }
+                },
+                onCancel: {
+                    showLeaveModal = false
+                },
+                leaveText: "탈퇴하기"
+            )
+        }
     }
 }
 
-
-
-#Preview {
-    GroupInfoNavBar()
-}

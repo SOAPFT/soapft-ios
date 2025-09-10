@@ -25,6 +25,7 @@ enum ChallengeAPI {
     case monthlyStats(id: String, year: Int, month: Int)
     case reportPost(postUuid: String)
     case precheckImages(challengeUuid: String, images: [Data])
+    case verificationStatus(PostUuid: String)
     case createVerifiedPost(parameters: [String: Any])
 }
 
@@ -68,6 +69,8 @@ extension ChallengeAPI: TargetType {
             return "/api/post/post/\(postUuid)/report"
         case .precheckImages:
             return "/api/post/precheck-images"
+        case .verificationStatus(let postUuid):
+            return "/api/post/verification-status/\(postUuid)"
         case .createVerifiedPost:
             return "/api/post/create-verified"
         }
@@ -145,7 +148,6 @@ extension ChallengeAPI: TargetType {
                 multipartData.append(MultipartFormData(provider: .data(imageData), name: "images", fileName: "image\(index).jpg", mimeType: "image/jpeg"))
             }
             return .uploadMultipart(multipartData)
-            
         case .createVerifiedPost(let parameters):
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         default:

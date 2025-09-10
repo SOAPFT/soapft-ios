@@ -45,6 +45,8 @@ struct LoginView: View {
                         }) {
                             Text("테스트")
                         }
+                        
+                        Text("")
                     }
                 }
             }

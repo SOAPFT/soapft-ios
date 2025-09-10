@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "coin.pdf",
-      "idiom" : "universal"
+      "filename" : "image 622.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "image 62.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "image 623.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

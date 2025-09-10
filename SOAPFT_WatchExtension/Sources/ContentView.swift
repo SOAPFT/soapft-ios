@@ -377,10 +377,10 @@ struct ContentView: View {
     // MARK: - Score Page
 
     private var scorePage: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 3) {
             headerLabel(icon: "bolt.fill", label: "SCORE")
 
-            VStack(spacing: 2) {
+            VStack(spacing: 1) {
                 Text("\(challengeManager.currentScore)")
                     .font(.system(size: 36, weight: .bold, design: .rounded))
                     .foregroundColor(.yellow)

@@ -103,9 +103,18 @@ class CertificationPostViewModel: ObservableObject {
     }
     
         
-        func toggleSuspicion(for post: Post) {
-            postUIStates[post.postUuid]?.isSuspicious.toggle()
+    func toggleSuspicion(for post: Post) {
+        print("🔍 의심하기 버튼 클릭 - PostUUID: \(post.postUuid)")
+        
+        guard let state = postUIStates[post.postUuid] else {
+            print("❌ PostUIState가 없음 - PostUUID: \(post.postUuid)")
+            return
         }
+        
+        print("🔍 현재 의심 상태: \(state.isSuspicious)")
+        state.isSuspicious.toggle()
+        print("🔍 변경된 의심 상태: \(state.isSuspicious)")
+    }
         
         func toggleCommentSheet(for post: Post) {
             postUIStates[post.postUuid]?.showCommentSheet.toggle()

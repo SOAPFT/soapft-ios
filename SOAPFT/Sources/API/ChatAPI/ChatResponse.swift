@@ -121,10 +121,10 @@ struct ChatMessage: Decodable {
     let type: String
     let content: String
     let imageUrl: String?
-    let sender: Sender
-    let isRead: Bool
-    let readByUuids: [String]
-    let isMyMessage: Bool
+    let sender: Sender?
+    var isRead: Bool
+    var readByUuids: [String]
+    var isMyMessage: Bool
     let createdAt: String // 또는 Date (추가 설명 아래 참고)
 }
 

@@ -12,15 +12,43 @@ import Kingfisher
 struct GroupInfoWrapper: View {
     @Environment(\.diContainer) private var container
     let challenge: ChallengeDetailResponse
+    
+    // 토스트 상태 관리를 최상위에서
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    @State private var isToastSuccess = true
 
     var body: some View {
-        GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
-            challengeService: container.challengeService,
-            id: challenge.challengeUuid ?? ""
-        ))
-        .navigationBarBackButtonHidden(true)
+        VStack(spacing: 0) {
+            GroupInfoNavBar(
+                ChallengeId: challenge.challengeUuid ?? "",
+                showToast: showToastMessage // 토스트 함수 전달
+            )
+            .navigationBarBackButtonHidden(true)
+            
+            GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
+                challengeService: container.challengeService,
+                id: challenge.challengeUuid ?? ""
+            ))
+        }
+        .toast(
+            message: toastMessage,
+            isSuccess: isToastSuccess,
+            isVisible: $showToast
+        )
+    }
+    
+    // 토스트 표시 함수
+    private func showToastMessage(_ message: String, isSuccess: Bool) {
+        toastMessage = message
+        isToastSuccess = isSuccess
+        withAnimation {
+            showToast = true
+        }
+        print("토스트 표시 - 메시지: \(message), 성공: \(isSuccess)")
     }
 }
+
 
 private struct GroupInfoWrapperBody: View {
     @StateObject var viewModel: GroupInfoViewModel
@@ -38,7 +66,6 @@ struct GroupInfoView: View {
     var body: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    GroupInfoNavBar()
 
                     BannerSection(bannerURL: viewModel.challenge.banner)
                     BasicInfoSection(challenge: viewModel.challenge)
@@ -58,13 +85,26 @@ struct BannerSection: View {
     let bannerURL: String?
 
     var body: some View {
-        AsyncImage(url: URL(string: bannerURL ?? "")) { image in
-            image.resizable().scaledToFill()
-        } placeholder: {
-            Color.gray.opacity(0.2)
-        }
-        .frame(height: 200)
-        .clipped()
+        KFImage(URL(string: bannerURL ?? ""))
+            .placeholder {
+                Color.gray.opacity(0.2)
+                    .overlay(
+                        Image(systemName: "photo")
+                            .foregroundColor(.white)
+                            .font(.system(size: 24))
+                    )
+            }
+            .onFailure { error in
+                print("배너 이미지 로드 실패: \(error)")
+            }
+            .resizable()
+            .scaledToFill()
+            .frame(height: 200)
+            .clipped()
+            .overlay(
+                RoundedRectangle(cornerRadius: 0)
+                    .strokeBorder(Color.gray.opacity(0.5), lineWidth: 0.8)
+            )
     }
 }
 

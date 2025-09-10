@@ -28,6 +28,8 @@ final class DIContainer: ObservableObject {
     let friendService: FriendService
     let commentService: CommentService
     let evenetService: EventService
+    let paymentService: PaymentService
+
 
     @Published var selectedTab: String = "Main"
     
@@ -45,6 +47,7 @@ final class DIContainer: ObservableObject {
         self.friendService = FriendService()
         self.commentService = CommentService()
         self.evenetService = EventService()
+        self.paymentService = PaymentService()
     }
 }
 

@@ -56,14 +56,14 @@ struct Home: View {
                             .foregroundStyle(.gray)
                             .padding(1)
                     } else {
-                        LazyVGrid(columns: columns, spacing: 16) {
+                        LazyVGrid(columns: columns, spacing: 12) {
                             ForEach(viewModel.filteredChallenges, id: \.id) { challenge in
                                 Button(action: { handleChallengeTap(challenge) }) {
                                     ChallengeItemView(challenge: challenge)
                                 }
                             }
-                            .padding(.horizontal)
                         }
+                        .padding(.horizontal)
                     }
                 }
             }
