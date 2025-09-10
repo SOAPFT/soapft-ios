@@ -28,16 +28,16 @@ struct LoginView: View {
                             .foregroundStyle(Color.white)
                     }
                             
-                    VStack(spacing: 20) {
+                    VStack(spacing: 10) {
                         Spacer()
+                        // Apple 로그인
+                        AppleSignButton()
+                        
                         // 카카오 로그인
                         KakoSignButton()
                         
                         // 네이버 로그인
                         NaverSignButton()
-                        
-                        // Apple 로그인
-                        
                         
                         // 테스트
                         Button(action: {

@@ -11,6 +11,7 @@ import Moya
 enum AuthAPI {
     case kakaoLogin(accessToken: String, deviceId: String, deviceType: String, pushToken: String, appVersion: String)
     case naverLogin(accessToken: String, deviceId: String, deviceType: String, pushToken: String, appVersion: String)
+    case appleLogin(accessToken: String, deviceId: String, deviceType: String, pushToken: String, appVersion: String)
     case refreshToken(refreshToken: String)
     case testNickname
 }
@@ -30,6 +31,8 @@ extension AuthAPI: TargetType {
             return "/api/auth/kakao"
         case .naverLogin:
             return "/api/auth/naver"
+        case .appleLogin:
+            return "/api/auth/apple"
         case .refreshToken:
             return "/api/auth/refresh"
         case .testNickname:
@@ -39,7 +42,7 @@ extension AuthAPI: TargetType {
 
     var method: Moya.Method {
         switch self {
-        case .kakaoLogin, .naverLogin, .refreshToken:
+        case .kakaoLogin, .naverLogin, .appleLogin, .refreshToken:
             return .post
         case .testNickname:
             return .get
@@ -49,7 +52,8 @@ extension AuthAPI: TargetType {
     var task: Task {
         switch self {
         case let .kakaoLogin(accessToken, deviceId, deviceType, pushToken, appVersion),
-             let .naverLogin(accessToken, deviceId, deviceType, pushToken, appVersion):
+             let .naverLogin(accessToken, deviceId, deviceType, pushToken, appVersion),
+            let .appleLogin(accessToken, deviceId, deviceType, pushToken, appVersion):
             let params: [String: Any] = [
                 "accessToken": accessToken,
                 "deviceId": deviceId,
@@ -75,7 +79,7 @@ extension AuthAPI: TargetType {
         ]
 
         switch self {
-        case .kakaoLogin, .naverLogin, .refreshToken:
+        case .kakaoLogin, .naverLogin, .appleLogin, .refreshToken:
             baseHeaders["Content-Type"] = "application/json"
             return baseHeaders
         case .testNickname:

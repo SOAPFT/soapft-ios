@@ -8,7 +8,16 @@ struct GroupMainView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) { // 상단 고정 부분
-                // 로고
+                Button(action: {
+                    print("new challenge")
+                    container.router.push(.groupCreate)
+                }, label: {
+                    HStack {
+                        Image(systemName: "plus")
+                            .foregroundStyle(Color.black)
+                            .font(.system(size: 18))
+                    }
+                })
                 
                 Spacer()
                 
@@ -38,19 +47,16 @@ struct GroupMainView: View {
                         .font(.system(size: 18))
                 }
             }
-            .padding()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
             
             Divider()
             
             ScrollView { // 스크롤뷰
-                Spacer()
+                Spacer().frame(height: 20)
                 
                 // 광고 배너
-                
-                NewChallenge // 새로운 챌린지 만들기 버튼
-                
-                Spacer().frame(height: 10)
-                
+
                 ChallengeBannerView
                 
                 Spacer().frame(height: 20)
@@ -254,12 +260,9 @@ struct GroupMainView: View {
                 container.router.push(.groupCreate)
             }, label: {
                 HStack {
-                    Text("새로운 챌린지 만들기")
-                        .font(Font.Pretend.pretendardMedium(size: 16))
-                        .foregroundStyle(Color.black)
-                    Spacer()
                     Image(systemName: "plus.circle.fill")
                         .foregroundStyle(Color.black)
+                        .frame(width: 43, height: 43)
                 }
             })
             .padding(.horizontal, 16)
@@ -446,6 +449,10 @@ struct GroupMainView: View {
         }
     }
 }
+
+
+#Preview {
+    GroupMainView()
 
 // MARK: - Kingfisher 확장 옵션들
 

@@ -110,8 +110,8 @@ final class PostService {
     }
 
     // MARK: - Get Post Detail
-    func getPostDetail(postId: Int, accessToken: String, completion: @escaping (Result<PostDetailResponseDTO, Error>) -> Void) {
-        provider.request(.getPostDetail(postId: postId, accessToken: accessToken)) { result in
+    func getPostDetail(postUuid: String, accessToken: String, completion: @escaping (Result<PostDetailResponseDTO, Error>) -> Void) {
+        provider.request(.getPostDetail(postUuid: postUuid, accessToken: accessToken)) { result in
             self.handleResponse(result, completion: completion)
         }
     }

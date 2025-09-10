@@ -17,6 +17,9 @@ struct GroupCreateNextView: View {
     @State private var selectedBannerImage: UIImage?
     @State private var selectedBannerItem: PhotosPickerItem?
     @State private var showPopUp: Bool = false
+    @State private var isLoading: Bool = false
+    @State private var showErrorAlert: Bool = false
+    @State private var errorMessage: String = ""
     
     @Environment(\.dismiss) private var dismiss
     
@@ -183,8 +186,44 @@ struct GroupCreateNextView: View {
                               btn2: "취소"
                 )
             }
+            
+            // 로딩 오버레이
+            if isLoading {
+                Color.black.opacity(0.25).ignoresSafeArea()
+                VStack(spacing: 12) {
+                    ProgressView()
+                    Text("업로드 하는 중...")
+                        .font(Font.Pretend.pretendardMedium(size: 15))
+                }
+                .padding(.horizontal, 20).padding(.vertical, 16)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .shadow(radius: 10)
+            }
         }
         .navigationBarBackButtonHidden()
+        
+        // (옵션) 에러 얼럿
+        .alert("오류", isPresented: $showErrorAlert, actions: {
+            Button("확인", role: .cancel) { }
+        }, message: {
+            Text(errorMessage)
+        })
+        // (옵션) ViewModel 에러 감지해 로딩 끄기
+        .onChange(of: viewModel.imageUploadError) { _, newVal in
+            if let err = newVal, !err.isEmpty {
+                isLoading = false
+                errorMessage = err
+                showErrorAlert = true
+            }
+        }
+        .onChange(of: viewModel.creationError) { _, newVal in
+            if let err = newVal, !err.isEmpty {
+                isLoading = false
+                errorMessage = err
+                showErrorAlert = true
+            }
+        }
     }
 }
 
@@ -208,6 +247,8 @@ extension GroupCreateNextView {
                     return
                 }
                 
+                isLoading = true
+                
                 viewModel.uploadImages {
                     viewModel.createChallenge(accessToken: accessToken){
                         // 챌린지 생성 성공 시 챌린지 관련 뷰 반영 API 호출
@@ -219,6 +260,8 @@ extension GroupCreateNextView {
                         container.selectedTab = "More"
                         container.router.reset()
                         container.router.push(.mainTabbar)
+                        
+                        isLoading = false
                     }
                 }
             }

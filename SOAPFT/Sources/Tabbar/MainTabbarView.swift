@@ -14,24 +14,24 @@ struct MainTabbarView: View {
         VStack(spacing: 0) {
             TabView (selection: $container.selectedTab){
                 HomeWrapper()
-                    .tag("Main")
-                FriendsView()
-                    .tag("Friends")
+                    .tag("홈")
+//                FriendsView()
+//                    .tag("Friends")
                 GroupMainView()
-                    .tag("More")
+                    .tag("챌린지")
                 ChatListWrapper()
-                    .tag("Chat")
+                    .tag("채팅")
                 MyPageView()
-                    .tag("My")
+                    .tag("마이")
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             HStack {
-                tabButton(title: "Main", selectedImage: "house.fill")
-                tabButton(title: "Friends", selectedImage: "person.2.fill")
-                tabButton(title: "More", selectedImage: "list.bullet")
-                tabButton(title: "Chat", selectedImage: "ellipsis.message.fill")
-                tabButton(title: "My", selectedImage: "person.crop.circle.fill")
+                tabButton(title: "홈", selectedImage: "house.fill")
+//                tabButton(title: "Friends", selectedImage: "person.2.fill")
+                tabButton(title: "챌린지", selectedImage: "flame.fill")
+                tabButton(title: "채팅", selectedImage: "ellipsis.message.fill")
+                tabButton(title: "마이", selectedImage: "person.crop.circle.fill")
             }
             .padding()
             .background(Color.white)
@@ -58,6 +58,6 @@ struct MainTabbarView: View {
     }
 }
 
-#Preview {
-    MainTabbarView()
-}
+//#Preview {
+//    MainTabbarView()
+//}

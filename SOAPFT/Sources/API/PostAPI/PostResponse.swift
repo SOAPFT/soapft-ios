@@ -159,3 +159,30 @@ struct Post: Decodable, Identifiable {
     let user: User?
 }
 
+// PostResponse.swift 등 전역 스코프 어딘가
+extension Post {
+    init(detail: PostDetailDTO) {
+        self.id = detail.id
+        self.postUuid = detail.postUuid
+        self.title = detail.title
+        self.userUuid = detail.userUuid
+        self.challengeUuid = detail.challengeUuid
+        self.content = detail.content
+        self.imageUrl = detail.imageUrl
+        self.isPublic = detail.isPublic
+        self.views = detail.views
+        self.createdAt = detail.createdAt
+        self.updatedAt = detail.updatedAt
+        self.verificationStatus = nil
+        self.aiConfidence = nil
+        self.aiAnalysisResult = nil
+        self.verifiedAt = nil
+        self.likeCount = nil
+        self.commentCount = nil
+        self.user = User(
+            userUuid: detail.user.userUuid,
+            nickname: detail.user.nickname,
+            profileImage: detail.user.profileImage
+        )
+    }
+}

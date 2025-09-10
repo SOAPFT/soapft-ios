@@ -71,21 +71,21 @@ struct GroupTabbarView: View {
         VStack(spacing: 0) {
             TabView (selection: $selectedTab){
                 GroupInfoWrapper(challenge: Challenge)
-                    .tag("Info")
+                    .tag("메인")
                 ChallengeStatisticsWrapper(challenge: Challenge)
-                    .tag("Status")
+                    .tag("현황")
                 UploadCertificationViewWrapper(challengeUuid: Challenge.challengeUuid ?? "")
-                    .tag("Check")
+                    .tag("업로드")
                 CertificationPostViewWrapper(ChallengeId: Challenge.challengeUuid ?? "")
-                    .tag("List")
+                    .tag("피드")
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             
             HStack {
-                tabButton(title: "Info", selectedImage: "info.circle")
-                tabButton(title: "Status", selectedImage: "checkmark.seal")
-                tabButton(title: "Check", selectedImage: "camera")
-                tabButton(title: "List", selectedImage: "newspaper")
+                tabButton(title: "메인", selectedImage: "info.circle")
+                tabButton(title: "현황", selectedImage: "checkmark.seal")
+                tabButton(title: "업로드", selectedImage: "camera")
+                tabButton(title: "피드", selectedImage: "newspaper")
             }
             .padding()
             .background(Color.white)

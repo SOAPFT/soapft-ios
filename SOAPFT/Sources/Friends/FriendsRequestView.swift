@@ -50,7 +50,15 @@ struct FriendsRequestView: View {
                         ForEach(viewModel.receivedRequests, id: \.requestId) {  friend in
                             Button(action: {
                                 let accessToken = KeyChainManager.shared.read(forKey: "accessToken") ?? ""
-                                container.router.push(.friendPage(userUUID: friend.requesterUuid, accessToken: accessToken))
+                                if let currentUserUuid = viewModel.userUuid {
+                                    container.router.push(.friendPage(
+                                        userUUID: friend.requesterUuid,
+                                        accessToken: accessToken,
+                                        currentUserUuid: currentUserUuid   // ✅ 내 UUID 전달
+                                    ))
+                                } else {
+                                    print("❌ 아직 내 UUID 로딩 전")
+                                }
                             }) {
                                 HStack(spacing: 12) {
                                     AsyncImage(url: URL(string: friend.profileImage ?? "")) { phase in

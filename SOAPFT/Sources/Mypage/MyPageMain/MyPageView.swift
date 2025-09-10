@@ -191,14 +191,17 @@ struct MyPageView: View {
                         .foregroundStyle(Color.gray.opacity(0.8))
                 }
                 
-                VStack(spacing: 4) {
-                    Text("\(viewModel.friendCount)")
-                        .font(Font.Pretend.pretendardSemiBold(size: 22))
-                        .foregroundColor(.black)
-                    Text("Friends")
-                        .font(Font.Pretend.pretendardLight(size: 14))
-                        .foregroundStyle(Color.gray.opacity(0.8))
-                }
+                Button(action: {
+                        container.router.push(.friend)
+                    }) {
+                    VStack {
+                        Text("\(viewModel.friendCount)")
+                            .font(Font.Pretend.pretendardRegular(size: 22))
+                            .foregroundStyle(Color.black)
+                        Text("Friends")
+                            .font(Font.Pretend.pretendardLight(size: 16))
+                            .foregroundStyle(Color.gray.opacity(0.8))
+                    }
             }
         }
         .padding(.horizontal, 20)

@@ -27,23 +27,27 @@ struct FriendsPostsView: View {
     var body: some View {
         LazyVGrid(columns: columns, spacing: 8) {
             ForEach(viewModel.posts, id: \.id) { post in
-                VStack {
-                    AsyncImage(url: URL(string: post.imageUrl.first ?? "")) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(1, contentMode: .fill)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    } placeholder: {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                            .aspectRatio(1, contentMode: .fit)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                Button(action: {
+                    container.router.push(.postDetail(postUuid: post.postUuid))
+                }) {
+                    VStack {
+                        AsyncImage(url: URL(string: post.imageUrl.first ?? "")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(1, contentMode: .fill)
+                                .clipped()
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        } placeholder: {
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.2))
+                                .aspectRatio(1, contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                     }
-                }
-                .onAppear {
-                    if post.id == viewModel.posts.last?.id {
-                        viewModel.fetchPosts()
+                    .onAppear {
+                        if post.id == viewModel.posts.last?.id {
+                            viewModel.fetchPosts()
+                        }
                     }
                 }
             }

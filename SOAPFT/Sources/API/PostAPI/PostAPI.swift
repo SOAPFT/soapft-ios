@@ -14,7 +14,7 @@ enum PostAPI {
     case getCalendar(year: Int, month: Int, accessToken: String)
     case getUserCalendar(userUuid: String, year: Int, month: Int, accessToken: String)
     case getUserPosts(userId: String, page: Int, limit: Int, accessToken: String)
-    case getPostDetail(postId: Int, accessToken: String)
+    case getPostDetail(postUuid: String, accessToken: String)
     case updatePost(postUuid: String, title: String, content: String, imageUrls: [String], isPublic: Bool, accessToken: String)
     case deletePost(postId: Int, accessToken: String)
     case getChallengePosts(challengeId: String, page: Int, limit: Int, accessToken: String)
@@ -41,8 +41,8 @@ extension PostAPI: TargetType {
             return "/api/post/calendar/\(userUuid)"
         case .getUserPosts(let userId, _, _, _):
             return "/api/post/user/\(userId)"
-        case .getPostDetail(let postId, _):
-            return "/api/post/\(postId)"
+        case .getPostDetail(let postUuid, _):
+            return "/api/post/\(postUuid)"
         case .updatePost(let postUuid, _, _, _, _, _):
             return "/api/post/\(postUuid)"
         case .deletePost(let postId, _):
