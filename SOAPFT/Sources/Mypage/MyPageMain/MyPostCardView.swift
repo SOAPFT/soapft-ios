@@ -91,7 +91,7 @@ struct MyPostCardView: View {
     private var actionButtons: some View {
         HStack(spacing: 20) {
             Button(action: toggleLike) {
-                Label("\(post.likeCount)", systemImage: state.isLiked ? "heart.fill" : "heart")
+                Label("\(String(describing: post.likeCount))", systemImage: state.isLiked ? "heart.fill" : "heart")
                     .foregroundStyle(state.isLiked ? .red : .gray)
             }
              

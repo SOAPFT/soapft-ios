@@ -12,18 +12,43 @@ import Kingfisher
 struct GroupInfoWrapper: View {
     @Environment(\.diContainer) private var container
     let challenge: ChallengeDetailResponse
+    
+    // 토스트 상태 관리를 최상위에서
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    @State private var isToastSuccess = true
 
     var body: some View {
         VStack(spacing: 0) {
-            GroupInfoNavBar()
-                .navigationBarBackButtonHidden(true)
+            GroupInfoNavBar(
+                ChallengeId: challenge.challengeUuid ?? "",
+                showToast: showToastMessage // 토스트 함수 전달
+            )
+            .navigationBarBackButtonHidden(true)
+            
             GroupInfoWrapperBody(viewModel: GroupInfoViewModel(
                 challengeService: container.challengeService,
                 id: challenge.challengeUuid ?? ""
             ))
         }
+        .toast(
+            message: toastMessage,
+            isSuccess: isToastSuccess,
+            isVisible: $showToast
+        )
+    }
+    
+    // 토스트 표시 함수
+    private func showToastMessage(_ message: String, isSuccess: Bool) {
+        toastMessage = message
+        isToastSuccess = isSuccess
+        withAnimation {
+            showToast = true
+        }
+        print("토스트 표시 - 메시지: \(message), 성공: \(isSuccess)")
     }
 }
+
 
 private struct GroupInfoWrapperBody: View {
     @StateObject var viewModel: GroupInfoViewModel

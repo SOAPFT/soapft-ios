@@ -38,14 +38,14 @@ struct LoginView: View {
                         
                         // Apple 로그인
                         
-                        /*
+                        
                         // 테스트
                         Button(action: {
                             container.router.push(.mainTabbar)
                         }) {
                             Text("테스트")
                         }
-                        */
+                        
                         Text("")
                     }
                 }

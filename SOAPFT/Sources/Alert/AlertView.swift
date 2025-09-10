@@ -61,6 +61,7 @@ struct AlertView: View {
             }, label: {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(Color.black)
+                    .rotationEffect(.degrees(90))
                     .frame(width: 24, height: 24)
             })
             .confirmationDialog(

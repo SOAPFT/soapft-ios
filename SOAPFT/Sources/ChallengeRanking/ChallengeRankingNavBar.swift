@@ -40,5 +40,4 @@ struct ChallengeRankingNavBar: View {
 }
 
 #Preview {
-    ChatRoomNavBar(chatRoomName: "챌린지 이름")
 }

@@ -21,23 +21,12 @@ struct CertificationPostNavBar: View {
                 }
                 
                 Spacer()
-                /*
+                
                 // Notification with badge
-                ZStack(alignment: .topTrailing) {
-                    Button(action: {}) {
-                        Image(systemName: "bell")
-                            .foregroundStyle(.black)
-                    }
-
-                    if notificationCount > 0 {
-                        Text("\(notificationCount)")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .padding(4)
-                            .background(Color.red)
-                            .clipShape(Circle())
-                            .offset(x: 8, y: -8)
-                    }
+                Button(action: { container.router.push(.alert) }) {
+                    Image(systemName: "bell")
+                        .foregroundStyle(.black)
+                    
                 }
 
 
@@ -50,7 +39,7 @@ struct CertificationPostNavBar: View {
                         .contentShape(Rectangle())
                 }
                 .padding(.horizontal, 10)
-                */
+                
                 
             }
             .padding()

@@ -142,18 +142,28 @@ final class ChallengeService {
     }
 
     // 이미지 사전 AI 검증
-    func precheckImages(challengeUuid: String, images: [Data], completion: @escaping (Result<PrecheckResponse, Error>) -> Void) {
-        provider.request(.precheckImages(challengeUuid: challengeUuid, images: images)) { result in
-            self.handleResponse(result, type: PrecheckResponse.self, completion: completion)
+        func precheckImages(challengeUuid: String, images: [Data], completion: @escaping (Result<VerificationStatusResponse, Error>) -> Void) {
+            provider.request(.precheckImages(challengeUuid: challengeUuid, images: images)) { result in
+                self.handleResponse(result, type: VerificationStatusResponse.self, completion: completion)
+            }
         }
-    }
+        
+        // 검증 상태 조회 (콜백)
+        func getVerificationStatus(
+            postUuid: String,
+            completion: @escaping (Result<VerificationStatusResponse, Error>) -> Void
+        ) {
+            provider.request(.verificationStatus(PostUuid: postUuid)) { result in
+                self.handleResponse(result, type: VerificationStatusResponse.self, completion: completion)
+            }
+        }
 
-    // AI 검증된 이미지로 게시글 생성
-    func createVerifiedPost(parameters: [String: Any], completion: @escaping (Result<CreatePostResponse, Error>) -> Void) {
-        provider.request(.createVerifiedPost(parameters: parameters)) { result in
-            self.handleResponse(result, type: CreatePostResponse.self, completion: completion)
+        // AI 검증된 이미지로 게시글 생성
+        func createVerifiedPost(parameters: [String: Any], completion: @escaping (Result<CreatePostResponse, Error>) -> Void) {
+            provider.request(.createVerifiedPost(parameters: parameters)) { result in
+                self.handleResponse(result, type: CreatePostResponse.self, completion: completion)
+            }
         }
-    }
 
     // 공통 응답 처리
     private func handleResponse<T: Decodable>(
@@ -172,7 +182,24 @@ final class ChallengeService {
                 }
                 
                 let decoded = try JSONDecoder().decode(T.self, from: response.data)
-                completion(.success(decoded))
+                
+                // ChallengeLeaveResponse의 경우 success 필드 확인
+                if let leaveResponse = decoded as? ChallengeLeaveResponse {
+                    if leaveResponse.success {
+                        completion(.success(decoded))
+                    } else {
+                        // success: false인 경우 APIError로 변환
+                        let apiError = APIError(
+                            message: leaveResponse.message,
+                            code: leaveResponse.errorCode,
+                            details: nil
+                        )
+                        completion(.failure(apiError))
+                    }
+                } else {
+                    // 다른 응답들은 기존대로 처리
+                    completion(.success(decoded))
+                }
             } catch {
                 // 🧨 디코딩 실패 상세 에러 출력
                 print("❌ JSON Decoding 실패 - 타입: \(T.self)")
@@ -191,5 +218,4 @@ final class ChallengeService {
             completion(.failure(error))
         }
     }
-
 }

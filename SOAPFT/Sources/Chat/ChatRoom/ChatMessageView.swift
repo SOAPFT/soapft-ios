@@ -62,14 +62,6 @@ struct ChatMessageView: View {
                     
                     VStack(alignment: .trailing, spacing: 4) {
                         HStack(spacing: 4) {
-                            // 읽음 표시
-                            /*
-                            if message.isRead {
-                                Text("읽음")
-                                    .font(.caption2)
-                                    .foregroundColor(.blue)
-                            }
-                            */
                             
                             Text(formatTimeToKST(message.createdAt))
                                 .font(.caption2)
@@ -151,11 +143,9 @@ struct ChatMessageView: View {
         
         // 한국 시간대로 변환
         let kstTimeZone = TimeZone(identifier: "Asia/Seoul")!
-        let calendar = Calendar.current
         var kstCalendar = Calendar.current
         kstCalendar.timeZone = kstTimeZone
         
-        let now = Date()
         let kstNow = Date() // 현재 시간도 KST 기준으로 비교
         
         // 한국 시간 기준으로 날짜 포맷터 설정

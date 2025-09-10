@@ -43,13 +43,6 @@ final class GroupCreateViewModel: ObservableObject {
     
     // 챌린지 생성 요청
     func createChallenge(accessToken: String, onSuccess: @escaping () -> Void) {
-        guard let profileData = profileImage?.jpegData(compressionQuality: 0.8),
-              let bannerData = bannerImage?.jpegData(compressionQuality: 0.8) else {
-            creationError = "이미지를 업로드해주세요"
-            print("❌ 이미지 없음: profileImage = \(String(describing: profileImage)), bannerImage = \(String(describing: bannerImage))")
-            return
-        }
-        
         let goalValue = goalStringToInt(selectedGoal)
         
         let genderValue: String = {
