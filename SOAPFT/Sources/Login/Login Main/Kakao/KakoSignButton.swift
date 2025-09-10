@@ -65,7 +65,7 @@ struct KakoSignButton: View {
         
         let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
         let deviceType = "iOS"
-        let pushToken = "dummy_push_token"
+        let pushToken = UserDefaults.standard.string(forKey: "device_token") ?? "dummy_push_token"
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
         
         // AuthService
