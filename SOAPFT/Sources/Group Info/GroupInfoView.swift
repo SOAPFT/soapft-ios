@@ -177,13 +177,24 @@ struct CreatorSection: View {
     var body: some View {
         HStack(spacing: 12) {
             if let creator = creator {
-                AsyncImage(url: URL(string: creator.profileImage ?? "")) { image in
-                    image.resizable().scaledToFill()
-                } placeholder: {
-                    Circle().fill(Color.gray.opacity(0.3))
+                let urlString = creator.profileImage ?? ""
+
+                if !urlString.isEmpty, let url = URL(string: urlString) {
+                    KFImage(url)
+                        .resizable()
+                        .placeholder { ProgressView() }
+                        .cancelOnDisappear(true)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 48, height: 48)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .foregroundColor(.gray)
+                        .frame(width: 48, height: 48)
+                        .clipShape(Circle())
                 }
-                .frame(width: 48, height: 48)
-                .clipShape(Circle())
+
 
                 Text(creator.nickname ?? "알 수 없음")
                     .font(.headline)
@@ -232,13 +243,24 @@ struct MemberListSection: View {
         VStack(spacing: 12) {
                 ForEach(viewModel.filteredParticipants, id: \.userUuid) { member in
                     HStack(spacing: 12) {
-                        KFImage(URL(string: member.profileImage ?? ""))
-                            .resizable()
-                            .placeholder { ProgressView() }
-                            .cancelOnDisappear(true)
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 48, height: 48)
-                            .clipShape(Circle())
+                        let urlString = member.profileImage ?? ""
+
+                        if !urlString.isEmpty, let url = URL(string: urlString) {
+                            KFImage(url)
+                                .resizable()
+                                .placeholder { ProgressView() }
+                                .cancelOnDisappear(true)
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 48, height: 48)
+                                .clipShape(Circle())
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .foregroundColor(.gray)
+                                .frame(width: 48, height: 48)
+                                .clipShape(Circle())
+                        }
+
                         
                         Text(member.nickname ?? "알 수 없음")
                         
