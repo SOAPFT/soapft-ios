@@ -48,7 +48,7 @@ struct PostDetailResponseDTO: Decodable {
 struct PostDetailDTO: Decodable {
     let id: Int
     let postUuid: String
-    let title: String
+    let title: String?
     let challengeUuid: String
     let content: String
     let imageUrl: [String]

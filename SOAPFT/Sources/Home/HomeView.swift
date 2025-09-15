@@ -10,10 +10,12 @@ import Lottie
 
 struct Home: View {
     @StateObject private var viewModel: HomeViewModel
+    @StateObject private var MPviewModel: MyPageViewModel
     @Environment(\.diContainer) private var container
     
     init(viewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        _MPviewModel = StateObject(wrappedValue: MyPageViewModel(container: DIContainer(router: AppRouter())))
     }
     
     private let columns = [
@@ -23,7 +25,7 @@ struct Home: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            homeNavBar()
+            homeNavBar(viewModel: MPviewModel)
             
 //            Divider()
             

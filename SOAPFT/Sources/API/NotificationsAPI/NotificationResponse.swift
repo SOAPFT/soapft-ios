@@ -6,16 +6,46 @@
 //
 
 import Foundation
+ 
+enum JSONValue: Codable {
+    case string(String), int(Int), double(Double), bool(Bool)
+    case object([String: JSONValue]), array([JSONValue]), null
+    
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() { self = .null }
+        else if let v = try? c.decode(Bool.self) { self = .bool(v) }
+        else if let v = try? c.decode(Int.self) { self = .int(v) }
+        else if let v = try? c.decode(Double.self) { self = .double(v) }
+        else if let v = try? c.decode(String.self) { self = .string(v) }
+        else if let v = try? c.decode([String: JSONValue].self) { self = .object(v) }
+        else if let v = try? c.decode([JSONValue].self) { self = .array(v) }
+        else { throw DecodingError.typeMismatch(JSONValue.self, .init(codingPath: decoder.codingPath, debugDescription: "Unsupported JSON type")) }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.singleValueContainer()
+        switch self {
+        case .null: try c.encodeNil()
+        case .bool(let v): try c.encode(v)
+        case .int(let v): try c.encode(v)
+        case .double(let v): try c.encode(v)
+        case .string(let v): try c.encode(v)
+        case .object(let v): try c.encode(v)
+        case .array(let v): try c.encode(v)
+        }
+    }
+}
 
 // MARK: - 알림 모델 (알림 생성 및 알림 목록 조회에 공통 사용)
 struct NotificationDTO: Decodable, Identifiable {
     let id: Int
     let recipientUuid: String
-    let senderUuid: String
+    let senderUuid: String?
     let type: String
     let title: String
     let content: String
-    let data: NotificationData
+    let data: [String: JSONValue]?
     let isRead: Bool
     let isSent: Bool
     let createdAt: String

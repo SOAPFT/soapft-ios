@@ -53,30 +53,26 @@ final class PostDetailViewModel : ObservableObject {
     }
     
     func toggleLike(for post: PostDetailDTO) {
-        guard let state = postUIStates[post.postUuid],
-              let index = posts.firstIndex(where: { $0.postUuid == post.postUuid }) else { return }
+        guard let state = postUIStates[post.postUuid] else { return }
 
         if state.isLiked {
             container.likeService.unlike(postId: post.postUuid) { result in
                 DispatchQueue.main.async {
-                    switch result {
-                    case .success(let response):
+                    if case .success(_) = result {
                         state.isLiked = false
-                        self.posts[index].likeCount = response.likeCount
-                    case .failure(let error):
-                        print("❌ 좋아요 취소 실패: \(error)")
+                        // 상세 DTO에 likeCount가 없다면 생략, 있으면 갱신
+                        // self.post?.likeCount = res.likeCount
+                    } else {
+                        // 실패 시 롤백이 필요하면 여기서 처리
                     }
                 }
             }
         } else {
             container.likeService.like(postId: post.postUuid) { result in
                 DispatchQueue.main.async {
-                    switch result {
-                    case .success(let response):
+                    if case .success(_) = result {
                         state.isLiked = true
-                        self.posts[index].likeCount = response.likeCount
-                    case .failure(let error):
-                        print("❌ 좋아요 추가 실패: \(error)")
+                        // self.post?.likeCount = res.likeCount
                     }
                 }
             }

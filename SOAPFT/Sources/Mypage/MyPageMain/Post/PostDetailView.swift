@@ -58,6 +58,15 @@ struct PostDetailView: View {
             viewModel.container = container
             if viewModel.post == nil { viewModel.fetchDetail() }
         }
+        .onChange(of: viewModel.post?.postUuid) { newValue, oldValue in
+            // ✅ 상세 DTO가 세팅되면 해당 postUuid로 state를 연결
+            if let p = viewModel.post {
+                viewModel.postUIStates[p.postUuid] = uiState
+                // 서버가 isLiked/isSuspicious를 내려주면 여기서 초기화
+                // uiState.isLiked = p.isLiked ?? false
+                // uiState.isSuspicious = p.isSuspicious ?? false
+            }
+        }
         .navigationBarBackButtonHidden()
     }
 }
@@ -116,8 +125,8 @@ private extension PostDetailView {
 
                 // 3) 제목/내용
                 VStack(alignment: .leading, spacing: 8) {
-                    if !post.title.isEmpty {
-                        Text(post.title)
+                    if let title = post.title, !title.isEmpty {
+                        Text(title)
                             .font(.title3.weight(.semibold))
                     }
                     if !post.content.isEmpty {
@@ -131,7 +140,7 @@ private extension PostDetailView {
                 // 4) 액션바 (좋아요/댓글/의심)
                 HStack(spacing: 20) {
                     Button {
-                        uiState.isLiked.toggle()
+//                        uiState.isLiked.toggle()
                         viewModel.toggleLike(for: post)
                     } label: {
                         Label("좋아요", systemImage: uiState.isLiked ? "heart.fill" : "heart")
