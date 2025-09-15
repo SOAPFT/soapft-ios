@@ -78,12 +78,10 @@ struct FriendsPageView: View {
                 }
                 Spacer()
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color.white)
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
             
             Divider()
-                .background(Color.gray.opacity(0.3))
         }
     }
     

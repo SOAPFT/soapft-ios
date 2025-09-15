@@ -81,10 +81,7 @@ struct AlertView: View {
     private func AlertCard() -> some View {
         ForEach(viewModel.alerts, id: \.id) { alert in
             Button(action: {
-                // 1. 읽음 처리
-                viewModel.markAsRead(alert: alert)
-                // 2. 네비게이션용 상태 변경
-                selectedAlert = alert
+                handleTap(alert)
             }) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
@@ -110,11 +107,93 @@ struct AlertView: View {
             }
         }
     }
+    
+    private func handleTap(_ alert: NotificationDTO) {
+        // 1) 읽음 처리
+        viewModel.markAsRead(alert: alert)
+        
+        // 2) 타입별 라우팅
+        switch alert.type {
+        case "friend_request":
+            container.router.push(.friendsRequest)
+            
+        case "friend_accepted":
+            container.router.push(.friend)
+            
+        case "challenge_invite":
+            if let challengeUuid = alert.data?.string("challengeUuid") {
+                container.router.push(.challengeSignUpWrapper(ChallengeID: challengeUuid))
+            } else {
+                container.selectedTab = "챌린지"
+                container.router.push(.mainTabbar)
+            }
+            
+        case "challenge_start", "challenge_end", "challenge_reminder", "mission_created", "mission_reminder":
+            if let challengeUuid = alert.data?.string("challengeUuid") {
+                container.router.push(.GroupTabbar(ChallengeID: challengeUuid))
+            } else {
+                container.selectedTab = "홈"
+                container.router.push(.mainTabbar)
+            }
+            
+        case "new_message":
+            let currentUserUuid = alert.recipientUuid
+            let chatRoomUuid    = alert.data?.string("chatRoomUuid")
+            let chatRoomName    = alert.data?.string("senderNickname")
+
+            if let roomId = chatRoomUuid, let name = chatRoomName {
+                container.router.push(
+                    .ChatRoomWrapper(
+                        currentUserUuid: currentUserUuid,
+                        roomId: roomId,
+                        chatRoomName: name
+                    )
+                )
+            } else {
+                container.selectedTab = "채팅"
+                container.router.push(.mainTabbar)
+            }
+            
+        case "post_like", "post_comment", "mention":
+            if let postUuid = alert.data?.string("postUuid") {
+                container.router.push(.postDetail(postUuid: postUuid))
+            } else {
+                container.selectedTab = "마이"
+                container.router.push(.mainTabbar)
+            }
+            
+        default:
+            container.router.push(.alert)
+        }
+    }
 }
 
 extension String {
     var byCharWrapping: Self {
         map(String.init).joined(separator: "\u{200B}")
+    }
+}
+
+private extension Dictionary where Key == String, Value == JSONValue {
+    func string(_ key: String) -> String? {
+        guard let v = self[key] else { return nil }
+        switch v {
+        case .string(let s): return s
+        case .int(let i): return String(i)
+        case .double(let d): return String(d)
+        case .bool(let b):   return b ? "true" : "false"
+        default: return nil
+        }
+    }
+    
+    func int(_ key: String) -> Int? {
+        guard let v = self[key] else { return nil }
+        switch v {
+        case .int(let i): return i
+        case .string(let s): return Int(s)
+        case .double(let d): return Int(d)
+        default: return nil
+        }
     }
 }
 
