@@ -73,7 +73,7 @@ struct FriendsView: View {
                                         userUuid: user.userUuid,
                                         nickname: user.nickname,
                                         profileImage: user.profileImage,
-                                        isFriend: true
+                                        isFriend: user.isFriend
                                     ))
                                 }
                             } else {

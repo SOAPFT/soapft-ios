@@ -120,9 +120,17 @@ struct AlertView: View {
         case "friend_accepted":
             container.router.push(.friend)
             
-        case "challenge_invite", "challenge_start", "challenge_end":
-            if let challengeId = alert.data?.string("challengeId") {
-                container.router.push(.challengeSignUpWrapper(ChallengeID: challengeId))
+        case "challenge_invite":
+            if let challengeUuid = alert.data?.string("challengeUuid") {
+                container.router.push(.challengeSignUpWrapper(ChallengeID: challengeUuid))
+            } else {
+                container.selectedTab = "챌린지"
+                container.router.push(.mainTabbar)
+            }
+            
+        case "challenge_start", "challenge_end", "challenge_reminder", "mission_created", "mission_reminder":
+            if let challengeUuid = alert.data?.string("challengeUuid") {
+                container.router.push(.GroupTabbar(ChallengeID: challengeUuid))
             } else {
                 container.selectedTab = "홈"
                 container.router.push(.mainTabbar)

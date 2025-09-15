@@ -60,6 +60,13 @@ struct MyPageView: View {
     private var topBarView: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
+                Image("logoSmall")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 32)
+                    .padding(.leading, 8)
+                    .padding(.bottom, 4)
+                
                 Spacer()
 
                 ZStack {
@@ -92,9 +99,9 @@ struct MyPageView: View {
                         .font(.system(size: 18))
                 }
             }
-            .padding(.vertical, 14)
+            .padding(.vertical, 8)
             .padding(.horizontal, 20)
-
+            
             Divider()
         }
     }
