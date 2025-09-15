@@ -47,9 +47,10 @@ struct MyInfoEditView: View {
                     Spacer()
             
                     Button(action: {
-                        viewModel.updateProfile {
-                            container.router.pop()
-                        }
+                        viewModel.updateProfile {}
+                        
+                        container.selectedTab = "마이"
+                        container.router.push(.mainTabbar)
                     }) {
                         Text("저장")
                             .font(Font.Pretend.pretendardMedium(size: 16))
