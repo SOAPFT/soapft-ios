@@ -92,10 +92,10 @@ struct MyPageView: View {
                         .font(.system(size: 18))
                 }
             }
-            .padding()
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
 
             Divider()
-                .background(Color.gray.opacity(0.3))
         }
     }
 
@@ -179,7 +179,7 @@ struct MyPageView: View {
             HStack(spacing: 50) {
                 VStack(spacing: 4) {
                     Text("\(viewModel.postCount)")
-                        .font(Font.Pretend.pretendardSemiBold(size: 22))
+                        .font(Font.Pretend.pretendardRegular(size: 22))
                         .foregroundColor(.black)
                     Text("Posts")
                         .font(Font.Pretend.pretendardLight(size: 14))

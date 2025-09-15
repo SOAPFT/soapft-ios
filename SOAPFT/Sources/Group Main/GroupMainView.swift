@@ -47,8 +47,8 @@ struct GroupMainView: View {
                         .font(.system(size: 18))
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
             
             Divider()
             

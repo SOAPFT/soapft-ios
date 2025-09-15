@@ -38,13 +38,8 @@ struct PostsView: View {
                                     .aspectRatio(1, contentMode: .fit)
                                     .overlay(
                                         VStack(spacing: 4) {
-                                            ProgressView()
-                                                .progressViewStyle(CircularProgressViewStyle(tint: .gray))
-                                                .scaleEffect(0.7)
-                                            
-                                            Text("로딩 중...")
-                                                .font(.caption2)
-                                                .foregroundColor(.gray)
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .strokeBorder(Color.gray.opacity(0.3), lineWidth: 0.5)
                                         }
                                     )
                             }

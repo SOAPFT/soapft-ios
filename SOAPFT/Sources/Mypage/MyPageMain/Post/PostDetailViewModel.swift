@@ -58,7 +58,7 @@ final class PostDetailViewModel : ObservableObject {
         if state.isLiked {
             container.likeService.unlike(postId: post.postUuid) { result in
                 DispatchQueue.main.async {
-                    if case let .success(res) = result {
+                    if case .success(_) = result {
                         state.isLiked = false
                         // 상세 DTO에 likeCount가 없다면 생략, 있으면 갱신
                         // self.post?.likeCount = res.likeCount
@@ -70,7 +70,7 @@ final class PostDetailViewModel : ObservableObject {
         } else {
             container.likeService.like(postId: post.postUuid) { result in
                 DispatchQueue.main.async {
-                    if case let .success(res) = result {
+                    if case .success(_) = result {
                         state.isLiked = true
                         // self.post?.likeCount = res.likeCount
                     }
