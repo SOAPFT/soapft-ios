@@ -87,12 +87,15 @@ extension UserAPI: TargetType {
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
             "accept": "application/json"
         ]
-
         switch self {
+        case let .deleteProfile(accessToken):
+            baseHeaders["Authorization"] = "Bearer \(accessToken)"
+            // Content-Type 제거
+            return baseHeaders
+        // 나머지 POST/PUT류에서만 Content-Type 추가
         case let .onboarding(_, _, _, accessToken),
              let .logout(accessToken),
              let .updateProfile(_, _, _, accessToken),
-             let .deleteProfile(accessToken),
              let .getUserInfo(accessToken),
              let .getOtherUserInfo(_, accessToken):
             baseHeaders["Authorization"] = "Bearer \(accessToken)"

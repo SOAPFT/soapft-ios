@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import Foundation
 
 struct AlertView: View {
     @Environment(\.diContainer) private var container
@@ -88,7 +89,7 @@ struct AlertView: View {
                         Text(alert.content.byCharWrapping)
                             .font(Font.Pretend.pretendardRegular(size: 14))
                             .foregroundStyle(alert.isRead ? .gray: .black)
-                        Text(alert.createdAt)
+                        Text(alert.createdAt.toDate()?.timeAgoDisplay() ?? "")
                             .font(Font.Pretend.pretendardRegular(size: 12))
                             .foregroundStyle(.gray)
                     }
@@ -171,6 +172,21 @@ struct AlertView: View {
 extension String {
     var byCharWrapping: Self {
         map(String.init).joined(separator: "\u{200B}")
+    }
+    
+    func toDate() -> Date? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: self)
+    }
+}
+
+extension Date {
+    func timeAgoDisplay() -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: self, relativeTo: Date())
     }
 }
 

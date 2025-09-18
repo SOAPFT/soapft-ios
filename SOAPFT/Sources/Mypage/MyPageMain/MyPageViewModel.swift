@@ -90,4 +90,40 @@ final class MyPageViewModel: ObservableObject {
             }
         }
     }
+    
+    func deleteProfile(completion: @escaping (Bool, String?) -> Void) {
+        guard let accessToken = KeyChainManager.shared.readAccessToken() else {
+            print("❌ accessToken 없음")
+            return
+        }
+        
+        container.userService.deleteProfile(accessToken: accessToken) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let res):
+                    print("✅ 계정 삭제 성공: \(res.message)")
+                    // 토큰·세션 정리 (프로젝트에서 실사용하는 키 전부 제거)
+                    KeyChainManager.shared.delete(forKey: "jwtToken")
+                    KeyChainManager.shared.delete(forKey: "refreshToken")
+                    KeyChainManager.shared.delete(forKey: "accessToken")
+                    
+                    // 필요하면 ViewModel 상태 초기화
+                    self?.userName = ""
+                    self?.userImage = nil
+                    self?.userIntroduction = nil
+                    self?.userUuid = ""
+                    self?.coins = 0
+                    self?.postCount = 0
+                    self?.friendCount = 0
+                    self?.notificationCount = 0
+
+                    completion(true, res.message)
+
+                case .failure(let error):
+                    print("❌ 계정 삭제 실패: \(error.localizedDescription)")
+                    completion(false, error.localizedDescription)
+                }
+            }
+        }
+    }
 }
