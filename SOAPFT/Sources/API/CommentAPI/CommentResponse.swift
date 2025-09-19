@@ -48,7 +48,7 @@ struct Comment: Decodable, Identifiable {
 
 struct CommentUser: Decodable {
     let userUuid: String
-    let nickname: String
+    let nickname: String?
     let profileImage: String?
 }
 

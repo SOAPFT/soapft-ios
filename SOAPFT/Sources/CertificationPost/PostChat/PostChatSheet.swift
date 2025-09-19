@@ -124,7 +124,7 @@ struct CommentView: View {
 
                 VStack(alignment: .leading) {
                     HStack {
-                        Text(comment.user.nickname)
+                        Text(comment.user.nickname ?? "알 수 없음")
                             .font(.subheadline).bold()
                         Text(
                             comment.updatedAt != comment.createdAt
@@ -156,7 +156,7 @@ struct CommentView: View {
 
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(reply.user.nickname)
+                            Text(reply.user.nickname ?? "알 수 없음")
                                 .font(.subheadline).bold()
                             Text(
                                 "· \(timeAgoString(from: reply.createdAt))"
