@@ -47,15 +47,36 @@ struct MyInfoEditView: View {
                     Spacer()
             
                     Button(action: {
-                        viewModel.updateProfile {}
-                        
-                        container.selectedTab = "마이"
-                        container.router.push(.mainTabbar)
+                        Task { @MainActor in
+                            // 1) 새 이미지가 있으면 업로드
+                            if let image = profileImage {
+                                ImageService().uploadImage(image: image) { result in
+                                    switch result {
+                                    case .success(let res):
+                                        // 2) 업로드된 URL을 ViewModel에 반영
+                                        viewModel.userImage = res.imageUrl
+                                        // 3) 프로필 저장
+                                        viewModel.updateProfile {}
+                                        
+                                        container.selectedTab = "마이"
+                                        container.router.push(.mainTabbar)
+                                    case .failure(let err):
+                                        print("업로드 실패: \(err.localizedDescription)")
+                                        // 에러 얼럿/토스트 등 처리
+                                    }
+                                }
+                            } else {
+                                // 새 이미지가 없으면 닉네임/소개만 저장
+                                viewModel.updateProfile {}
+                                
+                                container.selectedTab = "마이"
+                                container.router.push(.mainTabbar)
+                            }
+                        }
                     }) {
                         Text("저장")
-                            .font(Font.Pretend.pretendardMedium(size: 16))
-                            .foregroundStyle(Color.black)
                     }
+
                 }
                 
                 Text("프로필 수정")
