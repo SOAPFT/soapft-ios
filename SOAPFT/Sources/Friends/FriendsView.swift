@@ -92,7 +92,7 @@ struct FriendsView: View {
                             ForEach(viewModel.friends, id: \.friendUuid) { friend in
                                 userRow(user: SearchedFriend(
                                     userUuid: friend.friendUuid,
-                                    nickname: friend.nickname,
+                                    nickname: friend.nickname ?? "알 수 없음",
                                     profileImage: friend.profileImage ?? "",
                                     isFriend: true
                                 ))
