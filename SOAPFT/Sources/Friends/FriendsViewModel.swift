@@ -72,7 +72,7 @@ final class FriendsViewModel: ObservableObject {
                     self?.filteredFriends = friends.map {
                         SearchedFriend(
                             userUuid: $0.friendUuid,
-                            nickname: $0.nickname,
+                            nickname: $0.nickname?.isEmpty == false ? $0.nickname! : "알 수 없음",
                             profileImage: $0.profileImage ?? "",
                             isFriend: true
                         )

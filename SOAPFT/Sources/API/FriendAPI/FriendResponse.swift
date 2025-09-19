@@ -13,7 +13,7 @@ struct FriendListResponse: Decodable {
 struct Friend: Decodable {
     let friendId: Int
     let friendUuid: String
-    let nickname: String
+    let nickname: String?
     let profileImage: String?
     let status: String  // 예: "ACCEPTED"
     let createdAt: String
