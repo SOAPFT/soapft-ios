@@ -84,6 +84,8 @@ final class FriendsPageViewModel: ObservableObject {
             fetchReceivedFriendRequestId()
         case "blocked":
             isBlocked = true
+        case "no_relation":
+            isFriend = false
         default:
             break
         }
@@ -156,6 +158,7 @@ final class FriendsPageViewModel: ObservableObject {
                 }
             }
         }
+        isFriend = false
     }
     
     // 채팅방 생성
