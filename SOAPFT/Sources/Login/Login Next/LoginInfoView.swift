@@ -94,7 +94,7 @@ struct LoginInfoView: View {
         }
         .sheet(isPresented: $viewModel.showTermsOfService) {
             TermsOfServiceView(loginInfoViewModel: viewModel)
-                .presentationDetents([.height(300)])
+                .presentationDetents([.height(300), .large])
                 .presentationDragIndicator(.visible)
         }
         .navigationBarBackButtonHidden()

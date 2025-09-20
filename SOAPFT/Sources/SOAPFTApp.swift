@@ -36,6 +36,12 @@ struct SOAPFTApp: App {
                         case .loginInfo:
                             LoginInfoView()
                                 .environment(\.diContainer, container)
+                        case .privacyPolicy:
+                            PrivacyPolicyView()
+                                .environment(\.diContainer, container)
+                        case .serviceAgreement:
+                            ServiceAgreementView()
+                                .environment(\.diContainer, container)
                         case .mainTabbar:
                             MainTabbarView()
                                 .environment(\.diContainer, container)

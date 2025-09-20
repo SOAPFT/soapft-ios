@@ -10,6 +10,8 @@ import SwiftUI
 enum Route: Hashable {
     case login
     case loginInfo
+    case privacyPolicy
+    case serviceAgreement
     case mainTabbar
     case groupEdit
     case home
