@@ -18,7 +18,7 @@ class CertificationPostViewModel: ObservableObject {
     private let postService: PostService
     private let likeService: LikeService
     private let challengeId: String
-    private var currentPage: Int = 1
+    var currentPage: Int = 1
     private let limit: Int = 10
     
     private var cancellables = Set<AnyCancellable>()
@@ -32,35 +32,50 @@ class CertificationPostViewModel: ObservableObject {
         fetchPosts()
     }
     
-    func fetchPosts() {
+    func fetchPosts(refresh: Bool = false) {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
             print("❌ accessToken 없음")
             return
         }
-        
+
+        if refresh {
+            self.currentPage = 1
+            self.posts.removeAll()
+            self.hasMore = true
+        }
+
         isLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.postService.getChallengePosts(challengeId: self.challengeId, page: self.currentPage, limit: 10, accessToken: accessToken) { [weak self] (result: Result<ChallengePostsResponseDTO, Error>) in
+            self.postService.getChallengePosts(
+                challengeId: self.challengeId,
+                page: self.currentPage,
+                limit: 10,
+                accessToken: accessToken
+            ) { [weak self] (result: Result<ChallengePostsResponseDTO, Error>) in
                 guard let self = self else { return }
-                
+
                 DispatchQueue.main.async {
                     self.isLoading = false
                     switch result {
                     case .success(let response):
                         self.posts.append(contentsOf: response.posts)
-                        
-                        // 다음 페이지 요청을 위한 증가
+
+                        // 다음 페이지 증가
                         self.currentPage += 1
-                        
+
                         // 더 가져올 게 없으면 hasMore false
                         self.hasMore = response.posts.count == self.limit
-                        
-                        // 상태 추가 (기존 상태는 유지하고 누락된 것만 추가)
+
+                        // 상태 추가
                         for post in response.posts {
                             if self.postUIStates[post.postUuid] == nil {
-                                self.postUIStates[post.postUuid] = PostUIState.init(postUuid: post.postUuid, likeService: self.likeService)
+                                self.postUIStates[post.postUuid] = PostUIState(
+                                    postUuid: post.postUuid,
+                                    likeService: self.likeService
+                                )
                             }
                         }
+
                     case .failure(let error):
                         print("챌린지 불러오기 실패: \(error)")
                         self.hasMore = false
@@ -69,6 +84,7 @@ class CertificationPostViewModel: ObservableObject {
             }
         }
     }
+
 
         
     func toggleLike(for post: Post) {

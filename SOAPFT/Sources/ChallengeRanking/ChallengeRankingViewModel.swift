@@ -137,6 +137,12 @@ final class ChallengeRankingViewModel: ObservableObject {
                 durationSeconds: durationSeconds
             ) { result in
                 self.certifyMission(resultData: result)
+                
+                // 건강 데이터 불러오기 성공 후 토스트메시지
+                DispatchQueue.main.async {
+                    self.toastMessage = "건강 데이터로 인증이 완료되었습니다."
+                    self.showToast = true
+                }
             }
         } else {
             self.sendMissionToWatch()

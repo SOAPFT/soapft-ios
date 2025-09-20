@@ -11,7 +11,6 @@ import Kingfisher
 struct MyPageView: View {
     @Environment(\.diContainer) private var container
     @StateObject private var viewModel: MyPageViewModel
-    @State private var showingPayment = false
     @State private var showingGifticon = false
 
     init() {
@@ -43,11 +42,6 @@ struct MyPageView: View {
             viewModel.container = container
             viewModel.fetchUserProfile()
             viewModel.fetchNotificationCount()
-        }
-        .fullScreenCover(isPresented: $showingPayment) {
-            CoinInputView { _ in
-                viewModel.fetchUserProfile()
-            }
         }
         .fullScreenCover(isPresented: $showingGifticon, onDismiss: {
             viewModel.fetchUserProfile()

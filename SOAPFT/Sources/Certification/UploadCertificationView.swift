@@ -20,6 +20,7 @@ struct UploadCertificationViewWrapper: View {
 
 
 struct UploadCertificationView: View {
+    @Environment(\.diContainer) private var container
     @State private var selectedImages: [UIImage] = []
     @State private var descriptionText: String = ""
     @State private var showAlert: Bool = false
@@ -228,7 +229,15 @@ struct UploadCertificationView: View {
                         .frame(height: 150)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.5), lineWidth: 1))
                         .padding(.horizontal)
-
+                        .toolbar {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("완료") {
+                                    isFocused = false   // 포커스 해제 → 키보드 내려감
+                                }
+                            }
+                        }
+                    
                     if descriptionText.isEmpty && !isFocused {
                         Text("인증과 관련된 내용을 작성해주세요.")
                             .foregroundStyle(.gray)
@@ -246,6 +255,9 @@ struct UploadCertificationView: View {
                         if success{
                             selectedImages = []
                             descriptionText = ""
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                container.postRefreshSubject.send()
+                            }
                             viewModel.verificationResult = nil
                         }
                     }

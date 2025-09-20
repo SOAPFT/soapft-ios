@@ -22,6 +22,7 @@ struct CertificationPostViewWrapper: View {
 struct CertificationPostView: View {
     @StateObject var viewModel: CertificationPostViewModel
     @State private var selectedPostForComment: Post?
+    @Environment(\.diContainer) private var container
     
     var body: some View {
         VStack {
@@ -53,11 +54,27 @@ struct CertificationPostView: View {
                                     toggleSuspicious: { viewModel.toggleSuspicion(for: post) },
                                     commentCount: viewModel.commentCounts[post.postUuid, default: post.commentCount!]
                                 )
+                                .onAppear {
+                                    // ✅ 마지막 글이 나타나면 다음 페이지 요청
+                                    if let last = viewModel.posts.last,
+                                       post.postUuid == last.postUuid,
+                                       viewModel.hasMore,
+                                       !viewModel.isLoading {
+                                        viewModel.fetchPosts()
+                                    }
+                                }
                             }
+                        }
+                        
+                        // ✅ 로딩 인디케이터 (다음 페이지 로드 중)
+                        if viewModel.isLoading && viewModel.currentPage > 1 {
+                            ProgressView("불러오는 중...")
+                                .padding()
                         }
                     }
                     .padding()
                 }
+
             }
         }
         .sheet(item: $selectedPostForComment) { post in
@@ -66,8 +83,8 @@ struct CertificationPostView: View {
                 viewModel.commentCounts[post.postUuid, default: post.commentCount!] += addedCount
             }
         }
-        .onAppear {
-            viewModel.fetchPosts()
+        .onReceive(container.postRefreshSubject) {
+            viewModel.fetchPosts(refresh: true)
         }
     }
 }

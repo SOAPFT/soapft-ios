@@ -11,7 +11,11 @@ let project = Project(
     ],
     settings: .settings(
         configurations: [
-            .debug(name: "SecretOnly", xcconfig: .relativeToRoot("../SOAPFT_iOS/Configuration/Secret.xcconfig"))
+            .debug(name: "SecretOnly", xcconfig: .relativeToRoot("../SOAPFT_iOS/Configuration/Secret.xcconfig")),
+            .release(
+                name: "Release",
+                xcconfig: .relativeToRoot("../SOAPFT_iOS/Configuration/Secret.xcconfig") // 같은 파일 재사용
+            )
         ]
     ),
     targets: [
@@ -22,6 +26,7 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: "io.tuist.SOAPFT",
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(with: [
                 "CFBundleDisplayName": "한땀한땀",  // 홈 화면 표시 이름
                 "CFBundleIconName": "AppIcon",
@@ -42,7 +47,10 @@ let project = Project(
                 "NidServiceAppUrlScheme": "naver.$(NidClientID)",
                 "NidUrlScheme": "$(NidUrlScheme)",
                 "PaymentURL": "$(PaymentURL)",
-                "UIUserInterfaceStyle": "Light"
+                // iPhone only
+                "UIDeviceFamily": [1],
+                // 다크모드 미지원
+                "UIUserInterfaceStyle": "Light",
             ]),
             sources: ["SOAPFT/Sources/**"],
             resources: ["SOAPFT/Resources/**"],

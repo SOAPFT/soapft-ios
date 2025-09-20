@@ -8,10 +8,11 @@
 import Foundation
 import Moya
 
+//결제 로직이 있는 것이 아닌 기프티콘용 서비스
 final class PaymentService {
     private let provider = MoyaProvider<PaymentAPI>()
     
-    // 기프티콘 변환 (출금)
+    // 기프티콘 변환
     func withdrawGifticon(amount: Int, completion: @escaping (Result<WithdrawResponse, Error>) -> Void) {
         provider.request(.withdraw(amount: amount)) { result in
             self.handleResponse(result, type: WithdrawResponse.self, completion: completion)

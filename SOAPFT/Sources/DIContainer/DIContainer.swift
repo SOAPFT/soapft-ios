@@ -16,6 +16,7 @@ final class DIContainer: ObservableObject {
     // 뷰 수정, 생성, 삭제 시 호출할 데이터
     let challengeRefreshSubject = PassthroughSubject<Void, Never>()
     let chatRefreshSubject = PassthroughSubject<Void, Never>()
+    let postRefreshSubject = PassthroughSubject<Void, Never>()
     
     // 모든 서비스 선언
     let authService: AuthService
