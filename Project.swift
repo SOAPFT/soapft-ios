@@ -26,7 +26,7 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: "io.tuist.SOAPFT",
-            deploymentTargets: .iOS("16.0"),
+            deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(with: [
                 "CFBundleDisplayName": "한땀한땀",  // 홈 화면 표시 이름
                 "CFBundleIconName": "AppIcon",
