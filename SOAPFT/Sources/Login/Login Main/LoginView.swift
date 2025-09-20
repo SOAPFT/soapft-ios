@@ -39,13 +39,6 @@ struct LoginView: View {
                         // 네이버 로그인
                         NaverSignButton()
                         
-                        // 테스트
-                        Button(action: {
-                            container.router.push(.mainTabbar)
-                        }) {
-                            Text("테스트")
-                        }
-                        
                         Text("")
                     }
                 }

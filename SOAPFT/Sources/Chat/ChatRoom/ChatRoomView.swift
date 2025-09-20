@@ -254,6 +254,7 @@ struct ChatInputView: View {
     let sendAction: () -> Void
     let onTypingChanged: (Bool) -> Void
     
+    @FocusState private var isFocused: Bool
     @State private var isTyping = false
     @State private var typingTimer: Timer?
     
@@ -262,11 +263,11 @@ struct ChatInputView: View {
             Divider()
             
             HStack(spacing: 12) {
-                
                 // 텍스트 입력
                 TextField("메시지를 입력하세요", text: $messageText, axis: .vertical)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .lineLimit(1...4)
+                    .focused($isFocused) //포커스 바인딩
                     .onChange(of: messageText) { _, newValue in
                         handleTextChange(newValue)
                     }
@@ -294,6 +295,15 @@ struct ChatInputView: View {
             .padding(.vertical, 12)
         }
         .background(Color.white)
+        // 키보드 툴바 "완료" 버튼
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("완료") {
+                    isFocused = false   // 키보드 닫기
+                }
+            }
+        }
     }
     
     private func handleTextChange(_ newValue: String) {
@@ -329,6 +339,7 @@ struct ChatInputView: View {
         typingTimer = nil
     }
 }
+
 
 
 
