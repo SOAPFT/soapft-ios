@@ -14,7 +14,7 @@ let project = Project(
             .debug(name: "SecretOnly", xcconfig: .relativeToRoot("../SOAPFT_iOS/Configuration/Secret.xcconfig")),
             .release(
                 name: "Release",
-                xcconfig: .relativeToRoot("../SOAPFT_iOS/Configuration/Secret.xcconfig") // 같은 파일 재사용
+                xcconfig: .relativeToRoot("../SOAPFT_iOS/Configuration/Secret.xcconfig")
             )
         ]
     ),
@@ -28,7 +28,7 @@ let project = Project(
             bundleId: "io.tuist.SOAPFT",
             deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(with: [
-                "CFBundleDisplayName": "한땀한땀",  // 홈 화면 표시 이름
+                "CFBundleDisplayName": "한땀한땀",
                 "CFBundleIconName": "AppIcon",
                 "UILaunchScreen": [
                     "UIColorName": "",
@@ -47,10 +47,7 @@ let project = Project(
                 "NidServiceAppUrlScheme": "naver.$(NidClientID)",
                 "NidUrlScheme": "$(NidUrlScheme)",
                 "PaymentURL": "$(PaymentURL)",
-                // iPhone only
-                "UIDeviceFamily": [1],
-                // 다크모드 미지원
-                "UIUserInterfaceStyle": "Light",
+                "UIUserInterfaceStyle": "Light" // 다크모드 미지원
             ]),
             sources: ["SOAPFT/Sources/**"],
             resources: ["SOAPFT/Resources/**"],
@@ -67,7 +64,8 @@ let project = Project(
             ],
             settings: .settings(base: [
                 "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
-                "EMBEDDED_CONTENT_CONTAINS_SWIFT": "YES"
+                "EMBEDDED_CONTENT_CONTAINS_SWIFT": "YES",
+                "TARGETED_DEVICE_FAMILY": "1" // iPhone 전용
             ])
         ),
 
@@ -78,7 +76,7 @@ let project = Project(
             product: .watch2App,
             bundleId: "io.tuist.SOAPFT.watchapp",
             infoPlist: .extendingDefault(with: [
-                "CFBundleDisplayName": "한땀한땀",  // 워치 앱 이름 지정
+                "CFBundleDisplayName": "한땀한땀",
                 "WKWatchKitApp": true,
                 "WKCompanionAppBundleIdentifier": "io.tuist.SOAPFT"
             ]),
@@ -88,7 +86,8 @@ let project = Project(
                 .target(name: "SOAPFT_WatchExtension")
             ],
             settings: .settings(base: [
-                "WATCHOS_DEPLOYMENT_TARGET": "10.0"
+                "WATCHOS_DEPLOYMENT_TARGET": "10.0",
+                "TARGETED_DEVICE_FAMILY": "4" // Watch 전용
             ])
         ),
 
@@ -99,7 +98,7 @@ let project = Project(
             product: .watch2Extension,
             bundleId: "io.tuist.SOAPFT.watchapp.watchkitextension",
             infoPlist: .extendingDefault(with: [
-                "CFBundleDisplayName": "한땀한땀",  // 워치 Extension 표시 이름 지정
+                "CFBundleDisplayName": "한땀한땀",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.watchkit",
                     "NSExtensionAttributes": [
@@ -114,7 +113,8 @@ let project = Project(
             entitlements: .file(path: .relativeToRoot("SOAPFT_WatchExtension/Sources/SOAPFT_WatchExtension.entitlements")),
             settings: .settings(base: [
                 "WATCHOS_DEPLOYMENT_TARGET": "10.0",
-                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym"
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+                "TARGETED_DEVICE_FAMILY": "4" // Watch 전용
             ])
         )
     ]

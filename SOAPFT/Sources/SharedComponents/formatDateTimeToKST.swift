@@ -44,9 +44,7 @@ func formatDateTimeToKST(_ dateString: String) -> String {
     let kstTimeZone = TimeZone(identifier: "Asia/Seoul")!
     var kstCalendar = Calendar.current
     kstCalendar.timeZone = kstTimeZone
-    
-    let kstNow = Date() // 현재 시간도 KST 기준으로 비교
-    
+        
     // 한국 시간 기준으로 날짜 포맷터 설정
     let kstFormatter = DateFormatter()
     kstFormatter.timeZone = kstTimeZone
