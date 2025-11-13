@@ -52,16 +52,16 @@ struct KakoSignButton: View {
 
     private func handleLogin(oauthToken: OAuthToken?, error: Error?) {
         if let error = error {
-            print("❌ 카카오 로그인 실패: \(error.localizedDescription)")
+            print("[KakoSignButton] 카카오 로그인 실패: \(error.localizedDescription)")
             return
         }
         
         guard let token = oauthToken?.accessToken else {
-            print("❌ 토큰 없음")
+            print("[KakoSignButton] 토큰 없음")
             return
         }
         
-        print("✅ 카카오 로그인 성공: \(token)")
+        print("[KakoSignButton] 카카오 로그인 성공: \(token)")
         
         let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
         let deviceType = "iOS"
@@ -78,7 +78,7 @@ struct KakoSignButton: View {
         ) { result in
             switch result {
             case .success(let response):
-                print("✅ 서버 로그인 성공: \(response)")
+                print("[KakoSignButton] 서버 로그인 성공: \(response)")
                 
                 // Keychain에 토큰 저장
                 KeyChainManager.shared.save(response.accessToken, forKey: KeyChainKey.accessToken)
@@ -86,22 +86,22 @@ struct KakoSignButton: View {
                 
                 // 로그인 완료 후 동작
                 if let accessToken = KeyChainManager.shared.readAccessToken() {
-                    print("🔐 저장된 AccessToken: \(accessToken)")
+                    print("[KakoSignButton] 저장된 AccessToken: \(accessToken)")
                     // → 자동 로그인 시도 또는 API 호출
                     container.router.reset()
                     if response.isNewUser {
-                        print("🔥 isNewUser: ture")
+                        print("[KakoSignButton] isNewUser: ture")
                         container.router.push(.loginInfo)
                     } else {
-                        print("🔥 isNewUser: false")
+                        print("[KakoSignButton] isNewUser: false")
                         container.router.push(.mainTabbar)
                     }
                 } else {
-                    print("🔓 토큰 없음 → 로그인 화면으로 이동")
+                    print("[KakoSignButton] 토큰 없음 → 로그인 화면으로 이동")
                 }
 
             case .failure(let error):
-                print("❌ 서버 로그인 실패: \(error.localizedDescription)")
+                print("[KakoSignButton] 서버 로그인 실패: \(error.localizedDescription)")
             }
         }
     }

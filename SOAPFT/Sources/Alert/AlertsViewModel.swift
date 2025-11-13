@@ -12,7 +12,7 @@ class AlertsViewModel: ObservableObject {
     
     func fetchAlerts() {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
-            print("❌ accessToken 없음")
+            print("[AlertsViewModel] accessToken 없음")
             return
         }
         
@@ -26,9 +26,9 @@ class AlertsViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self?.alerts = response.notifications
-                    print("✅ 알림 목록 조회 성공: \(response.notifications.count)건")
+                    print("[AlertsViewModel] 알림 목록 조회 성공: \(response.notifications.count)건")
                 case .failure(let error):
-                    print("알림 조회 실패:", error)
+                    print("[AlertsViewModel] 알림 조회 실패:", error)
                 }
             }
         }
@@ -37,7 +37,7 @@ class AlertsViewModel: ObservableObject {
     // MARK: - 특정 알림 읽음 처리
     func markAsRead(alert: NotificationDTO) {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
-            print("❌ accessToken 없음")
+            print("[AlertsViewModel] accessToken 없음")
             return
         }
         
@@ -49,10 +49,10 @@ class AlertsViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(_):
-                    print("✅ 알림 읽음 처리 성공 (id: \(alert.id))")
+                    print("[AlertsViewModel] 알림 읽음 처리 성공 (id: \(alert.id))")
                     self?.fetchAlerts()
                 case .failure(let error):
-                    print("읽음 처리 실패:", error)
+                    print("[AlertsViewModel] 읽음 처리 실패:", error)
                 }
             }
         }
@@ -61,7 +61,7 @@ class AlertsViewModel: ObservableObject {
     // MARK: - 전체 알림 읽음 처리
     func markAllAsRead() {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
-            print("❌ accessToken 없음")
+            print("[AlertsViewModel] accessToken 없음")
             return
         }
         
@@ -75,10 +75,10 @@ class AlertsViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(_):
-                    print("✅ 전체 알림 읽음 처리 성공 (\(unreadIds.count)건)")
+                    print("[AlertsViewModel] 전체 알림 읽음 처리 성공 (\(unreadIds.count)건)")
                     self?.fetchAlerts()
                 case .failure(let error):
-                    print("전체 읽음 처리 실패:", error)
+                    print("[AlertsViewModel] 전체 읽음 처리 실패:", error)
                 }
             }
         }

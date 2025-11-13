@@ -39,29 +39,29 @@ final class PostService {
 //        }
 //    }
     func getCalendar(year: Int, month: Int, accessToken: String, completion: @escaping (Result<MyCalendarResponseDTO, Error>) -> Void) {
-        print("📡 [PostService] getCalendar 요청 → year: \(year), month: \(month)")
+        print("[PostService] getCalendar 요청 → year: \(year), month: \(month)")
 
         provider.request(.getCalendar(year: year, month: month, accessToken: accessToken)) { result in
             switch result {
             case .success(let response):
                 // 응답 본문 출력
                 if let json = String(data: response.data, encoding: .utf8) {
-                    print("📦 [PostService] 응답 JSON:\n\(json)")
+                    print("[PostService] 응답 JSON:\n\(json)")
                 }
 
                 do {
                     let decodedData = try JSONDecoder().decode(MyCalendarResponseDTO.self, from: response.data)
-                    print("✅ [PostService] getCalendar 디코딩 성공, 날짜 수: \(decodedData.data.count)")
+                    print("[PostService] getCalendar 디코딩 성공, 날짜 수: \(decodedData.data.count)")
                     completion(.success(decodedData))
                 } catch {
                     // 디코딩 실패 시 상세 에러 출력
-                    print("❗️ [PostService] getCalendar 디코딩 실패: \(error)")
-                    print("📦 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
+                    print("[PostService] getCalendar 디코딩 실패: \(error)")
+                    print("[PostService] 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
                     completion(.failure(error))
                 }
 
             case .failure(let error):
-                print("❌ [PostService] getCalendar 네트워크 요청 실패: \(error.localizedDescription)")
+                print("[PostService] getCalendar 네트워크 요청 실패: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
@@ -75,27 +75,27 @@ final class PostService {
 //        }
 //    }
     func getUserCalendar(userUuid: String, year: Int, month: Int, accessToken: String, completion: @escaping (Result<OtherUserCalendarResponseDTO, Error>) -> Void) {
-        print("📡 [PostService] getUserCalendar 요청 → userUUID: \(userUuid), year: \(year), month: \(month)")
+        print("[PostService] getUserCalendar 요청 → userUUID: \(userUuid), year: \(year), month: \(month)")
 
         provider.request(.getUserCalendar(userUuid: userUuid, year: year, month: month, accessToken: accessToken)) { result in
             switch result {
             case .success(let response):
                 if let json = String(data: response.data, encoding: .utf8) {
-                    print("📦 [PostService] 응답 JSON:\n\(json)")
+                    print("[PostService] 응답 JSON:\n\(json)")
                 }
 
                 do {
                     let decodedData = try JSONDecoder().decode(OtherUserCalendarResponseDTO.self, from: response.data)
-                    print("✅ [PostService] 디코딩 성공, 날짜 수: \(decodedData.data.count)")
+                    print("[PostService] 디코딩 성공, 날짜 수: \(decodedData.data.count)")
                     completion(.success(decodedData))
                 } catch {
-                    print("❗️ [PostService] 디코딩 실패: \(error)")
-                    print("📦 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
+                    print("[PostService] 디코딩 실패: \(error)")
+                    print("[PostService] 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "nil")")
                     completion(.failure(error))
                 }
 
             case .failure(let error):
-                print("❌ [PostService] 네트워크 요청 실패: \(error.localizedDescription)")
+                print("[PostService] 네트워크 요청 실패: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }

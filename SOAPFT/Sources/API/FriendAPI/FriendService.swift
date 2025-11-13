@@ -58,11 +58,11 @@ final class FriendService {
                     print("[FriendService] fetchFriendList decoded friends count: \(decoded.friends.count)")
                     completion(.success(decoded.friends))
                 } catch {
-                    print("❌ JSON 디코딩 실패: \(error)")
+                    print("[FriendService] JSON 디코딩 실패: \(error)")
                     completion(.failure(error))
                 }
             case .failure(let error):
-                print("❌ 네트워크 실패: \(error)")
+                print("[FriendService] 네트워크 실패: \(error)")
                 completion(.failure(error))
             }
         }
@@ -80,7 +80,7 @@ final class FriendService {
                     print("[FriendService] receivedRequests decoded count: \(decoded.receivedRequests.count)")
                     completion(.success(decoded.receivedRequests))
                 case .failure(let error):
-                    print("❌ 받은 요청 디코딩 실패: \(error)")
+                    print("[FriendService] 받은 요청 디코딩 실패: \(error)")
                     completion(.failure(error))
                 }
             }
@@ -104,12 +104,12 @@ final class FriendService {
                     let decoded = try JSONDecoder().decode([SearchedFriend].self, from: response.data)
                     completion(.success(decoded))
                 } catch {
-                    print("❌ 디코딩 실패: \(error)")
-                    print("📦 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "")")
+                    print("[FriendService] 디코딩 실패: \(error)")
+                    print("[FriendService] 원본 응답: \(String(data: response.data, encoding: .utf8) ?? "")")
                     completion(.failure(error))
                 }
             case .failure(let error):
-                print("❌ 요청 실패: \(error)")
+                print("[FriendService] 요청 실패: \(error)")
                 completion(.failure(error))
             }
         }
@@ -127,13 +127,13 @@ final class FriendService {
         case .success(let response):
             do {
                 if let jsonString = String(data: response.data, encoding: .utf8) {
-                    print("📦 서버 응답 JSON:\n\(jsonString)")
+                    print("[FriendService] 서버 응답 JSON:\n\(jsonString)")
                 }
                 
                 let decoded = try JSONDecoder().decode(T.self, from: response.data)
                 completion(.success(decoded))
             } catch {
-                print("❗️디코딩 오류:\n" + (String(data: response.data, encoding: .utf8) ?? "nil"))
+                print("[FriendService] 디코딩 오류:\n" + (String(data: response.data, encoding: .utf8) ?? "nil"))
                 completion(.failure(error))
             }
         case .failure(let error):

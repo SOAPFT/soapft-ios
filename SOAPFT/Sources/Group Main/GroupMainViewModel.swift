@@ -32,7 +32,7 @@ final class GroupMainViewModel: ObservableObject {
     // MARK: - 알림 개수
     func fetchNotificationCount() {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
-            print("❌ accessToken 없음")
+            print("[GroupMainViewModel] accessToken 없음")
             return
         }
         
@@ -41,9 +41,9 @@ final class GroupMainViewModel: ObservableObject {
                 switch result {
                 case .success(let noti):
                     self?.notificationCount = noti.unreadCount
-                    print("✅ 알림 개수 fetch 성공: \(noti)")
+                    print("[GroupMainViewModel] 알림 개수 fetch 성공: \(noti)")
                 case .failure(let error):
-                    print("❌ 알림 개수 fetch 실패: \(error.localizedDescription)")
+                    print("[GroupMainViewModel] 알림 개수 fetch 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -66,11 +66,11 @@ final class GroupMainViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let challenges):
-                    print("✅ 인기 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
-                    challenges.forEach { print("🔥 인기 챌린지 타이틀: \($0.title)") }
+                    print("[GroupMainViewModel] 인기 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
+                    challenges.forEach { print("[GroupMainViewModel] 인기 챌린지 타이틀: \($0.title)") }
                     self?.hot = challenges
                 case .failure(let error):
-                    print("🔥 인기 챌린지 실패: \(error.localizedDescription)")
+                    print("[GroupMainViewModel] 인기 챌린지 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -82,11 +82,11 @@ final class GroupMainViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let challenges):
-                    print("✅ 최근 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
-                    challenges.forEach { print("🌱 최근 챌린지 타이틀: \($0.title)") }
+                    print("[GroupMainViewModel] 최근 챌린지 API 호출 성공 - 챌린지 개수: \(challenges.count)")
+                    challenges.forEach { print("[GroupMainViewModel] 최근 챌린지 타이틀: \($0.title)") }
                     self?.recent = challenges
                 case .failure(let error):
-                    print("🌱 최근 챌린지 실패: \(error.localizedDescription)")
+                    print("[GroupMainViewModel] 최근 챌린지 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -94,23 +94,23 @@ final class GroupMainViewModel: ObservableObject {
     
     // MARK: - 이벤트 챌린지 (Mission 직접 사용)
     func fetchEventChallenges() {
-        print("🚀 이벤트 챌린지 API 호출 시작 - EventService.getEventList() 사용")
+        print("[GroupMainViewModel] 이벤트 챌린지 API 호출 시작 - EventService.getEventList() 사용")
         
         eventService.getEventList { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let missions):
-                    print("✅ 이벤트 챌린지 API 호출 성공 - 미션 개수: \(missions.count)")
+                    print("[GroupMainViewModel] 이벤트 챌린지 API 호출 성공 - 미션 개수: \(missions.count)")
                     
                     // Mission을 그대로 저장
                     self?.event = missions
                     
                     missions.forEach { mission in
-                        print("🎉 이벤트 미션: \(mission.title) - 타입: \(mission.type.displayName) - ID: \(mission.id)")
+                        print("[GroupMainViewModel] 이벤트 미션: \(mission.title) - 타입: \(mission.type.displayName) - ID: \(mission.id)")
                     }
                     
                 case .failure(let error):
-                    print("🎯 이벤트 챌린지 실패: \(error.localizedDescription)")
+                    print("[GroupMainViewModel] 이벤트 챌린지 실패: \(error.localizedDescription)")
                     // 실패 시 빈 배열로 설정
                     self?.event = []
                 }

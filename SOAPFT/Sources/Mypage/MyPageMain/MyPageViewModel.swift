@@ -26,10 +26,10 @@ final class MyPageViewModel: ObservableObject {
     
     func fetchUserProfile() {
         guard let accessToken = KeyChainManager.shared.read(forKey: "accessToken") else {
-            print("❌ accessToken 없음")
+            print("[MyPageViewModel] accessToken 없음")
             return
         }
-        print("✅ accessToken 있음: \(accessToken)")
+        print("[MyPageViewModel] accessToken 있음: \(accessToken)")
     
         container.userService.getUserInfo(accessToken: accessToken) { [weak self] result in
             DispatchQueue.main.async {
@@ -42,9 +42,9 @@ final class MyPageViewModel: ObservableObject {
                     self?.coins = profile.coins
                     self?.postCount = profile.postCount
                     self?.friendCount = profile.friendCount
-                    print("✅ 프로필 성공: \(profile)")
+                    print("[MyPageViewModel] 프로필 성공: \(profile)")
                 case .failure(let error):
-                    print("❌ 프로필 실패: \(error.localizedDescription)")
+                    print("[MyPageViewModel] 프로필 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -52,7 +52,7 @@ final class MyPageViewModel: ObservableObject {
     
     func fetchNotificationCount() {
         guard let accessToken = KeyChainManager.shared.readAccessToken() else {
-            print("❌ accessToken 없음")
+            print("[MyPageViewModel] accessToken 없음")
             return
         }
         
@@ -61,9 +61,9 @@ final class MyPageViewModel: ObservableObject {
                 switch result {
                 case .success(let noti):
                     self?.notificationCount = noti.unreadCount
-                    print("✅ 알림 개수 fetch 성공: \(noti)")
+                    print("[MyPageViewModel] 알림 개수 fetch 성공: \(noti)")
                 case .failure(let error):
-                    print("❌ 알림 개수 fetch 실패: \(error.localizedDescription)")
+                    print("[MyPageViewModel] 알림 개수 fetch 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -71,7 +71,7 @@ final class MyPageViewModel: ObservableObject {
     
     func updateProfile(comperion: (() -> Void)? = nil) {
         guard let accessToken = KeyChainManager.shared.readAccessToken() else {
-            print("❌ accessToken 없음")
+            print("[MyPageViewModel] accessToken 없음")
             return
         }
         
@@ -83,9 +83,9 @@ final class MyPageViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    print("✅ 프로필 수정 성공: \(response.message)")
+                    print("[MyPageViewModel] 프로필 수정 성공: \(response.message)")
                 case .failure(let error):
-                    print("❌ 프로필 수정 실패: \(error.localizedDescription)")
+                    print("[MyPageViewModel] 프로필 수정 실패: \(error.localizedDescription)")
                 }
             }
         }
@@ -93,7 +93,7 @@ final class MyPageViewModel: ObservableObject {
     
     func deleteProfile(completion: @escaping (Bool, String?) -> Void) {
         guard let accessToken = KeyChainManager.shared.readAccessToken() else {
-            print("❌ accessToken 없음")
+            print("[MyPageViewModel] accessToken 없음")
             return
         }
         
@@ -101,7 +101,7 @@ final class MyPageViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let res):
-                    print("✅ 계정 삭제 성공: \(res.message)")
+                    print("[MyPageViewModel] 계정 삭제 성공: \(res.message)")
                     // 토큰·세션 정리 (프로젝트에서 실사용하는 키 전부 제거)
                     KeyChainManager.shared.delete(forKey: "jwtToken")
                     KeyChainManager.shared.delete(forKey: "refreshToken")
@@ -120,7 +120,7 @@ final class MyPageViewModel: ObservableObject {
                     completion(true, res.message)
 
                 case .failure(let error):
-                    print("❌ 계정 삭제 실패: \(error.localizedDescription)")
+                    print("[MyPageViewModel] 계정 삭제 실패: \(error.localizedDescription)")
                     completion(false, error.localizedDescription)
                 }
             }
